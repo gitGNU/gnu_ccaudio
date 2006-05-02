@@ -1,0 +1,18 @@
+Begin4
+Title:          ccaudio2
+Version:        VERSION
+Entered-date:   DATE
+Description:	A general purpose and portable stand-alone class library
+		for manipulating audio data and samples held in audio
+		files.  Currently supports raw audio, SUN ".au", and
+		"riff" (.wav) files.  Also supports use of cd audio
+		devices.  ccaudio is a package in the GNU project.
+Keywords:       gnu c++ classes audio		
+Author:         dyfet@gnu.org (David Sugar)
+Maintained-by:  dyfet@gnu.org (David Sugar)
+Platforms:	GNU/Linux, other Unices, W32
+Home-page:	http://www.gnu.org/software/commoncpp
+Primary-Site	ftp.gnu.org /gnu/ccaudio
+		SIZE ccaudio2-VERSION.tar.gz
+Copying-policy: lgpl
+End

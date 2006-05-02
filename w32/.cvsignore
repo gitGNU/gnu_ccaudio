@@ -1,0 +1,16 @@
+Debug6
+ccaudio.opt
+ccaudio.plg
+g711.plg
+Debug
+audiotool.plg
+tmp
+ccaudio.rc
+Makefile.in
+Makefile
+
+ccaudio2.opt
+ccaudio2.plg
+Release
+teltones.plg
+gsm.plg

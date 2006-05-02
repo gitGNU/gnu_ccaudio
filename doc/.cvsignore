@@ -1,0 +1,11 @@
+# ignore genorated...
+
+Makefile
+Makefile.in
+latex
+man3
+rtf
+html
+doxy
+Doxyfile
+

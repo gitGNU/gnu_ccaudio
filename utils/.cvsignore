@@ -1,0 +1,9 @@
+audiotool
+.libs
+.deps
+Makefile
+Makefile.in
+*.au
+*.al
+*.raw
+
