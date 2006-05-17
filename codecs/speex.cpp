@@ -105,6 +105,8 @@ AudioCodec("speex", enc)
 	}
 
 	if(id)
+		encoder = decoder = NULL;
+	else
 	{
 		speex_bits_init(&dec_bits);
 		decoder = speex_decoder_init(spx_mode);
@@ -114,8 +116,6 @@ AudioCodec("speex", enc)
 		info.framecount = spx_frame;
 		info.set();
 	}
-	else
-		encoder = decoder = NULL;
 }
 
 SpeexCommon::~SpeexCommon()
@@ -193,16 +193,16 @@ unsigned SpeexCommon::encode(Linear buffer, void *dest, unsigned lsamples, bool 
 }	
 
 SpeexAudio::SpeexAudio() : 
-SpeexCommon(speexAudio, "speex")
+SpeexCommon(speexAudio, NULL)
 {
 }
 
 SpeexVoice::SpeexVoice() :
-SpeexCommon(speexVoice, "speex")
+SpeexCommon(speexVoice, NULL)
 {
 }
 
-static SpeexCommon codec(Audio::speexVoice, NULL);
+static SpeexCommon codec(Audio::speexVoice, "speex");
 
 // namespace
 }

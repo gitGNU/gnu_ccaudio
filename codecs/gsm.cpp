@@ -65,12 +65,24 @@ public:
 	unsigned encode(Linear data, void *dest, unsigned samples, bool buffered);
 	unsigned decode(Linear data, void *source, unsigned samples, bool buffered);
 
+	GSMCodec(const char *id, Encoding e);
 	GSMCodec();
 	~GSMCodec();
  
 };
 
-GSMCodec::GSMCodec() : AudioCodec("gsm", gsmVoice)
+GSMCodec::GSMCodec()
+{
+        encoder = gsm_create();
+        decoder = gsm_create();
+        info.framesize = 33;
+        info.framecount = 160;
+        info.rate = 8000;
+        info.bitrate = 13200;
+        info.annotation = "gsm";
+}
+
+GSMCodec::GSMCodec(const char *id, Encoding e) : AudioCodec(id, e)
 {
 	encoder = gsm_create();	
 	decoder = gsm_create();
@@ -132,6 +144,6 @@ unsigned GSMCodec::decode(Linear dest, void *from, unsigned samples, bool buffer
 	return result;
 }
 
-static GSMCodec codec;
+static GSMCodec codec("gsm", Audio::gsmVoice);
 
 }
