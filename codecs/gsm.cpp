@@ -62,7 +62,7 @@ public:
 	AudioCodec *getByInfo(Info &info);
 	AudioCodec *getByFormat(const char *format);	
 	
-	unsigned encode(Linear data, void *dest, unsigned samples, bool buffered);
+	unsigned encode(Linear data, void *dest, unsigned samples);
 	unsigned decode(Linear data, void *source, unsigned samples);
 
 	GSMCodec(const char *id, Encoding e);
@@ -109,7 +109,7 @@ AudioCodec *GSMCodec::getByFormat(const char *format)
 	return (AudioCodec *)new GSMCodec();
 }
 
-unsigned GSMCodec::encode(Linear from, void *dest, unsigned samples, bool buffered)
+unsigned GSMCodec::encode(Linear from, void *dest, unsigned samples)
 {
 	unsigned count = samples / 160;
 	unsigned result = count * 33;

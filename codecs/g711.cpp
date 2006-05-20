@@ -48,7 +48,7 @@ static class g711u : public AudioCodec
 public:
 	g711u();
 
-	unsigned encode(Linear buffer, void *source, unsigned lsamples, bool buffered);
+	unsigned encode(Linear buffer, void *source, unsigned lsamples);
 	unsigned decode(Linear buffer, void *dest, unsigned lsamples);
 	Level getImpulse(void *buffer, unsigned samples);
 	Level getPeak(void *buffer, unsigned samples);
@@ -60,7 +60,7 @@ static class g711a : public AudioCodec
 public:
 	g711a();
 
-	unsigned encode(Linear buffer, void *source, unsigned lsamples, bool buffered);
+	unsigned encode(Linear buffer, void *source, unsigned lsamples);
 	unsigned decode(Linear buffer, void *dest, unsigned lsamples);
 	Level getImpulse(void *buffer, unsigned samples);
 	Level getPeak(void *buffer, unsigned samples);
@@ -150,7 +150,7 @@ Audio::Level g711u::getPeak(void *data, unsigned samples)
 	return max;
 }
 
-unsigned g711u::encode(Linear buffer, void *dest, unsigned lsamples, bool buffered)
+unsigned g711u::encode(Linear buffer, void *dest, unsigned lsamples)
 {
 	static int ulaw[256] = {
         0,0,1,1,2,2,2,2,3,3,3,3,3,3,3,3,
@@ -244,7 +244,7 @@ unsigned g711u::decode(Linear buffer, void *source, unsigned lsamples)
 
 #define	AMI_MASK	0x55
 
-unsigned g711a::encode(Linear buffer, void *dest, unsigned lsamples, bool buffered)
+unsigned g711a::encode(Linear buffer, void *dest, unsigned lsamples)
 {
 	int mask, seg, pcm_val;
 	unsigned count;

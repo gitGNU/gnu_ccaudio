@@ -90,7 +90,7 @@ protected:
 
 	Sample decoder(int code);
 	unsigned char encoder(Sample sample);
-	unsigned encode(Linear buffer, void *dest, unsigned lsamples, bool buffered);
+	unsigned encode(Linear buffer, void *dest, unsigned lsamples);
 	unsigned decode(Linear buffer, void *source, unsigned lsamples);
 };
 
@@ -101,7 +101,7 @@ protected:
 
 	g723_24();
 
-        unsigned encode(Linear buffer, void *source, unsigned lsamples, bool buffered );
+        unsigned encode(Linear buffer, void *source, unsigned lsamples);
         unsigned decode(Linear buffer, void *dest, unsigned lsamples);
 };
 
@@ -112,7 +112,7 @@ protected:
 
 	g723_40();
 
-        unsigned encode(Linear buffer, void *source, unsigned lsamples, bool buffered);
+        unsigned encode(Linear buffer, void *source, unsigned lsamples);
         unsigned decode(Linear buffer, void *dest, unsigned lsamples);
 };
 
@@ -125,7 +125,7 @@ static class g723 : public AudioCodec
 public:
 	g723(Encoding encoding);
 
-	unsigned encode(Linear buffer, void *source, unsigned lsamples, bool buffered)
+	unsigned encode(Linear buffer, void *source, unsigned lsamples)
 		{return 0;};
 
 	unsigned decode(Linear buffer, void *dest, unsigned lsamples)
@@ -612,7 +612,7 @@ unsigned g723_16::decode(Linear buffer, void *source, unsigned lsamples)
 	return count;
 }
 	
-unsigned g723_16::encode(Linear buffer, void *dest, unsigned lsamples, bool buffered)
+unsigned g723_16::encode(Linear buffer, void *dest, unsigned lsamples)
 {
 	unsigned char *dp = (unsigned char *)dest, code;
 	unsigned count = 0;
