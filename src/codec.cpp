@@ -320,3 +320,22 @@ Audio::Level AudioCodec::getPeak(void *data, unsigned samples)
 	return max;
 }
 
+unsigned AudioCodec::getEstimated(void)
+{
+	return info.framesize;
+}
+
+unsigned AudioCodec::decodeBuffered(Linear buffer, Encoded source, unsigned bytes)
+{
+	return decode(buffer, source, toSamples(info, bytes));
+}
+
+unsigned AudioCodec::getPacket(Encoded packet, Encoded data, unsigned bytes)
+{
+	if(bytes != info.framesize)
+		return 0;
+
+	memcpy(packet, data, bytes);
+	return bytes;
+}
+

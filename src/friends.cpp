@@ -130,7 +130,7 @@ AudioRegistry::AudioRegistry()
 #endif	
 }
 
-const unsigned Audio::npos = (unsigned)(-1);
+const unsigned Audio::ndata = (unsigned)(-1);
 
 const char *Audio::getCodecPath(void)
 {

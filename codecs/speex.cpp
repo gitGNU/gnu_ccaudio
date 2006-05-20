@@ -59,7 +59,7 @@ public:
 	~SpeexCommon();
 
 	unsigned encode(Linear buffer, void *dest, unsigned lsamples, bool buffered);
-	unsigned decode(Linear buffer, void *source, unsigned lsamples, bool buffered);
+	unsigned decode(Linear buffer, void *source, unsigned lsamples);
 
         AudioCodec *getByInfo(Info &info);
         AudioCodec *getByFormat(const char *format);
@@ -151,7 +151,7 @@ AudioCodec *SpeexCommon::getByInfo(Info &info)
 	}
 }
 
-unsigned SpeexCommon::decode(Linear buffer, void *src, unsigned lsamples, bool buffered)
+unsigned SpeexCommon::decode(Linear buffer, void *src, unsigned lsamples)
 {
 	unsigned count = lsamples / info.framecount;
 	unsigned result = 0;

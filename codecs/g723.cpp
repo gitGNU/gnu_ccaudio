@@ -91,7 +91,7 @@ protected:
 	Sample decoder(int code);
 	unsigned char encoder(Sample sample);
 	unsigned encode(Linear buffer, void *dest, unsigned lsamples, bool buffered);
-	unsigned decode(Linear buffer, void *source, unsigned lsamples, bool buffered);
+	unsigned decode(Linear buffer, void *source, unsigned lsamples);
 };
 
 class g723_24 : protected g72x, protected AudioCodec
@@ -102,7 +102,7 @@ protected:
 	g723_24();
 
         unsigned encode(Linear buffer, void *source, unsigned lsamples, bool buffered );
-        unsigned decode(Linear buffer, void *dest, unsigned lsamples, bool buffered);
+        unsigned decode(Linear buffer, void *dest, unsigned lsamples);
 };
 
 class g723_40 : protected g72x, protected AudioCodec
@@ -113,7 +113,7 @@ protected:
 	g723_40();
 
         unsigned encode(Linear buffer, void *source, unsigned lsamples, bool buffered);
-        unsigned decode(Linear buffer, void *dest, unsigned lsamples, bool buffered);
+        unsigned decode(Linear buffer, void *dest, unsigned lsamples);
 };
 
 static class g723 : public AudioCodec
@@ -128,7 +128,7 @@ public:
 	unsigned encode(Linear buffer, void *source, unsigned lsamples, bool buffered)
 		{return 0;};
 
-	unsigned decode(Linear buffer, void *dest, unsigned lsamples, bool buffered)
+	unsigned decode(Linear buffer, void *dest, unsigned lsamples)
 		{return 0;};
 
 	AudioCodec *getByFormat(const char *format);
@@ -594,7 +594,7 @@ unsigned char g723_16::encoder(Sample sl)
 
 }
 
-unsigned g723_16::decode(Linear buffer, void *source, unsigned lsamples, bool buffered)
+unsigned g723_16::decode(Linear buffer, void *source, unsigned lsamples)
 {
 	unsigned char code, *dp = (unsigned char *)source;
 	unsigned count = 0;

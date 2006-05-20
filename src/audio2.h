@@ -122,7 +122,7 @@ public:
 	typedef	unsigned long	timeout_t;
 #endif
 
-	static const unsigned npos;
+	static const unsigned ndata;
 
 	typedef struct
 	{
@@ -1825,10 +1825,38 @@ public:
 	 * @return number of bytes scanned or returned
 	 * @param buffer sample buffer to save linear samples into.
 	 * @param source for encoded data.
-	 * @param number of samples to extract or bytes to buffer.
-	 * @patam true if buffered mode.
+	 * @param number of samples to extract.
 	 */
-	virtual unsigned decode(Linear buffer, void *source, unsigned number = 0, bool buffered = false) = 0;
+	virtual unsigned decode(Linear buffer, void *source, unsigned number = 0) = 0;
+
+	/**
+	 * Buffer and decode data into linear samples.  This is needed
+	 * for audio formats that have irregular packet sizes.
+	 *
+	 * @return number of samples actually decoded.
+	 * @param destination for decoded data.
+	 * @param source for encoded data.
+	 * @param number of bytes being sent.
+	 */
+	virtual unsigned decodeBuffered(Linear buffer, Encoded source, unsigned len);
+
+	/**
+	 * Get estimated data required for buffered operations.
+	 *
+	 * @return estimated number of bytes required.
+	 */
+	virtual unsigned getEstimated(void);
+
+	/**
+	 * Get a packet of data rather than decode.  This is tied with
+	 * getEstimated.
+	 *
+	 * @return size of data packet or 0 if not complete.
+	 * @param destination to save.
+	 * @param data to push into buffer.
+	 * @param number of bytes to push.
+	 */
+	virtual unsigned getPacket(Encoded destination, Encoded data, unsigned size);
 
 	/**
 	 * Get an info description for this codec.

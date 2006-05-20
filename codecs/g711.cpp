@@ -49,7 +49,7 @@ public:
 	g711u();
 
 	unsigned encode(Linear buffer, void *source, unsigned lsamples, bool buffered);
-	unsigned decode(Linear buffer, void *dest, unsigned lsamples, bool buffered);
+	unsigned decode(Linear buffer, void *dest, unsigned lsamples);
 	Level getImpulse(void *buffer, unsigned samples);
 	Level getPeak(void *buffer, unsigned samples);
 
@@ -61,7 +61,7 @@ public:
 	g711a();
 
 	unsigned encode(Linear buffer, void *source, unsigned lsamples, bool buffered);
-	unsigned decode(Linear buffer, void *dest, unsigned lsamples, bool buffered);
+	unsigned decode(Linear buffer, void *dest, unsigned lsamples);
 	Level getImpulse(void *buffer, unsigned samples);
 	Level getPeak(void *buffer, unsigned samples);
 
@@ -193,7 +193,7 @@ unsigned g711u::encode(Linear buffer, void *dest, unsigned lsamples, bool buffer
 	return count;
 }
 
-unsigned g711u::decode(Linear buffer, void *source, unsigned lsamples, bool buffered)
+unsigned g711u::decode(Linear buffer, void *source, unsigned lsamples)
 {
 	register unsigned char *src = (unsigned char *)source;
 	unsigned count;
@@ -332,7 +332,7 @@ Audio::Level g711a::getPeak(void *data, unsigned samples)
 	return max;
 }
 
-unsigned g711a::decode(Linear buffer, void *source, unsigned lsamples, bool buffered)
+unsigned g711a::decode(Linear buffer, void *source, unsigned lsamples)
 {
 	register unsigned char *src = (unsigned char *)source;
 	unsigned count;
