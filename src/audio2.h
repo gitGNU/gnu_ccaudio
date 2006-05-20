@@ -122,6 +122,8 @@ public:
 	typedef	unsigned long	timeout_t;
 #endif
 
+	static const unsigned npos;
+
 	typedef struct
 	{
 	float v2;
