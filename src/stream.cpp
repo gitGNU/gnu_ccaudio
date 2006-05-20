@@ -142,6 +142,41 @@ AudioStream::~AudioStream()
 	AudioFile::clear();
 }
 
+ssize_t AudioStream::getBuffer(Encoded data, size_t request)
+{
+	if(!request)
+		return getPacket(data);
+
+	return AudioFile::getBuffer(data, request);
+}
+
+ssize_t AudioStream::getPacket(Encoded data)
+{
+	size_t count;
+	unsigned status = 0;
+
+	if(!isStreamable())
+		return AudioFile::getBuffer(data, 0);
+
+	for(;;)
+	{
+		count = codec->getEstimated();
+		if(count)
+			status = AudioFile::getBuffer(framebuf, count);
+		if(count && (size_t)status != count)
+			return 0;
+
+		status = codec->getPacket(data, framebuf, status);
+		if(status == Audio::ndata)
+			break;
+
+		if(status)
+			return status;
+	}		
+
+	return 0;
+}
+
 bool AudioStream::isStreamable(void)
 {
 	if(!isOpen())
@@ -276,7 +311,7 @@ unsigned AudioStream::getMono(Linear buffer, unsigned frames)
 
 	while(frames--)
 	{
-		len = getBuffer(iobuf);	// packet read
+		len = AudioFile::getBuffer(iobuf);	// packet read
 		if(len < (ssize_t)info.framesize)
 			break;
 		++copied;
@@ -330,7 +365,7 @@ unsigned AudioStream::getStereo(Linear buffer, unsigned frames)
 
 	while(frames--)
 	{
-		len = getBuffer(iobuf);		// packet read
+		len = AudioFile::getBuffer(iobuf);	// packet read
 		if(len < (ssize_t)info.framesize)		
 			break;
 		++copied;
@@ -559,7 +594,7 @@ unsigned AudioStream::getEncoded(Encoded addr, unsigned frames)
 
 	while(frames--)
 	{
-		len = getBuffer(addr);	// packet read
+		len = AudioFile::getBuffer(addr);	// packet read
 		if(len < info.framesize)
 			break;
 		addr += info.framesize;

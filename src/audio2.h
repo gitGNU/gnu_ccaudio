@@ -959,6 +959,15 @@ public:
 	virtual ssize_t getBuffer(Encoded data, size_t size) = 0;
 
 	/**
+	 * Get's a packet of audio data.
+	 *
+	 * @return count of data received.
+	 * @param data to get.
+	 */
+	inline ssize_t getPacket(Encoded data)
+		{return getBuffer(data, 0);};
+
+	/**
 	 * Get raw data and assure is in native machine endian.
 	 *
 	 * @return data received in buffer.
@@ -1526,6 +1535,15 @@ public:
 	virtual ~AudioStream();
 
 	/**
+	 * Virtual for packet i/o intercept.
+	 *
+	 * @return bytes read.
+	 * @param data encoding buffer.
+	 * @param count requested.
+	 */
+	ssize_t getBuffer(Encoded data, size_t count);
+
+	/**
 	 * Open existing audio file for streaming.
 	 *
 	 * @param name of file to open.
@@ -1606,6 +1624,15 @@ public:
 	 * @return number of frames written.
 	 */
 	unsigned putEncoded(Encoded address, unsigned frames = 1);
+
+	/**
+	 * Get a packet of data from the file.  This uses the codec
+	 * to determine what a true packet boundry is.
+	 *
+	 * @param buffer to save encoded data.
+	 * @return number of bytes read as packet.
+	 */
+	ssize_t getPacket(Encoded data);
 
 	/**
 	 * Get and automatically convert audio file data into
