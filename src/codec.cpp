@@ -325,6 +325,16 @@ unsigned AudioCodec::getEstimated(void)
 	return info.framesize;
 }
 
+unsigned AudioCodec::getRequired(void)
+{
+	return info.framecount;
+}
+
+unsigned AudioCodec::encodeBuffered(Linear buffer, Encoded source, unsigned samples)
+{
+	return encode(buffer, source, samples);
+}
+
 unsigned AudioCodec::decodeBuffered(Linear buffer, Encoded source, unsigned bytes)
 {
 	return decode(buffer, source, toSamples(info, bytes));

@@ -1811,13 +1811,22 @@ public:
 	/**
 	 * Encode a linear sample frame into the codec sample buffer.
 	 *
-	 * @param number of bytes written.
+	 * @return number of bytes written.
 	 * @param buffer linear sample buffer to use.
 	 * @param dest buffer to store encoded results.
-	 * @param number of samples or buffered bytes.
-	 * @param true if buffered mode.
+	 * @param number of samples.
 	 */
-	virtual unsigned encode(Linear buffer, void *dest, unsigned number = 0, bool buffered = false) = 0;
+	virtual unsigned encode(Linear buffer, void *dest, unsigned number = 0) = 0;
+
+	/**
+	 * Encode linear samples buffered into the coded.
+	 *
+	 * @return number of bytes written or 0 if incomplete.
+	 * @param buffer linear samples to post.
+	 * @param destination of encoded audio.
+	 * @param number of samples being buffered.
+	 */
+	virtual unsigned encodeBuffered(Linear Buffer, Encoded dest, unsigned number);
 
 	/**
 	 * Decode the sample frame into linear samples.
@@ -1843,9 +1852,16 @@ public:
 	/**
 	 * Get estimated data required for buffered operations.
 	 *
-	 * @return estimated number of bytes required.
+	 * @return estimated number of bytes required for decode.
 	 */
 	virtual unsigned getEstimated(void);
+
+	/**
+	 * get required samples for encoding.
+	 *
+	 * @return required number of samples for encoder buffer.
+	 */
+	virtual unsigned getRequired(void);
 
 	/**
 	 * Get a packet of data rather than decode.  This is tied with
