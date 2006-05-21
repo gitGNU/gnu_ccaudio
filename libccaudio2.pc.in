@@ -5,6 +5,9 @@ includedir=@includedir@
 modflags=@MODULE_FLAGS@
 modpath=@codec_libdir@
 codecdir=@codec_libdir@
+speex_format=@speex_format@
+adpcm_format=true
+gsm_format=@gsm_format@
 
 Name: libccaudio2
 Description: GNU ccAudio core library

@@ -3,6 +3,7 @@ Changes from 0.9.3 to 0.9.4
 - new coded methods!
 - g721 adpcm codec added
 - fix for default codec peak and silence
+- supported formats in pkgconfig file
 
 Changes from 0.9.2 to 0.9.3
 - codec cleanup for leak

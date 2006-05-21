@@ -205,6 +205,17 @@ AC_SUBST(MODULE_FLAGS)
 AC_SUBST(SHARED_FLAGS)
 AC_SUBST(STAGE2)
 
+gsm_format="false"
+if test "$ac_gsm_codec" ; then
+	gsm_format="true" ; fi
+
+speex_format="false"
+if test "$ac_spx_codec" ; then
+	speex_format="true" ; fi
+
+AC_SUBST(gsm_format)
+AC_SUBST(speex_format)
+
 AC_PATH_PROG(DOXYGEN, doxygen, no)
 AC_SUBST(DOXYGEN)
 AM_CONDITIONAL(DOXY, test "$DOXYGEN" != "no")
