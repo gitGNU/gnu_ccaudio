@@ -287,6 +287,7 @@ Audio::Level AudioCodec::getImpulse(void *data, unsigned samples)
 {
 	unsigned long sum = 0;
 	Linear ldata = new Sample[samples];
+	Linear lptr = ldata;
 	long count = decode(ldata, data, samples);
 
 	samples = count;
@@ -298,7 +299,7 @@ Audio::Level AudioCodec::getImpulse(void *data, unsigned samples)
 			sum += *(ldata++);
 	}
 
-	delete[] ldata;
+	delete[] lptr;
 	return (Level)(sum / count);
 }
 
@@ -306,6 +307,7 @@ Audio::Level AudioCodec::getPeak(void *data, unsigned samples)
 {
 	Level max = 0, value;
 	Linear ldata = new Sample[samples];
+	Linear lptr = ldata;
 	long count = decode(ldata, data, samples);
 
 	samples = count;
@@ -318,7 +320,7 @@ Audio::Level AudioCodec::getPeak(void *data, unsigned samples)
 			max = value;
 	}
 
-	delete[] ldata;
+	delete[] lptr;
 	return max;
 }
 
