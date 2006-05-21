@@ -157,6 +157,8 @@ bool AudioCodec::load(Encoding e)
 	case mulawAudio:
 	case alawAudio:
 		return load("g.711");
+	case g721ADPCM:
+		return load("g.721");
 	case g723_2bit:
 	case g723_3bit:
 	case g723_5bit:

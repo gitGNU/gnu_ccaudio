@@ -1,6 +1,7 @@
 Changes from 0.9.3 to 0.9.4
 - ndata result for audio codecs
 - new coded methods!
+- g721 adpcm codec added
 
 Changes from 0.9.2 to 0.9.3
 - codec cleanup for leak
