@@ -174,6 +174,8 @@ int main(int argc, char **argv)
 		Tool::append(++argv);
 	else if(!stricmp(cp, "-play"))
 		Tool::play(++argv);
+	else if(!stricmp(cp, "-packets"))
+		Tool::packetdump(++argv);
 
 	cerr << "audiotool: " << *argv << ": unknown option" << endl;
 	exit(-1);
