@@ -181,6 +181,8 @@ const char *Audio::getExtension(Encoding encoding)
 		return ".sx";
 	case g721ADPCM:
 		return ".adpcm";
+	case g729Audio:
+		return ".g729";
 	default:
 		return ".au";
 	}
@@ -245,6 +247,12 @@ Audio::Encoding Audio::getEncoding(const char *name)
 		return pcm32Mono;
 	else if(!stricmp(name, "adpcm"))
 		return g721ADPCM;
+	else if(!stricmp(name, "g721"))
+		return g721ADPCM;
+	else if(!stricmp(name, "g726_32"))
+		return g721ADPCM;
+	else if(!stricmp(name, "g729"))
+		return g729Audio;
 	else if(!stricmp(name, "mp1"))
 		return mp1Audio;
 	else if(!stricmp(name, "mp2"))
@@ -277,6 +285,10 @@ Audio::Encoding Audio::getEncoding(const char *name)
 		return voxADPCM;
 	else if(!stricmp(name, ".adpcm"))
 		return g721ADPCM;
+	else if(!stricmp(name, ".g721"))
+		return g721ADPCM;
+	else if(!stricmp(name, ".g729"))
+		return g729Audio;
 	else if(!stricmp(name, ".a24"))
 		return g723_3bit;
 	else if(!stricmp(name, ".a40"))
@@ -306,6 +318,8 @@ const char *Audio::getMIME(Info &info)
 	{
 		switch(info.encoding)
 		{
+		case g729Audio:
+			return "audio/g729";
 		case g721ADPCM:
 			return "audio/x-adpcm";
 		default:
@@ -357,6 +371,8 @@ const char *Audio::getName(Encoding encoding)
 		return "pcma";
 	case g721ADPCM:
 		return "adpcm";
+	case g729Audio:
+		return "g.729";
 	case g722Audio:
 	case g722_7bit:
 	case g722_6bit:
@@ -882,6 +898,9 @@ Audio::timeout_t Audio::getFraming(Encoding encoding, timeout_t timeout)
 	case msgsmVoice:
 		fa = 40;
 		break;
+	case g729Audio:
+		fa = 10;
+		break;
 	case gsmVoice:
 	case speexVoice:
 	case speexAudio:
@@ -916,6 +935,8 @@ int Audio::getCount(Encoding encoding)
 		return 320;
 	case gsmVoice:
 		return 160;
+	case g729Audio:
+		return 80;
 	case sx73Voice:
 	case sx96Voice:
 		return 120;
@@ -961,6 +982,9 @@ int Audio::getFrame(Encoding encoding, int samples)
 		break;
 	case gsmVoice:
 		framing = 33;
+		break;
+	case g729Audio:
+		framing = 10;
 		break;
 	case g723_2bit:
 		framing = 1;

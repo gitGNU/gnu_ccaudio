@@ -1,3 +1,7 @@
+Changes from 0.9.4 to 0.9.5
+- some fixup for wave rewrite
+- g.729 characteristics added
+
 Changes from 0.9.3 to 0.9.4
 - ndata result for audio codecs
 - new coded methods!

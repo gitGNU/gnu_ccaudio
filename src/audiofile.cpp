@@ -1159,10 +1159,21 @@ void AudioFile::close(void)
 
 		// If it's a non-PCM datatype, the offsets are a bit
 		// different for subchunk 2.
-		if(info.encoding < cdaStereo)
+		switch(info.encoding)
+		{
+		case cdaStereo:
+		case cdaMono:
+		case pcm8Stereo:
+		case pcm8Mono:
+		case pcm16Stereo:
+		case pcm16Mono:
+		case pcm32Stereo:
+		case pcm32Mono:
+			setLong(buf + 40, length - header);
+			break;
+		default:
 			setLong(buf + 54, length - header);
-		else
-			setLong(buf + 40, length - header); 
+		}
 
 		afWrite(buf, 58);
 		break;
