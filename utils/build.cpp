@@ -51,11 +51,13 @@ char *AudioBuild::getContinuation(void)
 
 void AudioBuild::copyConvert(AudioStream &input, AudioStream &output)
 {
-	unsigned long samples;
-	Linear buffer;
+	unsigned long samples, copied;
+	Linear buffer, source;
 	unsigned pages, npages;
 	Info from, to;
 	bool mono = true;
+	AudioResample *resampler = NULL;
+	Linear resample = NULL;
 	
 	input.getInfo(&from);
 	output.getInfo(&to);
@@ -71,6 +73,14 @@ void AudioBuild::copyConvert(AudioStream &input, AudioStream &output)
 	else
 		buffer = new Sample[samples * 2];
 
+	source = buffer;
+	if(from.rate != to.rate)
+	{
+		resampler = new AudioResample((Rate)from.rate, (Rate)to.rate);
+		resample = new Sample[resampler->estimate(samples)];
+		source = resample;
+	}
+
 	for(;;)
 	{
 		if(mono)
@@ -81,16 +91,27 @@ void AudioBuild::copyConvert(AudioStream &input, AudioStream &output)
 		if(!pages)
 			break;
 
-		if(mono)
-			npages = output.bufMono(buffer, samples);
+		if(resampler)
+			copied = resampler->process(buffer, resample, samples);
 		else
-			npages = output.bufStereo(buffer, samples);
+			copied = samples;
+
+		if(mono)
+			npages = output.bufMono(source, copied);
+		else
+			npages = output.bufStereo(source, copied);
 
 		// if(!npages)
 		//	break;
 	}
 
 	delete[] buffer;
+
+	if(resampler)
+		delete resampler;
+
+	if(resample)
+		delete[] resample;
 }
 
 
@@ -131,6 +152,7 @@ void Tool::build(char **argv)
 	const char *target;
 	char *option;
 	char *encoding = NULL;
+	Rate rate = rateUnknown;
 
 retry:
 	if(!*argv)
@@ -156,6 +178,13 @@ retry:
 		goto retry;
 	}
 
+	if(!strnicmp(option, "-rate=", 6))
+	{
+		rate = (Rate)atol(option + 6);
+		++argv;
+		goto retry;
+	} 
+
 	if(!stricmp(option, "-encoding"))
 	{
 		++argv;
@@ -167,6 +196,18 @@ retry:
 		encoding = *(argv++);
 		goto retry;
 	}
+
+        if(!stricmp(option, "-rate"))
+        {
+                ++argv;
+                if(!*argv)
+                {
+			cerr << "audiotool: -build: -rate: missing argument" << endl;
+                        exit(-1);
+                }
+                rate = (Rate)atol(*(argv++));
+                goto retry;
+        }
 
 skip:
       	if(*argv && **argv == '-')
@@ -196,6 +237,9 @@ skip:
 	if(encoding)
 		make.encoding = getEncoding(encoding);
 
+	if(rate != rateUnknown)
+		make.setRate(rate);
+
 	output.create(target, &make, false, 10);
 	if(!output.isOpen())
 	{
@@ -204,7 +248,7 @@ skip:
 	}
 	output.getInfo(&make);
 
-	if(make.encoding == info.encoding)
+	if(make.encoding == info.encoding && make.rate == info.rate)
 		AudioBuild::copyDirect(input, output);
 	else
 	{

@@ -91,6 +91,7 @@ namespace ost {
 #define	AUDIO_CODEC_MODULES	1
 #define	AUDIO_LINEAR_FRAMING	1
 #define	AUDIO_NATIVE_METHODS	1
+#define	AUDIO_RATE_RESAMPLER	1
 
 class __EXPORT AudioCodec;
 class __EXPORT AudioDevice;
