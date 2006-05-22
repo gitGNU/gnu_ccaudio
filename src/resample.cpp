@@ -56,7 +56,7 @@ AudioResample::AudioResample(Rate mul, Rate div)
 		max = dfact;
 
 	++max;
-	buffer = new short[max];
+	buffer = new Sample[max];
 	ppos = gpos = 0;
 	memset(buffer, 0, max * 2);
 	last = 0;
@@ -77,7 +77,7 @@ size_t AudioResample::estimate(size_t count)
 size_t AudioResample::process(Linear from, Linear dest, size_t count)
 {
 	size_t saved = 0;
-	short diff, current;
+	Sample diff, current;
 	unsigned pos;
 	
 	while(count--)

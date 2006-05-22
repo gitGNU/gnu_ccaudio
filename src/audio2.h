@@ -776,7 +776,7 @@ class __EXPORT AudioResample : public Audio
 protected:
 	unsigned mfact, dfact, max;
 	unsigned gpos, ppos;
-	short last;
+	Sample last;
 	Linear buffer;
 
 public:
