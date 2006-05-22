@@ -1050,6 +1050,12 @@ void Audio::Info::clear(void)
 	memset(this, 0, sizeof(Info));
 }
 
+void Audio::Info::setRate(Rate rate)
+{
+	rate = getRate(encoding, rate);
+	set();
+}	
+
 void Audio::Info::setFraming(timeout_t timeout)
 {
 	set();

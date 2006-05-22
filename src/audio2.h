@@ -374,6 +374,7 @@ public:
 		void clear(void);
 		void set(void);
 		void setFraming(timeout_t frame);
+		void setRate(Rate rate);
 	};
 
 	/**
@@ -517,6 +518,16 @@ public:
 	 * @param encoding format.
 	 */
 	static Rate getRate(Encoding encoding);
+
+	/**
+	 * Return optional rate setting effect.  Many codecs are
+	 * fixed rate.
+	 *
+	 * @return result rate for audio date.
+	 * @param encoding format.
+	 * @param requested rate.
+	 */
+	static Rate getRate(Encoding e, Rate request);
 
 	/**
 	 * Return frame timing for an audio encoding format.

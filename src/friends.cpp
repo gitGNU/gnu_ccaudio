@@ -1061,6 +1061,32 @@ void Audio::fill(unsigned char *addr, int samples, Encoding encoding)
 	}
 }
 
+Audio::Rate Audio::getRate(Encoding encoding, Rate request)
+{
+	if((long)request == (long)0)
+		request = getRate(encoding);
+
+	switch(encoding)
+	{
+	case pcm8Stereo:
+	case pcm8Mono:
+	case pcm16Stereo:
+	case pcm16Mono:
+	case pcm32Stereo:
+	case pcm32Mono:
+	case mulawAudio:
+	case alawAudio:
+		return request;
+	case voxADPCM:
+		if(request == rate8khz)
+			return rate8khz;
+		return rate6khz;
+	default:
+		break;
+	};
+	return getRate(encoding);
+}
+
 Audio::Rate Audio::getRate(Encoding encoding)
 {
 	switch(encoding)
