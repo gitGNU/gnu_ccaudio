@@ -753,6 +753,28 @@ public:
 };
 
 /**
+ * The AudioResample class is used to manage linear intropolation
+ * buffering for rate conversions.
+ *
+ * @author David Sugar <dyfet@ostel.com>
+ * @short linear intropolation and rate conversion.
+ */
+class __EXPORT AudioResample : public Audio
+{
+protected:
+	unsigned mfact, dfact, max;
+	unsigned gpos, ppos;
+	short last;
+	Linear buffer;
+
+public:
+	AudioResample(Rate mul, Rate div);
+	~AudioResample();
+
+	size_t process(Linear from, Linear to, size_t count);
+};
+
+/**
  * The AudioTone class is used to create a frame of audio encoded single or
  * dualtones.  The frame will be iterated for each request, so a
  * continual tone can be extracted by frame.

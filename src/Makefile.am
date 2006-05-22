@@ -19,7 +19,8 @@ lib_LTLIBRARIES = libccaudio2.la
 
 libccaudio2_la_SOURCES = audiofile.cpp friends.cpp codec.cpp tone.cpp \
 	fileio.cpp buffer.cpp stream.cpp oss.cpp w32.cpp osx.cpp \
-	mapper.cpp dialers.cpp teltones.cpp detect.cpp audiobase.cpp
+	mapper.cpp dialers.cpp teltones.cpp detect.cpp audiobase.cpp \
+	resample.cpp
 
 libccaudio2_la_LDFLAGS = $(DYN_LOADER) $(AUDIO_LIBS) -lm $(RELEASE)
 
