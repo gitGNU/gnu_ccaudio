@@ -62,7 +62,7 @@ private:
 		int next_flag;
 	}	state_t;
 
-	state_t state;
+	state_t encode_state, decode_state;
 		
 public:
 	AudioCodec *getByInfo(Info &info);
@@ -70,7 +70,7 @@ public:
 
 	unsigned decode(Linear buffer, void *from, unsigned lsamples);
 	unsigned encode(Linear buffer, void *dest, unsigned lsamples);
-	short coder(int nib);
+	short coder(state_t *state, int nib);
 
 	g721Codec(const char *id, Encoding e);
 	g721Codec();
@@ -85,7 +85,8 @@ g721Codec::g721Codec() : AudioCodec()
 	info.bitrate = 32000;
 	info.annotation = "g.721";
 
-	memset(&state, 0, sizeof(state));
+	memset(&encode_state, 0, sizeof(encode_state));
+        memset(&decode_state, 0, sizeof(decode_state));
 }
 
 g721Codec::g721Codec(const char *id, Encoding e) : AudioCodec(id, e)
@@ -100,11 +101,11 @@ g721Codec::g721Codec(const char *id, Encoding e) : AudioCodec(id, e)
 g721Codec::~g721Codec()
 {}
 
-short g721Codec::coder(int nib)
+short g721Codec::coder(state_t *state, int nib)
 {
 	int step, sign, diff;
 
-	step = steps[state.ssindex];
+	step = steps[state->ssindex];
 	sign = nib & 0x08;
 	nib &= 0x07;
 
@@ -113,25 +114,25 @@ short g721Codec::coder(int nib)
 	if(sign)
 		diff = -diff;
 
-	if(state.next_flag & 0x01)
-		state.signal -= 8;
-	else if(state.next_flag & 0x02)
-		state.signal += 8;
+	if(state->next_flag & 0x01)
+		state->signal -= 8;
+	else if(state->next_flag & 0x02)
+		state->signal += 8;
 
-	state.signal += diff;
-	if (state.signal > 2047)
-                state.signal = 2047;
-	else if (state.signal < -2047)
-               	state.signal = -2047;
+	state->signal += diff;
+	if (state->signal > 2047)
+                state->signal = 2047;
+	else if (state->signal < -2047)
+               	state->signal = -2047;
 
-        state.next_flag = 0;
-	state.ssindex += index[nib];
-	if (state.ssindex < 0)
-		state.ssindex = 0;
-	else if(state.ssindex > 48)
-		state.ssindex = 48;
+        state->next_flag = 0;
+	state->ssindex += index[nib];
+	if (state->ssindex < 0)
+		state->ssindex = 0;
+	else if(state->ssindex > 48)
+		state->ssindex = 48;
 
-	return state.signal << 4;	
+	return state->signal << 4;	
 }
 
 unsigned g721Codec::encode(Linear buffer, void *coded, unsigned lsamples)
@@ -146,8 +147,8 @@ unsigned g721Codec::encode(Linear buffer, void *coded, unsigned lsamples)
 	while(count--)
 	{
 		data = (*(buffer++)) >> 4;
-		step = steps[state.ssindex];
-		diff = data - state.signal;
+		step = steps[encode_state.ssindex];
+		diff = data - encode_state.signal;
 
 		if(diff < 0)
 		{
@@ -162,7 +163,7 @@ unsigned g721Codec::encode(Linear buffer, void *coded, unsigned lsamples)
 			if(nib > 7)
 				nib = 7;
 		}
-		coder(nib);
+		coder(&encode_state, nib);
 		if(hi)
 		{
 			byte |= nib;
@@ -188,9 +189,9 @@ unsigned g721Codec::decode(Linear buffer, void *from, unsigned lsamples)
 	while(count--)
 	{
 		nib = (*src >> 4) & 0x0f;
-		*(buffer++) = coder(nib);
+		*(buffer++) = coder(&decode_state, nib);
 		nib = *src & 0x0f;
-		*(buffer++) = coder(nib);
+		*(buffer++) = coder(&decode_state, nib);
 		++src;
 	}
 	return (lsamples / 2) * 2;
