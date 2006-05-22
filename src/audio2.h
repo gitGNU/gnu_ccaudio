@@ -783,6 +783,7 @@ public:
 	~AudioResample();
 
 	size_t process(Linear from, Linear to, size_t count);
+	size_t estimate(size_t count);
 };
 
 /**

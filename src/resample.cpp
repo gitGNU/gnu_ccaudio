@@ -67,6 +67,13 @@ AudioResample::~AudioResample()
 	delete[] buffer;
 };
 
+size_t AudioResample::estimate(size_t count)
+{
+	count *= mfact;
+	count += (mfact - 1);
+	return count / dfact;
+}
+
 size_t AudioResample::process(Linear from, Linear dest, size_t count)
 {
 	size_t saved = 0;
