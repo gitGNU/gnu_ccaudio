@@ -1050,9 +1050,9 @@ void Audio::Info::clear(void)
 	memset(this, 0, sizeof(Info));
 }
 
-void Audio::Info::setRate(Rate rate)
+void Audio::Info::setRate(Rate r)
 {
-	rate = getRate(encoding, rate);
+	rate = getRate(encoding, r);
 	set();
 }	
 

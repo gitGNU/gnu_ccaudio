@@ -37,16 +37,39 @@
 
 #include "private.h"
 #include "audio2.h"
+#include <cstdio>
 
 using namespace ost;
 
-AudioResample::AudioResample(Rate mul, Rate div)
+AudioResample::AudioResample(Rate div, Rate mul)
 {
-	while(!(mul & 0x01) && !(div & 0x01))
+	bool common = true;
+	while(common)
 	{
-		mul = (Rate)(mul >> 1);
-		div = (Rate)(div >> 1);
+		common = false;
+
+		while(!(mul & 0x01) && !(div & 0x01))
+		{
+			mul = (Rate)(mul >> 1);
+			div = (Rate)(div >> 1);
+			common = true;
+		}
+
+		while(!(mul % 3) && !(div % 3))
+		{
+			mul = (Rate)(mul / 3);
+			div = (Rate)(div / 3);
+			common = true;
+		}
+
+		while(!(mul % 5) && !(div %5)) 	
+		{
+			mul = (Rate)(mul / 5);
+			div = (Rate)(div / 5);
+			common = true;
+		}
 	}
+		
 
 	mfact = (unsigned)mul;
 	dfact = (unsigned)div;
@@ -79,36 +102,34 @@ size_t AudioResample::process(Linear from, Linear dest, size_t count)
 	size_t saved = 0;
 	Sample diff, current;
 	unsigned pos;
-	
+	unsigned dpos;
+
 	while(count--)
 	{
 		current = *(from++);
 		diff = (current - last) / mfact;
 		pos = mfact;
-		while(--pos)
+		while(pos--)
 		{
-			buffer[ppos++] = (last += diff);			
+			last += diff;
+			buffer[ppos++] = current;			
 			if(ppos >= max)
 				ppos = 0;
-		}
-		buffer[ppos++] = current;
-		if(ppos >= max)
-			ppos = 0;
-		last = current;
-		for(;;)
-		{
-			diff = ppos - gpos;
-			if(diff < 0)
-				diff = max - diff;			
-			if((unsigned)diff < dfact)
-				break;
 
-			*(dest++) = buffer[gpos];
-			++saved;
-			gpos += dfact;
-			if(gpos >= max)
-				gpos -= max;
+			if(gpos < ppos)
+				dpos = ppos - gpos;
+			else
+				dpos = max - (gpos - ppos);
+			if(dpos >= dfact)
+			{
+				*(dest++) = buffer[gpos];
+				++saved;
+				gpos += dfact;
+				if(gpos >= max)
+					gpos = gpos - max;
+			}
 		}
+		last = current;
 	}
 	return saved;
 }
