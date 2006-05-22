@@ -183,6 +183,8 @@ const char *Audio::getExtension(Encoding encoding)
 		return ".adpcm";
 	case g729Audio:
 		return ".g729";
+	case ilbcAudio:
+		return ".ilbc";
 	default:
 		return ".au";
 	}
@@ -253,6 +255,8 @@ Audio::Encoding Audio::getEncoding(const char *name)
 		return g721ADPCM;
 	else if(!stricmp(name, "g729"))
 		return g729Audio;
+	else if(!stricmp(name, "ilbc"))
+		return ilbcAudio;
 	else if(!stricmp(name, "mp1"))
 		return mp1Audio;
 	else if(!stricmp(name, "mp2"))
@@ -289,6 +293,8 @@ Audio::Encoding Audio::getEncoding(const char *name)
 		return g721ADPCM;
 	else if(!stricmp(name, ".g729"))
 		return g729Audio;
+	else if(!stricmp(name, ".ilbc"))
+		return ilbcAudio;
 	else if(!stricmp(name, ".a24"))
 		return g723_3bit;
 	else if(!stricmp(name, ".a40"))
@@ -318,8 +324,6 @@ const char *Audio::getMIME(Info &info)
 	{
 		switch(info.encoding)
 		{
-		case g729Audio:
-			return "audio/g729";
 		case g721ADPCM:
 			return "audio/x-adpcm";
 		default:
@@ -345,6 +349,10 @@ const char *Audio::getMIME(Info &info)
 		return "audio/x-vox";
 	case gsmVoice:
 		return "audio/x-gsm";
+	case g729Audio:
+		return "audio/g729";
+	case ilbcAudio:
+		return "audio/iLBC";
 	default:
 		return NULL;
 	}
@@ -371,6 +379,8 @@ const char *Audio::getName(Encoding encoding)
 		return "pcma";
 	case g721ADPCM:
 		return "adpcm";
+	case ilbcAudio:
+		return "ilbc";
 	case g729Audio:
 		return "g.729";
 	case g722Audio:
@@ -904,7 +914,8 @@ Audio::timeout_t Audio::getFraming(Encoding encoding, timeout_t timeout)
 	case gsmVoice:
 	case speexVoice:
 	case speexAudio:
-		fa = 20;
+	case ilbcAudio:
+		fa = 30;
 		break;
 	case sx96Voice:
 	case sx73Voice:
@@ -935,6 +946,8 @@ int Audio::getCount(Encoding encoding)
 		return 320;
 	case gsmVoice:
 		return 160;
+	case ilbcAudio:
+		return 240;
 	case g729Audio:
 		return 80;
 	case sx73Voice:
@@ -982,6 +995,9 @@ int Audio::getFrame(Encoding encoding, int samples)
 		break;
 	case gsmVoice:
 		framing = 33;
+		break;
+	case ilbcAudio:
+		framing = 50;
 		break;
 	case g729Audio:
 		framing = 10;

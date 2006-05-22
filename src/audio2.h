@@ -237,7 +237,8 @@ public:
 		speexVoice,	// narrow band
 		speexAudio,
 
-		g729Audio
+		g729Audio,
+		ilbcAudio
 	};
 	typedef enum Encoding Encoding;
 

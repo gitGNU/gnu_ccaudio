@@ -1,6 +1,7 @@
 Changes from 0.9.4 to 0.9.5
 - some fixup for wave rewrite
 - g.729 characteristics added
+- ilbc characteristics added
 - fix for g721 bidirectional use
 
 Changes from 0.9.3 to 0.9.4
