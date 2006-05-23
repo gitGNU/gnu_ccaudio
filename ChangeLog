@@ -1,6 +1,8 @@
 Changes from 0.9.5 to 0.9.6
 - crude rate resampling support
 - getRate for encodings and setRate for Info
+- speex codec fix
+- oki codec and dialogic vox support
 
 Changes from 0.9.4 to 0.9.5
 - some fixup for wave rewrite

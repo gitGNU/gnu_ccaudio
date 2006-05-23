@@ -80,6 +80,7 @@ GSMCodec::GSMCodec()
         info.rate = 8000;
         info.bitrate = 13200;
         info.annotation = "gsm";
+	info.encoding = gsmVoice;
 }
 
 GSMCodec::GSMCodec(const char *id, Encoding e) : AudioCodec(id, e)

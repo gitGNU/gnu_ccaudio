@@ -47,7 +47,7 @@ using namespace ost;
 
 class SpeexCommon: public AudioCodec
 {
-private:
+protected:
 	SpeexMode *spx_mode;
 	SpeexBits enc_bits, dec_bits;
 	unsigned int spx_clock, spx_channel;
@@ -56,6 +56,7 @@ private:
 
 public:
 	SpeexCommon(Encoding enc, const char *name);
+	SpeexCommon();
 	~SpeexCommon();
 
 	unsigned encode(Linear buffer, void *dest, unsigned lsamples);
@@ -104,18 +105,12 @@ AudioCodec("speex", enc)
 		break;
 	}
 
-	if(id)
-		encoder = decoder = NULL;
-	else
-	{
-		speex_bits_init(&dec_bits);
-		decoder = speex_decoder_init(spx_mode);
-		speex_bits_init(&enc_bits);
-		encoder = speex_encoder_init(spx_mode);
-		speex_decoder_ctl(decoder, SPEEX_GET_FRAME_SIZE, &spx_frame);
-		info.framecount = spx_frame;
-		info.set();
-	}
+	encoder = decoder = NULL;
+}
+
+SpeexCommon::SpeexCommon() :
+AudioCodec()
+{
 }
 
 SpeexCommon::~SpeexCommon()
@@ -193,13 +188,46 @@ unsigned SpeexCommon::encode(Linear buffer, void *dest, unsigned lsamples)
 }	
 
 SpeexAudio::SpeexAudio() : 
-SpeexCommon(speexAudio, NULL)
+SpeexCommon()
 {
+	info.encoding = speexVoice;
+	info.framesize = 40;
+	info.framecount = 160;
+	info.rate = 16000;
+	info.bitrate = 48000;
+	info.annotation = "SPEEX/16000";
+	spx_clock = 16000;
+	spx_channel = 1;
+	spx_mode = &speex_wb_mode;
+        speex_bits_init(&dec_bits);
+        decoder = speex_decoder_init(spx_mode);
+        speex_bits_init(&enc_bits);
+        encoder = speex_encoder_init(spx_mode);
+        speex_decoder_ctl(decoder, SPEEX_GET_FRAME_SIZE, &spx_frame);
+        info.framecount = spx_frame;
+        info.set();
 }
 
 SpeexVoice::SpeexVoice() :
-SpeexCommon(speexVoice, NULL)
+SpeexCommon()
 {
+	info.encoding = speexVoice;
+	info.framesize = 20;
+	info.framecount = 160;
+	info.rate = 8000;
+	info.bitrate = 24000;
+	info.annotation = "SPEEX/8000";
+	spx_clock = 8000;
+	spx_channel = 1;
+	spx_mode = &speex_nb_mode;
+        speex_bits_init(&dec_bits);
+        decoder = speex_decoder_init(spx_mode);
+        speex_bits_init(&enc_bits);
+        encoder = speex_encoder_init(spx_mode);
+        speex_decoder_ctl(decoder, SPEEX_GET_FRAME_SIZE, &spx_frame);
+        info.framecount = spx_frame;
+        info.set();
+
 }
 
 static SpeexCommon codec(Audio::speexVoice, "speex");

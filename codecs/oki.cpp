@@ -43,7 +43,7 @@
 namespace ccAudioCodec {
 using namespace ost;
 
-static int index[8] = { -1, -1, -1, -1, 2, 4, 6, 8 };
+static int index[8] = {-1, -1, -1, -1, 2, 4, 6, 8};
 
 static int steps[49] = {
   16, 17, 19, 21, 23, 25, 28, 31, 34, 37, 41, 45, 50, 55, 60, 66, 73,
@@ -52,14 +52,13 @@ static int steps[49] = {
   1060, 1166, 1282, 1411, 1552
 };
 
-class g721Codec : public AudioCodec
+class okiCodec : public AudioCodec
 {
 private:
 	typedef struct state
 	{
-		int ssindex;
-		int signal;
-		int next_flag;
+		short last;
+		short ssindex;
 	}	state_t;
 
 	state_t encode_state, decode_state;
@@ -70,145 +69,167 @@ public:
 
 	unsigned decode(Linear buffer, void *from, unsigned lsamples);
 	unsigned encode(Linear buffer, void *dest, unsigned lsamples);
-	short coder(state_t *state, int nib);
+	unsigned char encode_sample(state_t *state, short sample);
+	short decode_sample(state_t *state, unsigned char code);
 
-	g721Codec(const char *id, Encoding e);
-	g721Codec();
-	~g721Codec();
+	okiCodec(const char *id, Encoding e);
+	okiCodec(Encoding e);
+	~okiCodec();
 };
 
-g721Codec::g721Codec() : AudioCodec()
+okiCodec::okiCodec(Encoding e) : AudioCodec()
 {
 	info.framesize = 1;
 	info.framecount = 2;
-	info.rate = 8000;
-	info.bitrate = 32000;
-	info.annotation = "g.721";
-	info.encoding = g721ADPCM;
+	info.encoding = e;
+
+	if(encoding == voxADPCM)
+	{
+		info.rate = 6000;
+		info.bitrate = 24000;
+		info.annotation = "vox";
+	}
+	else
+	{
+		info.rate = 8000;
+		info.bitrate = 24000;
+		info.annotation = "oki";
+	}
 
 	memset(&encode_state, 0, sizeof(encode_state));
         memset(&decode_state, 0, sizeof(decode_state));
+	info.set();
 }
 
-g721Codec::g721Codec(const char *id, Encoding e) : AudioCodec(id, e)
+okiCodec::okiCodec(const char *id, Encoding e) : AudioCodec(id, e)
 {
-	info.framesize = 1;
-	info.framecount = 2;
-	info.rate = 8000;
-	info.bitrate = 32000;
-	info.annotation = "g.721";
+        info.framesize = 1;
+        info.framecount = 2;
+
+        if(encoding == voxADPCM)
+        {
+                info.rate = 6000;
+                info.bitrate = 24000;
+                info.annotation = "vox";
+        }
+        else
+        {
+                info.rate = 8000;
+                info.bitrate = 24000;
+                info.annotation = "oki";
+        }
+        memset(&encode_state, 0, sizeof(encode_state));
+        memset(&decode_state, 0, sizeof(decode_state));
+        info.set();
 }
 
-g721Codec::~g721Codec()
+okiCodec::~okiCodec()
 {}
 
-short g721Codec::coder(state_t *state, int nib)
+unsigned char okiCodec::encode_sample(state_t *state, short sample)
 {
-	int step, sign, diff;
+	unsigned char code = 0;
+	short diff, step;
 
 	step = steps[state->ssindex];
-	sign = nib & 0x08;
-	nib &= 0x07;
-
-	diff = (((nib << 1) + 1) * step) >> 3;
-		
-	if(sign)
+	diff = sample - state->last;
+	if(diff < 0)
+	{
 		diff = -diff;
+		code = 0x08;
+	}
 
-	if(state->next_flag & 0x01)
-		state->signal -= 8;
-	else if(state->next_flag & 0x02)
-		state->signal += 8;
+	if(diff >= step)
+	{
+		code |= 0x04;
+		diff -= step;
+	}
+	if(diff >= step/2)
+	{
+		code |= 0x02;
+		diff -= step/2;
+	}
+	if(diff >= step/4)
+		code |= 0x01; 
 
-	state->signal += diff;
-	if (state->signal > 2047)
-                state->signal = 2047;
-	else if (state->signal < -2047)
-               	state->signal = -2047;
-
-        state->next_flag = 0;
-	state->ssindex += index[nib];
-	if (state->ssindex < 0)
-		state->ssindex = 0;
-	else if(state->ssindex > 48)
-		state->ssindex = 48;
-
-	return state->signal << 4;	
+	decode_sample(state, code);
+	return code;
 }
 
-unsigned g721Codec::encode(Linear buffer, void *coded, unsigned lsamples)
+short okiCodec::decode_sample(state_t *state, unsigned char code)
+{
+	short diff, step, sample;
+
+	step = steps[state->ssindex];
+	diff = step / 8;
+	if(code & 0x01)
+		diff += step / 4;
+	if(code & 0x02)
+		diff += step / 2;
+	if(code & 0x04)
+		diff += step;
+	if(code & 0x08)
+		diff = -diff;
+	sample = state->last + diff;
+	sample &= 0x7ff;
+	state->last = sample;
+	state->ssindex += index[code & 0x07];
+	if(state->ssindex < 0)
+		state->ssindex = 0;
+	if(state->ssindex > 48)
+		state->ssindex = 48;
+	return sample;
+}
+
+unsigned okiCodec::encode(Linear buffer, void *coded, unsigned lsamples)
 {
 	unsigned count = (lsamples / 2) * 2;
-	short data;
 	bool hi = false;
-	int diff, step, nib;
 	unsigned char byte = 0;
 	Encoded dest = (Encoded)coded;
 
 	while(count--)
 	{
-		data = (*(buffer++)) >> 4;
-		step = steps[encode_state.ssindex];
-		diff = data - encode_state.signal;
-
-		if(diff < 0)
-		{
-			nib = (-diff << 2) / step;
-			if(nib > 7)
-				nib = 7;
-			nib |= 0x08;
-		}
-		else
-		{
-			nib = (diff << 2) / step;
-			if(nib > 7)
-				nib = 7;
-		}
-		coder(&encode_state, nib);
 		if(hi)
 		{
-			byte |= nib;
-			*(dest++) = byte;
-			hi = false;
-		}
+			byte |= encode_sample(&encode_state, *(buffer++));
+			*(dest++) = byte;			
+		}	
 		else
-		{
-			byte = (unsigned char)(nib << 4);
-			hi = true;
-		}
-				
+			byte = encode_sample(&encode_state, *(buffer++)) << 4 ;				
 	}
 	return (lsamples / 2) * 2;
 }
 
-unsigned g721Codec::decode(Linear buffer, void *from, unsigned lsamples)
+unsigned okiCodec::decode(Linear buffer, void *from, unsigned lsamples)
 {
 	Encoded src = (Encoded)from;
 	unsigned count = lsamples / 2;
-	int nib;
+	unsigned char byte;
 
 	while(count--)
 	{
-		nib = (*src >> 4) & 0x0f;
-		*(buffer++) = coder(&decode_state, nib);
-		nib = *src & 0x0f;
-		*(buffer++) = coder(&decode_state, nib);
+		byte = ((*src >> 4) & 0x0f);
+		*(buffer++) = decode_sample(&decode_state, byte);
+		byte = (*src & 0x0f);
+		*(buffer++) = decode_sample(&decode_state, byte);
 		++src;
 	}
 	return (lsamples / 2) * 2;
 }		
 
-AudioCodec *g721Codec::getByInfo(Info &info)
+AudioCodec *okiCodec::getByInfo(Info &info)
 {
-        return (AudioCodec *)new g721Codec();
+        return (AudioCodec *)new okiCodec(info.encoding);
 }
 
-AudioCodec *g721Codec::getByFormat(const char *format)
+AudioCodec *okiCodec::getByFormat(const char *format)
 {
-        return (AudioCodec *)new g721Codec();
+        return (AudioCodec *)new okiCodec(info.encoding);
 }
 				
-static g721Codec codec("adpcm", Audio::g721ADPCM);
+static okiCodec voxcodec("vox", Audio::voxADPCM);
+static okiCodec okicodec("oki", Audio::okiADPCM);
 
 } // namespace
 
