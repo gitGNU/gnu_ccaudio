@@ -171,7 +171,10 @@ short okiCodec::decode_sample(state_t *state, unsigned char code)
 	if(code & 0x08)
 		diff = -diff;
 	sample = state->last + diff;
-	sample &= 0x7ff;
+	if(sample > 2047)
+		sample = 2047;
+	else if(sample < -2047)
+		sample = -2047;
 	state->last = sample;
 	state->ssindex += index[code & 0x07];
 	if(state->ssindex < 0)
@@ -192,11 +195,11 @@ unsigned okiCodec::encode(Linear buffer, void *coded, unsigned lsamples)
 	{
 		if(hi)
 		{
-			byte |= encode_sample(&encode_state, *(buffer++));
+			byte |= encode_sample(&encode_state, *(buffer++) / 16 );
 			*(dest++) = byte;			
 		}	
 		else
-			byte = encode_sample(&encode_state, *(buffer++)) << 4 ;				
+			byte = encode_sample(&encode_state, *(buffer++) / 16 ) << 4 ;				
 	}
 	return (lsamples / 2) * 2;
 }
@@ -210,9 +213,9 @@ unsigned okiCodec::decode(Linear buffer, void *from, unsigned lsamples)
 	while(count--)
 	{
 		byte = ((*src >> 4) & 0x0f);
-		*(buffer++) = decode_sample(&decode_state, byte);
+		*(buffer++) = (decode_sample(&decode_state, byte) * 16);
 		byte = (*src & 0x0f);
-		*(buffer++) = decode_sample(&decode_state, byte);
+		*(buffer++) = (decode_sample(&decode_state, byte) * 16);
 		++src;
 	}
 	return (lsamples / 2) * 2;
