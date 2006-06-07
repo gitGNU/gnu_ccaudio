@@ -914,6 +914,8 @@ Audio::timeout_t Audio::getFraming(Encoding encoding, timeout_t timeout)
 	case gsmVoice:
 	case speexVoice:
 	case speexAudio:
+		fa = 20;
+		break;
 	case ilbcAudio:
 		fa = 30;
 		break;

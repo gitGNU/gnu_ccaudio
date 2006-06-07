@@ -74,6 +74,7 @@ void AudioBuild::copyConvert(AudioStream &input, AudioStream &output)
 		buffer = new Sample[samples * 2];
 
 	source = buffer;
+
 	if(from.rate != to.rate)
 	{
 		resampler = new AudioResample((Rate)from.rate, (Rate)to.rate);

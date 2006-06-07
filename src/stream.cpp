@@ -547,7 +547,7 @@ unsigned AudioStream::bufAudio(Linear samples, unsigned count, unsigned size)
 		samples += fill;
 		count -= fill;
 	}
-
+	
 	if(bufferPosition == size)
 	{
 		if(bufferChannels == 1)
