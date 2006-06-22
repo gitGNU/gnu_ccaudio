@@ -24,7 +24,8 @@ CFG=ccaudio2 - Win32 Debug
 # Begin Project
 # PROP AllowPerConfigDependencies 0
 # PROP Scc_ProjName ""
-# PROP Scc_LocalPath ""
+# PROP Scc_LocalPath "Desktop"
+# PROP WCE_FormatVersion ""
 CPP=cl.exe
 MTL=midl.exe
 RSC=rc.exe
@@ -127,6 +128,10 @@ SOURCE=..\src\friends.cpp
 # Begin Source File
 
 SOURCE=..\src\mapper.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\resample.cpp
 # End Source File
 # Begin Source File
 
