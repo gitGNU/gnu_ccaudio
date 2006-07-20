@@ -181,6 +181,10 @@ const char *Audio::getExtension(Encoding encoding)
 		return ".sx";
 	case g721ADPCM:
 		return ".adpcm";
+	case g723_3bit:
+		return ".a24";
+	case g723_5bit:
+		return ".a40";
 	case g729Audio:
 		return ".g729";
 	case ilbcAudio:
@@ -291,6 +295,14 @@ Audio::Encoding Audio::getEncoding(const char *name)
 		return g721ADPCM;
 	else if(!stricmp(name, ".g721"))
 		return g721ADPCM;
+	else if(!stricmp(name, ".a32"))
+		return g721ADPCM;
+	else if(!stricmp(name, ".a24"))
+		return g723_3bit;
+	else if(!stricmp(name, ".a40"))
+		return g723_5bit;
+	else if(!stricmp(name, ".g723"))
+		return g723_3bit;
 	else if(!stricmp(name, ".g729"))
 		return g729Audio;
 	else if(!stricmp(name, ".ilbc"))

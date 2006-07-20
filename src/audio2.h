@@ -239,7 +239,9 @@ public:
 		speexAudio,
 
 		g729Audio,
-		ilbcAudio
+		ilbcAudio,
+
+		g723_4bit = g721ADPCM
 	};
 	typedef enum Encoding Encoding;
 

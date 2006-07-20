@@ -15,7 +15,7 @@ pkglibdir = $(codec_libdir)
 noinst_HEADERS = codecs.h
 
 if MODULES
-pkglib_PROGRAMS = g.711.codec g.721.codec oki.codec
+pkglib_PROGRAMS = g.711.codec adpcm.codec oki.codec
 
 if GSM_CODEC
 pkglib_PROGRAMS += gsm.codec
@@ -30,8 +30,8 @@ AM_CPPFLAGS = -I../src -I$(top_srcdir)/src -fPIC -DPIC
 oki_codec_SOURCES = oki.cpp
 oki_codec_LDFLAGS = @MODULE_FLAGS@ -lm
 
-g_721_codec_SOURCES = g721.cpp
-g_721_codec_LDFLAGS = @MODULE_FLAGS@ -lm
+adpcm_codec_SOURCES = adpcm.cpp
+adpcm_codec_LDFLAGS = @MODULE_FLAGS@ -lm
 
 g_711_codec_SOURCES = g711.cpp
 g_711_codec_LDFLAGS = @MODULE_FLAGS@ 

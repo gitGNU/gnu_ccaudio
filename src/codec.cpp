@@ -158,14 +158,12 @@ bool AudioCodec::load(Encoding e)
 	case alawAudio:
 		return load("g.711");
 	case g721ADPCM:
-		return load("g.721");
+	case g723_3bit:
+	case g723_5bit:
+		return load("adpcm");
 	case okiADPCM:
 	case voxADPCM:
 		return load("oki");
-	case g723_2bit:
-	case g723_3bit:
-	case g723_5bit:
-		return load("g.723");
 	case mp1Audio:
 	case mp2Audio:
 	case mp3Audio:

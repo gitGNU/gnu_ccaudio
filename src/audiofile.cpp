@@ -260,7 +260,7 @@ void AudioFile::create(const char *name, Info *myinfo, bool exclusive, timeout_t
 		info.framesize = 33;
 		info.bitrate = 13200;
 	}
-	else if(!stricmp(ext, ".adpcm"))
+	else if(!stricmp(ext, ".adpcm") || !stricmp(ext, ".a32"))
 	{
 		info.encoding = g721ADPCM;
 		info.format = raw;
