@@ -256,10 +256,10 @@ void g721Codec::update(
 
 	mag = dq & 0x7FFF;		/* prediction difference magnitude */
 	/* TRANS */
-	ylint = state_ptr->yl >> 15;	/* exponent part of yl */
+	ylint = (short)(state_ptr->yl >> 15);	/* exponent part of yl */
 	ylfrac = (state_ptr->yl >> 10) & 0x1F;	/* fractional part of yl */
 	thr1 = (32 + ylfrac) << ylint;		/* threshold */
-	thr2 = (ylint > 9) ? 31 << 10 : thr1;	/* limit thr2 to 31 << 10 */
+	thr2 = (short)((ylint > 9) ? 31 << 10 : thr1);	/* limit thr2 to 31 << 10 */
 	dqthr = (thr2 + (thr2 >> 1)) >> 1;	/* dqthr = 0.75 * thr2 */
 	if (state_ptr->td == 0)		/* signal supposed voice */
 		tr = 0;
@@ -386,7 +386,7 @@ void g721Codec::update(
 		exp = quan(mag, power2, 15);
 		state_ptr->sr[0] =  (exp << 6) + ((mag << 6) >> exp) - 0x400;
 	} else
-		state_ptr->sr[0] = 0xFC20;
+		state_ptr->sr[0] = (short)0xFC20;
 
 	/* DELAY A */
 	state_ptr->pk[1] = state_ptr->pk[0];
@@ -481,7 +481,7 @@ unsigned char g721Codec::encoder(short sl, state_t *state)
 
         update(4, y, _witab[i] << 5, _fitab[i], dq, sr, dqsez, state);
 
-        return (i);
+        return (unsigned char)(i);
 }
 
 short g721Codec::coder(state_t *state, int i)
