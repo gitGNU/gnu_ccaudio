@@ -701,7 +701,7 @@ unsigned char g723_5Codec::encoder(short sl, state_t *state_ptr)
 
         update(5, y, _witab[i], _fitab[i], dq, sr, dqsez, state_ptr);
 
-        return (i);
+        return (unsigned char)(i);
 }
 
 short g723_5Codec::coder(state_t *state_ptr, int i)
