@@ -1,3 +1,6 @@
+Changes from 0.9.9 to 0.9.10
+- 2 bit adpcm added along with .a16
+
 Changes from 0.9.8 to 0.9.9
 - g.723 codecs, additional file name rules for .a24/.a32/.a40
 - combined g.721/723 codecs into new adpcm.codec module

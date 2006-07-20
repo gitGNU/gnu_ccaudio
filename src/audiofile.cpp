@@ -274,6 +274,13 @@ void AudioFile::create(const char *name, Info *myinfo, bool exclusive, timeout_t
 		info.order = 0;
 		info.rate = 8000;
 	}
+	else if(!stricmp(ext, ".a16"))
+	{
+		info.encoding = g723_2bit;
+		info.format = raw;
+		info.order = 0;
+		info.order = 8000;
+	}
 	else if(!stricmp(ext, ".sx"))
 	{
 		info.encoding = sx96Voice;

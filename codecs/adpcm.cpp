@@ -441,7 +441,6 @@ public:
 	~g723_3Codec();
 };
 
-
 class g723_5Codec : public AudioCodec
 {
 private:
@@ -466,6 +465,34 @@ public:
 	~g723_5Codec();
 };
 
+class g723_2Codec : public AudioCodec
+{
+private:
+	static short    _dqlntab[4];
+	static short    _witab[4];
+	static short    _fitab[4];
+	static short qtab_723_16[1];
+
+	state_t encode_state, decode_state;
+		
+public:
+	AudioCodec *getByInfo(Info &info);
+	AudioCodec *getByFormat(const char *format);
+
+	unsigned decode(Linear buffer, void *from, unsigned lsamples);
+	unsigned encode(Linear buffer, void *dest, unsigned lsamples);
+	short coder(state_t *state, int nib);
+	unsigned char encoder(short sl, state_t *state);
+
+	g723_2Codec(const char *id, Encoding e);
+	g723_2Codec();
+	~g723_2Codec();
+};
+
+short g723_2Codec::_dqlntab[4] = { 116, 365, 365, 116};
+short g723_2Codec::_witab[4] = {-704, 14048, 14048, -704};
+short g723_2Codec::_fitab[4] = {0, 0xE00, 0xE00, 0};
+short g723_2Codec::qtab_723_16[1] = {261};
 
 short g723_3Codec::_dqlntab[8] = {-2048, 135, 273, 373, 373, 273, 135, -2048};
 short g723_3Codec::_witab[8] = {-128, 960, 4384, 18624, 18624, 4384, 960, -128};
@@ -638,6 +665,160 @@ AudioCodec *g723_3Codec::getByInfo(Info &info)
 AudioCodec *g723_3Codec::getByFormat(const char *format)
 {
         return (AudioCodec *)new g723_3Codec();
+}
+
+
+
+g723_2Codec::g723_2Codec() : AudioCodec()
+{
+	unsigned pos;
+
+	info.framesize = 1;
+	info.framecount = 4;
+	info.bitrate = 16000;
+	info.encoding = g723_3bit;
+	info.annotation = "g.723";
+	info.rate = 8000;
+	memset(&encode_state, 0, sizeof(encode_state));
+        memset(&decode_state, 0, sizeof(decode_state));
+	encode_state.yl = decode_state.yl = 34816;
+	encode_state.yu = decode_state.yu = 544;
+	encode_state.sr[0] = encode_state.sr[1] = decode_state.sr[0] = decode_state.sr[1] = 32;
+
+	for(pos = 0; pos < 6; ++pos)
+		encode_state.dq[pos] = decode_state.dq[pos] = 32;
+}
+
+g723_2Codec::g723_2Codec(const char *id, Encoding e) : AudioCodec(id, e)
+{
+	info.framesize = 1;
+	info.framecount = 4;
+	info.bitrate = 16000;
+	info.rate = 8000;
+	info.annotation = "g.723";
+}
+
+g723_2Codec::~g723_2Codec()
+{}
+
+unsigned char g723_2Codec::encoder(short sl, state_t *state_ptr)
+{
+	short sezi, se, sez, sei;
+	short d, sr, y, dqsez, dq, i;
+
+	sl >>= 2;
+
+        sezi = predictor_zero(state_ptr);
+        sez = sezi >> 1;
+        sei = sezi + predictor_pole(state_ptr);
+        se = sei >> 1;                  /* se = estimated signal */
+
+        d = sl - se;   
+
+        /* quantize prediction difference d */
+        y = step_size(state_ptr);       /* quantizer step size */
+        i = quantize(d, y, qtab_723_16, 1);  /* i = ADPCM code */
+
+              /* Since quantize() only produces a three level output
+               * (1, 2, or 3), we must create the fourth one on our own
+               */
+        if (i == 3)                          /* i code for the zero region */
+          if ((d & 0x8000) == 0)             /* If d > 0, i=3 isn't right... */
+            i = 0;
+
+        dq = reconstruct(i & 2, _dqlntab[i], y); /* quantized diff. */
+
+        sr = (dq < 0) ? se - (dq & 0x3FFF) : se + dq; /* reconstructed signal */
+        dqsez = sr + sez - se;          /* pole prediction diff. */
+
+        update(2, y, _witab[i], _fitab[i], dq, sr, dqsez, state_ptr);
+
+
+        return (unsigned char)(i);
+}
+
+short g723_2Codec::coder(state_t *state_ptr, int i)
+{
+	short sezi, sei, sez, se;
+	short y, sr, dq, dqsez;
+
+        i &= 0x03;                      /* mask to get proper bits */
+
+        sezi = predictor_zero(state_ptr);
+        sez = sezi >> 1;
+        sei = sezi + predictor_pole(state_ptr);
+        se = sei >> 1;                  /* se = estimated signal */
+
+        y = step_size(state_ptr);       /* adaptive quantizer step size */
+        dq = reconstruct(i & 0x02, _dqlntab[i], y); /* unquantize pred diff */
+
+        sr = (dq < 0) ? (se - (dq & 0x3FFF)) : (se + dq); /* reconst. signal */
+
+        dqsez = sr - se + sez;                  /* pole prediction diff. */
+
+        update(2, y, _witab[i], _fitab[i], dq, sr, dqsez, state_ptr);
+
+
+	return sr << 2;
+}
+
+unsigned g723_2Codec::encode(Linear buffer, void *coded, unsigned lsamples)
+{
+	unsigned count = (lsamples / 4);
+	Encoded dest = (Encoded)coded;
+	unsigned i, data, byte, bits;
+
+	while(count--)
+	{
+		bits = 0;
+		data = 0;
+		for(i = 0; i < 4; ++i)
+		{
+			byte = encoder(*(buffer++), &encode_state);
+			data |= (byte << bits);
+			bits += 2;
+			if(bits >= 8)
+			{
+				*(dest++) = (data & 0xff);
+				bits -= 8;
+				data >>= 8;
+			}
+		}
+	}
+	return (lsamples / 4) * 4;
+}
+
+unsigned g723_2Codec::decode(Linear buffer, void *from, unsigned lsamples)
+{
+	Encoded src = (Encoded)from;
+	unsigned count = (lsamples / 4) * 4;
+	unsigned char byte, nib;
+	unsigned bits = 0, data = 0; 
+
+	while(count--)
+	{
+		if(bits < 2)
+		{
+			byte = *(src++);
+			data |= (byte << bits);
+			bits += 8;
+		}
+		nib = data & 0x03;
+		data >>= 2;
+		bits -= 2;
+		*(buffer++) = coder(&decode_state, nib);
+	}
+	return (lsamples / 4) * 4;
+}		
+
+AudioCodec *g723_2Codec::getByInfo(Info &info)
+{
+        return (AudioCodec *)new g723_2Codec();
+}
+
+AudioCodec *g723_2Codec::getByFormat(const char *format)
+{
+        return (AudioCodec *)new g723_2Codec();
 }
 
 g723_5Codec::g723_5Codec() : AudioCodec()
