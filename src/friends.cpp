@@ -243,6 +243,8 @@ Audio::Encoding Audio::getEncoding(const char *name)
 		return alawAudio;
 	else if(!stricmp(name, "linear") || !stricmp(name, "pcm16") || !stricmp(name, "pcm") || !stricmp(name, "l16"))
 		return pcm16Mono;
+	else if(!stricmp(name, "stereo"))
+		return pcm16Stereo;
 	else if(!stricmp(name, "cda"))
 		return cdaStereo;
 	else if(!stricmp(name, "gsm"))
@@ -255,11 +257,11 @@ Audio::Encoding Audio::getEncoding(const char *name)
 		return pcm32Mono;
 	else if(!stricmp(name, "adpcm"))
 		return g721ADPCM;
-	else if(!stricmp(name, "g721"))
+	else if(!stricmp(name, "g721") || !stricmp(name, "g.721"))
 		return g721ADPCM;
 	else if(!stricmp(name, "g726_32"))
 		return g721ADPCM;
-	else if(!stricmp(name, "g729"))
+	else if(!stricmp(name, "g729") || !stricmp(name, "g.729"))
 		return g729Audio;
 	else if(!stricmp(name, "ilbc"))
 		return ilbcAudio;
@@ -291,19 +293,19 @@ Audio::Encoding Audio::getEncoding(const char *name)
 		return mulawAudio;
 	else if(!stricmp(name, ".sw") || !stricmp(name, ".raw") || !stricmp(name, ".pcm"))
 		return pcm16Mono;
-	else if(!stricmp(name, ".vox"))
+	else if(!stricmp(name, ".vox") || !stricmp(name, "vox"))
 		return voxADPCM;
 	else if(!stricmp(name, ".adpcm"))
 		return g721ADPCM;
 	else if(!stricmp(name, ".g721"))
 		return g721ADPCM;
-	else if(!stricmp(name, ".a32"))
+	else if(!stricmp(name, ".a32") || !stricmp(name, "a32"))
 		return g721ADPCM;
-	else if(!stricmp(name, ".a24"))
+	else if(!stricmp(name, ".a24") || !stricmp(name, "a24"))
 		return g723_3bit;
-	else if(!stricmp(name, ".a16"))
+	else if(!stricmp(name, ".a16") || !stricmp(name, "a16"))
 		return g723_2bit;
-	else if(!stricmp(name, ".a40"))
+	else if(!stricmp(name, ".a40") || !stricmp(name, "a40"))
 		return g723_5bit;
 	else if(!stricmp(name, ".g723"))
 		return g723_3bit;
