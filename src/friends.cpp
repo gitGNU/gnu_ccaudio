@@ -259,7 +259,7 @@ Audio::Encoding Audio::getEncoding(const char *name)
 		return g721ADPCM;
 	else if(!stricmp(name, "g721") || !stricmp(name, "g.721"))
 		return g721ADPCM;
-	else if(!stricmp(name, "g726_32"))
+	else if(!stricmp(name, "g726-32"))
 		return g721ADPCM;
 	else if(!stricmp(name, "g729") || !stricmp(name, "g.729"))
 		return g729Audio;
@@ -281,11 +281,11 @@ Audio::Encoding Audio::getEncoding(const char *name)
 		return sx96Voice;
 	else if(!stricmp(name, "spx") || !stricmp(name, "speex"))
 		return speexVoice;
-	else if(!stricmp(name, "g723_16") || !stricmp(name, "g.723_16"))
+	else if(!stricmp(name, "g723-16") || !stricmp(name, "g.723-16"))
 		return g723_2bit;
-	else if(!stricmp(name, "g723_24") || !stricmp(name, "g.723_24"))
+	else if(!stricmp(name, "g723-24") || !stricmp(name, "g.723-24"))
 		return g723_3bit;
-	else if(!stricmp(name, "g723_40") || !stricmp(name, "g.723_40"))
+	else if(!stricmp(name, "g723-40") || !stricmp(name, "g.723-40"))
 		return g723_5bit;
 	else if(!stricmp(name, ".al") || !stricmp(name, ".alaw"))
 		return alawAudio;
@@ -932,6 +932,7 @@ Audio::timeout_t Audio::getFraming(Encoding encoding, timeout_t timeout)
 	case gsmVoice:
 	case speexVoice:
 	case speexAudio:
+	case speexUltra:
 		fa = 20;
 		break;
 	case ilbcAudio:
@@ -977,6 +978,8 @@ int Audio::getCount(Encoding encoding)
 		return 160;
 	case speexAudio:
 		return 320;
+	case speexUltra:
+		return 640;
 	case unknownEncoding:
 		return 0;
 	case g723_2bit:
@@ -1126,6 +1129,8 @@ Audio::Rate Audio::getRate(Encoding encoding)
 		return rate44khz;
 	case speexAudio:
 		return rate16khz;
+	case speexUltra:
+		return rate32khz;
 	default:
 		return rate8khz;
 	}

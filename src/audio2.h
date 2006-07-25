@@ -173,6 +173,7 @@ public:
 		rate6khz = 6000,
 		rate8khz = 8000,
 		rate16khz = 16000,
+		rate32khz = 32000,
 		rate44khz = 44100
 	};
 
@@ -240,7 +241,10 @@ public:
 
 		g729Audio,
 		ilbcAudio,
+		speexUltra,
 
+		speexNarrow = speexVoice,
+		speexWide = speexAudio,
 		g723_4bit = g721ADPCM
 	};
 	typedef enum Encoding Encoding;
