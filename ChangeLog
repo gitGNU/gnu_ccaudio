@@ -1,3 +1,6 @@
+Changes from 0.9.11 to 0.9.12
+- check for gsm.h header in multiple places
+
 Changes from 0.9.10 to 0.9.11
 - more encoding format codec name aliases
 

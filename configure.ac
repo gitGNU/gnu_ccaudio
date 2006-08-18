@@ -54,6 +54,11 @@ ac_spx_codec=false
 AC_CHECK_HEADER(gsm/gsm.h,
 	[ac_gsm_codec=true
 	AC_DEFINE(HAVE_GSM_GSM_H, [1], [gsm header found])
+	],[
+	AC_CHECK_HEADER(gsm.h,
+		[ac_gsm_codec=true
+		AC_DEFINE(HAVE_GSM_H, [1], [gsm default header])
+		])
 	])
 
 # speex 1.1.5 or later
@@ -206,11 +211,11 @@ AC_SUBST(SHARED_FLAGS)
 AC_SUBST(STAGE2)
 
 gsm_format="false"
-if test "$ac_gsm_codec" ; then
+if test "$ac_gsm_codec" == true; then
 	gsm_format="true" ; fi
 
 speex_format="false"
-if test "$ac_spx_codec" ; then
+if test "$ac_spx_codec" == true; then
 	speex_format="true" ; fi
 
 AC_SUBST(gsm_format)
