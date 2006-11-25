@@ -48,7 +48,7 @@ using namespace ost;
 class SpeexCommon: public AudioCodec
 {
 protected:
-	SpeexMode *spx_mode;
+	const SpeexMode *spx_mode;
 	SpeexBits enc_bits, dec_bits;
 	unsigned int spx_clock, spx_channel;
 	void *encoder, *decoder;
