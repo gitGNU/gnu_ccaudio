@@ -33,9 +33,9 @@ fi
 
 AUDIO_LIBS=""
 
-VERSION="0.9.9"
+VERSION="0.9.12"
 LT_RELEASE="0.9"
-LT_VERSION="0:9"
+LT_VERSION="0:12"
 AC_CONFIG_AUX_DIR(autoconf)
 AC_CANONICAL_SYSTEM
 AC_PROG_CPP
@@ -61,11 +61,13 @@ AC_CHECK_HEADER(gsm/gsm.h,
 		])
 	])
 
-# speex 1.1.5 or later
-AC_CHECK_HEADER(speex/speex.h,
-	AC_CHECK_LIB(speex, speex_encode_int, [
-		[ac_spx_codec=true])
-	])
+AC_ARG_ENABLE(speex, [  --enable-speex          enable speex support])
+if test "$enable_speex" = "yes" ; then
+	AC_CHECK_HEADER(speex/speex.h,
+		AC_CHECK_LIB(speex, speex_encode_int, [
+			[ac_spx_codec=true])
+		])
+fi
 
 WINVERSION="`echo $VERSION | sed 's/\./,/g'`,0"
 AC_SUBST(WINVERSION)
