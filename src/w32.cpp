@@ -1,5 +1,5 @@
 // Copyright (C) 2004-2005 Open Source Telecom Corporation.
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
@@ -136,7 +136,7 @@ W32AudioDevice::W32AudioDevice(unsigned index)
 {
 	headers = NULL;
 	buffers = NULL;
-	
+
 	enabled = false;
 	sem = NULL;
 
@@ -179,7 +179,7 @@ void W32AudioDevice::flush(void)
 	{
 		if(headers[i].dwFlags & WHDR_PREPARED)
 			waveOutUnprepareHeader(hPlay, &headers[i], sizeof(WAVEHDR));
-	} 
+	}
 	if(sem)
 		delete sem;
 
@@ -196,13 +196,11 @@ bool W32AudioDevice::setAudio(Rate rate, bool stereo, timeout_t framing)
 	wfx.nSamplesPerSec = rate;
 	wfx.wBitsPerSample = 16;
 
-	if(stereo)
-	{
+	if(stereo) {
 		info.encoding = pcm16Stereo;
 		channels = 2;
 	}
-	else
-	{
+	else {
 		info.encoding = pcm16Mono;
 		channels = 1;
 	}
@@ -222,18 +220,17 @@ bool W32AudioDevice::setAudio(Rate rate, bool stereo, timeout_t framing)
 	buffers = new char[bufsize * bufcount];
 
 	memset(headers, 0, sizeof(WAVEHDR) * bufcount);
-	while(i < bufcount)
-	{
+	while(i < bufcount) {
 		headers[i].dwBufferLength = bufsize;
 		headers[i].lpData = &buffers[i * bufsize];
 		++i;
 	}
 
-    info.rate = rate;
-    info.bitrate = rate * 16 * channels;
-    info.order = __BYTE_ORDER;
-    info.format = raw;    
-    info.annotation = "Microsoft Windows";
+	info.rate = rate;
+	info.bitrate = rate * 16 * channels;
+	info.order = __BYTE_ORDER;
+	info.format = raw;
+	info.annotation = "Microsoft Windows";
 	info.framecount = bufsize / 2 / channels;
 	info.framesize = bufsize;
 	info.framing = (info.framecount * 1000l) / info.rate;
@@ -244,8 +241,7 @@ bool W32AudioDevice::setAudio(Rate rate, bool stereo, timeout_t framing)
 	wfx.nBlockAlign = 2 * channels;
 	wfx.nAvgBytesPerSec = wfx.nBlockAlign * rate;
 
-	if(enabled)
-	{
+	if(enabled) {
 		waveOutClose(hPlay);
 		enabled = false;
 	}
@@ -267,7 +263,7 @@ bool W32AudioDevice::setAudio(Rate rate, bool stereo, timeout_t framing)
 	enabled = true;
 	return true;
 }
-	
+
 unsigned W32AudioDevice::getSamples(Linear samples, unsigned count)
 {
 	return 0;
@@ -285,14 +281,12 @@ unsigned W32AudioDevice::putSamples(Linear samples, unsigned count)
 
 	swapEndian(info, samples, count);
 
-	while(size > 0)
-	{
+	while(size > 0) {
 		header = &headers[index];
 		if(header->dwFlags & WHDR_PREPARED)
 			waveOutUnprepareHeader(hPlay, header, sizeof(WAVEHDR));
-		
-		if(size < (bufsize - header->dwUser))
-		{
+
+		if(size < (bufsize - header->dwUser)) {
 			memcpy(header->lpData + header->dwUser, data, size);
 			header->dwUser += size;
 			total += (unsigned)(size / scale);
@@ -307,17 +301,16 @@ unsigned W32AudioDevice::putSamples(Linear samples, unsigned count)
 		header->dwUser = 0;
 		result = waveOutPrepareHeader(hPlay, header, sizeof(WAVEHDR));
 
-		if(result == MMSYSERR_NOERROR)
-		{
+		if(result == MMSYSERR_NOERROR) {
 			sem->wait();
 			++counter;
 			result = waveOutWrite(hPlay, header, sizeof(WAVEHDR));
 		}
 		index = (++index) % bufcount;
-		headers[index].dwUser = 0;			
+		headers[index].dwUser = 0;
 	}
 	return total;
-}	
+}
 
 bool Audio::hasDevice(unsigned index)
 {

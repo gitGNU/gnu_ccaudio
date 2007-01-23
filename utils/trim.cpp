@@ -1,17 +1,17 @@
 // Copyright (C) 1999-2001 Open Source Telecom Corporation.
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with this program; if not, write to the Free Software 
+// along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 #include "audiotool.h"
@@ -33,26 +33,23 @@ void Tool::trim(char **argv)
 	unsigned long count;
 	char target[PATH_MAX];
 	bool use = false;
-	
+
 retry:
-	if(!*argv)
-	{
+	if(!*argv) {
 		cerr << "audiotool: -trim: missing arguments" << endl;
 		exit(-1);
 	}
 
 	fn = *argv;
 
-	if(!strcmp(fn, "--"))
-	{
+	if(!strcmp(fn, "--")) {
 		++argv;
 		goto skip;
 	}
 
 	if(!strnicmp(fn, "--", 2))
 		++fn;
-	if(!strnicmp(fn, "-framing=", 9))
-	{
+	if(!strnicmp(fn, "-framing=", 9)) {
 		framing = atoi(fn + 9);
 		++argv;
 		goto retry;
@@ -60,17 +57,15 @@ retry:
 	else if(!stricmp(fn, "-framing"))
 	{
 		++argv;
-		if(!*argv)
-		{
+		if(!*argv) {
 			cerr << "audiotool: -trim: -framing: missing argument" << endl;
 			exit(-1);
 		}
 		framing = atoi(*(argv++));
 		goto retry;
-	} 
+	}
 
-	if(!strnicmp(fn, "-padding=", 9))
-	{
+	if(!strnicmp(fn, "-padding=", 9)) {
 		padding = atoi(fn + 9);
 		++argv;
 		goto retry;
@@ -78,8 +73,7 @@ retry:
 	else if(!stricmp(fn, "-padding"))
 	{
 		++argv;
-		if(!*argv)
-		{
+		if(!*argv) {
 			cerr << "audiotool: --trim: -padding: argument missing" << endl;
 			exit(-1);
 		}
@@ -87,8 +81,7 @@ retry:
 		goto retry;
 	}
 
-	if(!strnicmp(fn, "-silence=", 9))
-	{
+	if(!strnicmp(fn, "-silence=", 9)) {
 		silence = atoi(fn + 9);
 		++argv;
 		goto retry;
@@ -96,29 +89,25 @@ retry:
 	else if(!stricmp(fn, "-silence"))
 	{
 		++argv;
-		if(!*argv)
-		{
+		if(!*argv) {
 			cerr << "audiotool: -trim: -silence: argument missing" << endl;
 			exit(-1);
 		}
 		silence = atoi(*(argv++));
 		goto retry;
-	}		
+	}
 
 skip:
 
 	if(!framing)
 		framing = 20;
 
-	while(*argv)
-	{
-		if(!isFile(*argv))
-		{
+	while(*argv) {
+		if(!isFile(*argv)) {
 			cout << *(argv++) << ": invalid" << endl;
 			continue;
 		}
-		if(!canAccess(*argv))
-		{
+		if(!canAccess(*argv)) {
 			cout << *(argv++) << ": inaccessable" << endl;
 			continue;
 		}
@@ -128,8 +117,7 @@ skip:
 		file.getInfo(&info);
 		if(!isLinear(info.encoding))
 			codec = AudioCodec::getCodec(info, false);
-		if(!isLinear(info.encoding) && !codec)
-		{
+		if(!isLinear(info.encoding) && !codec) {
 			cout << *(argv++) << ": cannot load codec" << endl;
 			continue;
 		}
@@ -142,8 +130,7 @@ skip:
 
 		// compute silence value
 
-		while(!silence)
-		{
+		while(!silence) {
 			rtn = file.getBuffer(buffer, info.framesize);
 			if(rtn < (int)info.framesize)
 				break;
@@ -170,10 +157,8 @@ skip:
 				break;
 
 			++total;
-			if(codec)
-			{
-				if(codec->isSilent(silence, buffer, info.framecount))
-				{
+			if(codec) {
+				if(codec->isSilent(silence, buffer, info.framecount)) {
 					use = false;
 					if(codec->getPeak(buffer, info.framecount) >= silence)
 						use = true;
@@ -187,33 +172,29 @@ skip:
 				last = total;
 		}
 
-		if(!last || !first)
-		{
+		if(!last || !first) {
 			cout << *(argv++) << ": all silent, skipping" << endl;
 			continue;
 		}
 
 		--first;
-		total = last - first;	
+		total = last - first;
 		file.setPosition(first * info.framecount);
-		
+
 		tmp.create(target, &info);
-		if(!tmp.isOpen())
-		{
+		if(!tmp.isOpen()) {
 			cout << *(argv++) << ": cannot rewrite" << endl;
 			continue;
 		}
 
-		while(total--)
-		{
+		while(total--) {
 			rtn = file.getBuffer(buffer, info.framesize);
 			if(rtn < (int)info.framesize)
 				break;
 			tmp.putBuffer(buffer, info.framesize);
 		}
 
-		if(padding)
-		{
+		if(padding) {
 			if(!codec)
 				memset(buffer, 0, info.framesize);
 			else if(isStereo(info.encoding))
@@ -222,16 +203,14 @@ skip:
 				memset(samples, 0, info.framecount * 2);
 				codec->encode(samples, buffer, info.framecount);
 			}
-			else
-			{
+			else {
 				samples = new Sample[info.framecount];
 				memset(samples, 0, info.framecount);
 				codec->encode(samples, buffer, info.framecount);
 			}
 		}
 
-		while(padding--)
-		{
+		while(padding--) {
 			rtn = tmp.putBuffer(buffer, info.framesize);
 		}
 
@@ -246,7 +225,7 @@ skip:
 
 		codec = NULL;
 		buffer = NULL;
-		
+
 		file.close();
 		tmp.close();
 

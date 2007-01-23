@@ -1,17 +1,17 @@
 // Copyright (C) 2005 David Sugar, Tycho Softworks
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with this program; if not, write to the Free Software 
+// along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 #include "tonetool.h"
@@ -28,14 +28,13 @@ extern "C" {
 
 static BOOL WINAPI down(DWORD ctrltype)
 {
-	if(delfile)
-	{
+	if(delfile) {
 		remove(delfile);
 		delfile = NULL;
 	}
 	exit(ctrltype);
 	return TRUE;
-}
+	}
 
 #else
 static void down(int signo)
@@ -43,7 +42,7 @@ static void down(int signo)
 	if(delfile)
 		remove(delfile);
 	exit(signo);
-}
+	}
 #endif
 
 }
@@ -56,8 +55,7 @@ int main(int argc, char **argv)
 {
 	char *cp;
 
-	if(argc < 2)
-	{
+	if(argc < 2) {
 		cerr << "use: tonetool --option [args...]" << endl;
 		exit(-1);
 	}
@@ -93,49 +91,49 @@ int main(int argc, char **argv)
 using namespace ost;
 
 bool Tool::isFile(const char *path)
-{ 
+{
 #ifdef W32
-        DWORD attr = GetFileAttributes(path);
-        if(attr == (DWORD)~0l)
-                return false;
+	DWORD attr = GetFileAttributes(path);
+	if(attr == (DWORD)~0l)
+		return false;
 
-        if(attr & FILE_ATTRIBUTE_DIRECTORY)
-                return false;
+	if(attr & FILE_ATTRIBUTE_DIRECTORY)
+		return false;
 
-        return true;
+	return true;
 
 #else
-        struct stat ino;
+	struct stat ino;
 
-        if(stat(path, &ino))
-                return false;
+	if(stat(path, &ino))
+		return false;
 
-        if(S_ISREG(ino.st_mode))
-                return true;
+	if(S_ISREG(ino.st_mode))
+		return true;
 
-        return false;
+	return false;
 #endif // WIN32
 }
 
 bool Tool::canAccess(const char *path)
 {
 #ifdef WIN32
-        DWORD attr = GetFileAttributes(path);
-        if(attr == (DWORD)~0l)
-                return false;
+	DWORD attr = GetFileAttributes(path);
+	if(attr == (DWORD)~0l)
+		return false;
 
-        if(attr & FILE_ATTRIBUTE_SYSTEM)
-                return false;
+	if(attr & FILE_ATTRIBUTE_SYSTEM)
+		return false;
 
-        if(attr & FILE_ATTRIBUTE_HIDDEN)
-                return false;
+	if(attr & FILE_ATTRIBUTE_HIDDEN)
+		return false;
 
-        return true;
+	return true;
 #else
-        if(!access(path, R_OK))
-                return true;
+	if(!access(path, R_OK))
+		return true;
 
-        return false;
+	return false;
 
 #endif
 }
@@ -149,7 +147,7 @@ AudioTone *Tool::getTone(char **argv, Level l, timeout_t framing, timeout_t inte
 		return new DTMFTones(*(++argv), l, framing, interdigit);
 	else if(!stricmp(*argv, "mf"))
 		return new MFTones(*(++argv), l, framing, interdigit);
-	
+
 	name = *(argv++);
 	locale = *(argv);
 	key = TelTone::find(name, locale);

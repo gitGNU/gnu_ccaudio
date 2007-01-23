@@ -72,27 +72,23 @@ Audio::Linear DTMFTones::getFrame(void)
 {
 	for(;;)
 	{
-		if(remaining)
-		{
+		if(remaining) {
 			--remaining;
 			return AudioTone::getFrame();
 		}
 
-		if(!digits || !*digits)
-		{
+		if(!digits || !*digits) {
 			complete = true;
 			return NULL;
 		}
 
-		if(!isSilent())
-		{
+		if(!isSilent()) {
 			remaining = dtmfframes;
 			reset();
 			continue;
 		}
 
-		switch(*(digits++))
-		{
+		switch(*(digits++)) {
 		case '!':
 		case 'f':
 		case 'F':
@@ -103,84 +99,84 @@ Audio::Linear DTMFTones::getFrame(void)
 			remaining = dtmfframes;
 			break;
 
-                case '2':
-                        dual(697, 1336, level, level);
-                        remaining = dtmfframes;
-                        break;
+				case '2':
+			dual(697, 1336, level, level);
+			remaining = dtmfframes;
+			break;
 
-                case '3':      
-                        dual(697, 1477, level, level);
-                        remaining = dtmfframes;
-                        break;  
+				case '3':
+			dual(697, 1477, level, level);
+			remaining = dtmfframes;
+			break;
 
 		case 'A':
-                case 'a':
-                        dual(697, 1633, level, level);
-                        remaining = dtmfframes;
-                        break;   
+				case 'a':
+			dual(697, 1633, level, level);
+			remaining = dtmfframes;
+			break;
 
 		case '4':
 			dual(770, 1209, level, level);
 			remaining = dtmfframes;
 			break;
 
-                case '5':
-                        dual(770, 1336, level, level);
-                        remaining = dtmfframes;
-                        break;
+				case '5':
+			dual(770, 1336, level, level);
+			remaining = dtmfframes;
+			break;
 
-                case '6':      
-                        dual(770, 1477, level, level);
-                        remaining = dtmfframes;
-                        break;  
+				case '6':
+			dual(770, 1477, level, level);
+			remaining = dtmfframes;
+			break;
 
 		case 'B':
-                case 'b':
-                        dual(770, 1633, level, level);
-                        remaining = dtmfframes;
-                        break;   
+				case 'b':
+			dual(770, 1633, level, level);
+			remaining = dtmfframes;
+			break;
 
 		case '7':
 			dual(852, 1209, level, level);
 			remaining = dtmfframes;
 			break;
 
-                case '8':
-                        dual(852, 1336, level, level);
-                        remaining = dtmfframes;
-                        break;
+				case '8':
+			dual(852, 1336, level, level);
+			remaining = dtmfframes;
+			break;
 
-                case '9':      
-                        dual(852, 1477, level, level);
-                        remaining = dtmfframes;
-                        break;  
+				case '9':
+			dual(852, 1477, level, level);
+			remaining = dtmfframes;
+			break;
 
 		case 'C':
-                case 'c':
-                        dual(852, 1633, level, level);
-                        remaining = dtmfframes;
-                        break;   
+				case 'c':
+			dual(852, 1633, level, level);
+			remaining = dtmfframes;
+			break;
 
 		case '*':
 			dual(941, 1209, level, level);
 			remaining = dtmfframes;
 			break;
 
-                case '0':
-                        dual(941, 1336, level, level);
-                        remaining = dtmfframes;
-                        break;
+				case '0':
+			dual(941, 1336, level, level);
+			remaining = dtmfframes;
+			break;
 
-                case '#':      
-                        dual(941, 1477, level, level);
-                        remaining = dtmfframes;
-                        break;  
+				case '#':
+			dual(941, 1477, level, level);
+			remaining = dtmfframes;
+			break;
 
 		case 'D':
-                case 'd':
-                        dual(941, 1633, level, level);
-                        remaining = dtmfframes;
-                        break;   
+				case 'd':
+			dual(941, 1633, level, level);
+			remaining = dtmfframes;
+			break;
 
 		case 's':
 		case 'S':
@@ -193,7 +189,7 @@ Audio::Linear DTMFTones::getFrame(void)
 			reset();
 			break;
 		}
-	}	
+	}
 }
 
 MFTones::MFTones(const char *d, Level l, timeout_t duration, timeout_t timer) :
@@ -230,20 +226,17 @@ Audio::Linear MFTones::getFrame(void)
 {
 	for(;;)
 	{
-		if(remaining)
-		{
+		if(remaining) {
 			--remaining;
 			return AudioTone::getFrame();
 		}
 
-		if(!digits || !*digits)
-		{
+		if(!digits || !*digits) {
 			complete = true;
 			return NULL;
 		}
 
-		if(!isSilent())
-		{
+		if(!isSilent()) {
 			if(kflag)
 				remaining = 100 / frametime;
 			else
@@ -253,8 +246,7 @@ Audio::Linear MFTones::getFrame(void)
 			continue;
 		}
 
-		switch(*(digits++))
-		{
+		switch(*(digits++)) {
 		case '!':
 		case 'f':
 		case 'F':
@@ -265,45 +257,45 @@ Audio::Linear MFTones::getFrame(void)
 			remaining = mfframes;
 			break;
 
-                case '2':
-                        dual(700, 1100, level, level);
-                        remaining = mfframes;
-                        break;
+				case '2':
+			dual(700, 1100, level, level);
+			remaining = mfframes;
+			break;
 
-                case '3':      
-                        dual(900, 1100, level, level);
-                        remaining = mfframes;
-                        break;  
+				case '3':
+			dual(900, 1100, level, level);
+			remaining = mfframes;
+			break;
 
 		case '4':
 			dual(700, 1300, level, level);
 			remaining = mfframes;
 			break;
 
-                case '5':
-                        dual(900, 1300, level, level);
-                        remaining = mfframes;
-                        break;
+				case '5':
+			dual(900, 1300, level, level);
+			remaining = mfframes;
+			break;
 
-                case '6':      
-                        dual(1100, 1300, level, level);
-                        remaining = mfframes;
-                        break;  
+				case '6':
+			dual(1100, 1300, level, level);
+			remaining = mfframes;
+			break;
 
 		case '7':
 			dual(700, 1500, level, level);
 			remaining = mfframes;
 			break;
 
-                case '8':
-                        dual(900, 1500, level, level);
-                        remaining = mfframes;
-                        break;
+				case '8':
+			dual(900, 1500, level, level);
+			remaining = mfframes;
+			break;
 
-                case '9':      
-                        dual(1100, 1500, level, level);
-                        remaining = mfframes;
-                        break;  
+				case '9':
+			dual(1100, 1500, level, level);
+			remaining = mfframes;
+			break;
 
 		case 'K':
 		case 'k':
@@ -313,24 +305,24 @@ Audio::Linear MFTones::getFrame(void)
 			kflag = true;
 			break;
 
-                case '0':
-                        dual(1300, 1500, level, level);
-                        remaining = mfframes;
-                        break;
+				case '0':
+			dual(1300, 1500, level, level);
+			remaining = mfframes;
+			break;
 
 		case 'S':
 		case 's':
-                case '*':      
-                        dual(1500, 1700, level, level);
-                        remaining = mfframes;
-                        break;  
+				case '*':
+			dual(1500, 1700, level, level);
+			remaining = mfframes;
+			break;
 
 		case 'B':
-                case 'b':
+				case 'b':
 			single(2600, level);
 			kflag = true;
 			remaining = 1000 / frametime;
-                        break;   
+			break;
 
 		case ',':
 			remaining = 1000 / frametime;
@@ -341,5 +333,5 @@ Audio::Linear MFTones::getFrame(void)
 			reset();
 			break;
 		}
-	}	
+	}
 }

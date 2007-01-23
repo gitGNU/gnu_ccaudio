@@ -123,8 +123,7 @@ DTMFDetect::DTMFDetect()
 
 DTMFDetect::~DTMFDetect()
 {
-	if(state)
-	{
+	if(state) {
 		free(state);
 		state = NULL;
 	}
@@ -138,8 +137,8 @@ void DTMFDetect::goertzelInit(goertzel_state_t *s, tone_detection_descriptor_t *
 }
 
 void DTMFDetect::goertzelUpdate(goertzel_state_t *s,
-                     Sample x[],
-                     int samples)
+		 Sample x[],
+		 int samples)
 {
 	int i;
 	float v1;
@@ -183,13 +182,13 @@ int DTMFDetect::putSamples(Linear amp, int samples)
 		else
 			limit = samples;
 
-		// The following unrolled loop takes only 35% (rough estimate) of the 
-		// time of a rolled loop on the machine on which it was developed 
+		// The following unrolled loop takes only 35% (rough estimate) of the
+		// time of a rolled loop on the machine on which it was developed
 		for(j = sample;  j < limit;  j++)
 		{
 			famp = amp[j];
 	  		state->energy += famp*famp;
-	    
+
 			// With GCC 2.95, the following unrolled code seems to take about 35%
 			// (rough estimate) as long as a neat little 0-3 loop
 			v1 = state->row_out[0].v2;
@@ -295,7 +294,7 @@ int DTMFDetect::putSamples(Linear amp, int samples)
 			// Relative peak test
 			for(i = 0;  i < 4;  i++)
 			{
-				if ((i != best_col && 
+				if ((i != best_col &&
 					col_energy[i]*DTMF_RELATIVE_PEAK_COL > col_energy[best_col]) ||
 					(i != best_row && row_energy[i]*DTMF_RELATIVE_PEAK_ROW > row_energy[best_row]))
 					break;
@@ -314,40 +313,33 @@ int DTMFDetect::putSamples(Linear amp, int samples)
 				//   back to back differing digits. More importantly, it
 				//   can work with nasty phones that give a very wobbly start
 				//   to a digit.
-				if (hit == state->hit3  &&  state->hit3 != state->hit2)
-				{
+				if (hit == state->hit3  &&  state->hit3 != state->hit2) {
 					state->mhit = hit;
 					state->digit_hits[(best_row << 2) + best_col]++;
 					state->detected_digits++;
-					if (state->current_digits < 128)
-					{
+					if (state->current_digits < 128) {
 						state->digits[state->current_digits++] = hit;
 						state->digits[state->current_digits] = '\0';
 					}
-					else
-					{
+					else {
 						state->lost_digits++;
 					}
 				}
 			}
 		}
 
-		if (!hit && (fax_energy >= FAX_THRESHOLD) && (fax_energy > state->energy * 21.0))
-		{
+		if (!hit && (fax_energy >= FAX_THRESHOLD) && (fax_energy > state->energy * 21.0)) {
 			fax_energy_2nd = goertzelResult(&state->fax_tone2nd);
-			if (fax_energy_2nd * FAX_2ND_HARMONIC < fax_energy)
-			{
+			if (fax_energy_2nd * FAX_2ND_HARMONIC < fax_energy) {
 				// XXX Probably need better checking than just this the energy
 				hit = 'f';
 				state->fax_hits++;
 			} /* Don't reset fax hits counter */
 		} else {
-			if (state->fax_hits > 5)
-			{
+			if (state->fax_hits > 5) {
 				state->mhit = 'f';
 				state->detected_digits++;
-				if (state->current_digits < 128)
-				{
+				if (state->current_digits < 128) {
 					state->digits[state->current_digits++] = hit;
 					state->digits[state->current_digits] = '\0';
 				}
@@ -372,8 +364,7 @@ int DTMFDetect::putSamples(Linear amp, int samples)
 		state->energy = 0.0;
 		state->current_sample = 0;
 	}
-	if ((!state->mhit) || (state->mhit != hit))
-	{
+	if ((!state->mhit) || (state->mhit != hit)) {
 		state->mhit = 0;
 		return(0);
 	}
@@ -384,8 +375,7 @@ int DTMFDetect::getResult(char *buf, int max)
 {
 	if (max > state->current_digits)
 		max = state->current_digits;
-	if (max > 0)
-	{
+	if (max > 0) {
 		memcpy (buf, state->digits, max);
 		memmove (state->digits, state->digits + max, state->current_digits - max);
 		state->current_digits -= max;

@@ -1,17 +1,17 @@
 // Copyright (C) 1999-2001 Open Source Telecom Corporation.
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with this program; if not, write to the Free Software 
+// along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 #include "audiotool.h"
@@ -58,7 +58,7 @@ void AudioBuild::copyConvert(AudioStream &input, AudioStream &output)
 	bool mono = true;
 	AudioResample *resampler = NULL;
 	Linear resample = NULL;
-	
+
 	input.getInfo(&from);
 	output.getInfo(&to);
 
@@ -75,8 +75,7 @@ void AudioBuild::copyConvert(AudioStream &input, AudioStream &output)
 
 	source = buffer;
 
-	if(from.rate != to.rate)
-	{
+	if(from.rate != to.rate) {
 		resampler = new AudioResample((Rate)from.rate, (Rate)to.rate);
 		resample = new Sample[resampler->estimate(samples)];
 		source = resample;
@@ -127,25 +126,24 @@ void AudioBuild::copyDirect(AudioStream &input, AudioStream &output)
 	input.getInfo(&from);
 	output.getInfo(&to);
 
-        if(to.order && from.order && to.order != from.order && isLinear(from.encoding))
-                endian = true;
-	
-        bufsize = from.framesize;
-        buffer = new unsigned char[bufsize];
+	if(to.order && from.order && to.order != from.order && isLinear(from.encoding))
+		endian = true;
 
-	while(status > 0)
-        {
+	bufsize = from.framesize;
+	buffer = new unsigned char[bufsize];
+
+	while(status > 0) {
 		status = input.getNative(buffer, bufsize);
 		if(status < 1)
 			break;
 
-                status = output.putNative(buffer, status);
-        }
+		status = output.putNative(buffer, status);
+	}
 
 	delete[] buffer;
-}	
-	
-void Tool::build(char **argv) 
+}
+
+void Tool::build(char **argv)
 {
 	AudioBuild input;
 	AudioStream output;
@@ -156,15 +154,13 @@ void Tool::build(char **argv)
 	Rate rate = rateUnknown;
 
 retry:
-	if(!*argv)
-	{
+	if(!*argv) {
 		cerr << "audiotool: -build: missing arguments" << endl;
 		exit(-1);
 	}
 
 	option = *argv;
-	if(!strcmp("--", option))
-	{
+	if(!strcmp("--", option)) {
 		++argv;
 		goto skip;
 	}
@@ -172,25 +168,21 @@ retry:
 	if(!strnicmp("--", option, 2))
 		++option;
 
-	if(!strnicmp(option, "-encoding=", 10))
-	{
+	if(!strnicmp(option, "-encoding=", 10)) {
 		encoding = option + 10;
 		++argv;
 		goto retry;
 	}
 
-	if(!strnicmp(option, "-rate=", 6))
-	{
+	if(!strnicmp(option, "-rate=", 6)) {
 		rate = (Rate)atol(option + 6);
 		++argv;
 		goto retry;
-	} 
+	}
 
-	if(!stricmp(option, "-encoding"))
-	{
+	if(!stricmp(option, "-encoding")) {
 		++argv;
-		if(!*argv)
-		{
+		if(!*argv) {
 			cerr << "audiotool: -build: -encoding: missing argument" << endl;
 			exit(-1);
 		}
@@ -198,37 +190,32 @@ retry:
 		goto retry;
 	}
 
-        if(!stricmp(option, "-rate"))
-        {
-                ++argv;
-                if(!*argv)
-                {
+	if(!stricmp(option, "-rate")) {
+		++argv;
+		if(!*argv) {
 			cerr << "audiotool: -build: -rate: missing argument" << endl;
-                        exit(-1);
-                }
-                rate = (Rate)atol(*(argv++));
-                goto retry;
-        }
+			exit(-1);
+		}
+		rate = (Rate)atol(*(argv++));
+		goto retry;
+	}
 
 skip:
-      	if(*argv && **argv == '-')
-      	{
-        	cerr << "audiotool: -build: " << *argv << ": unkown option" << endl;
-                exit(-1);
-        }
+	  	if(*argv && **argv == '-') {
+			cerr << "audiotool: -build: " << *argv << ": unkown option" << endl;
+		exit(-1);
+	}
 
 	if(*argv)
 		target = *(argv++);
 
-	if(!*argv)
-	{
+	if(!*argv) {
 		cerr << "audiotool: no files to build from" << endl;
 		exit(-1);
 	}
 
 	input.open(argv);
-	if(!input.isOpen())
-	{
+	if(!input.isOpen()) {
 		cerr << "audiotool: " << *argv << ": cannot access" << endl;
 		exit(-1);
 	}
@@ -242,8 +229,7 @@ skip:
 		make.setRate(rate);
 
 	output.create(target, &make, false, 10);
-	if(!output.isOpen())
-	{
+	if(!output.isOpen()) {
 		cerr << "audiotool: " << target << ": cannot create" << endl;
  		exit(-1);
 	}
@@ -251,16 +237,13 @@ skip:
 
 	if(make.encoding == info.encoding && make.rate == info.rate)
 		AudioBuild::copyDirect(input, output);
-	else
-	{
-		if(!input.isStreamable())
-		{
+	else {
+		if(!input.isStreamable()) {
 			remove(target);
 			cerr << "audiotool: " << *argv << ": cannot load codec" << endl;
 			exit(-1);
 		}
-		if(!output.isStreamable())
-		{
+		if(!output.isStreamable()) {
 			remove(target);
 			cerr << "audiotool: " << target << ": cannot load codec" << endl;
 			exit(-1);
@@ -271,8 +254,8 @@ skip:
 	output.close();
 	exit(0);
 }
-	
-void Tool::append(char **argv) 
+
+void Tool::append(char **argv)
 {
 	AudioBuild input;
 	AudioStream output;
@@ -284,8 +267,7 @@ void Tool::append(char **argv)
 retry:
 	option = *argv;
 
-	if(!strcmp("--", option))
-	{
+	if(!strcmp("--", option)) {
 		++argv;
 		goto skip;
 	}
@@ -293,18 +275,15 @@ retry:
 	if(!strnicmp("--", option, 2))
 		++option;
 
-	if(!strnicmp(option, "-offset=", 8))
-	{
+	if(!strnicmp(option, "-offset=", 8)) {
 		offset = option + 8;
 		++argv;
 		goto retry;
 	}
 
-	if(!stricmp(option, "-offset"))
-	{
+	if(!stricmp(option, "-offset")) {
 		++argv;
-		if(!*argv)
-		{
+		if(!*argv) {
 			cerr << "audiotool: -append: -offset: argument missing" << endl;
 			exit(-1);
 		}
@@ -314,31 +293,27 @@ retry:
 
 
 skip:
-        if(*argv && **argv == '-')
-        {
+	if(*argv && **argv == '-') {
 		cerr << "audiotool: -append: " << *argv << ": unknown option" << endl;
-                exit(-1);
-        }
+		exit(-1);
+	}
 
 	if(*argv)
 		target = *(argv++);
 
-	if(!*argv)
-	{
+	if(!*argv) {
 		cerr << "audiotool: no files to append from" << endl;
 		exit(-1);
 	}
 
 	input.open(argv);
-	if(!input.isOpen())
-	{
+	if(!input.isOpen()) {
 		cerr << "audiotool: " << *argv << ": cannot access" << endl;
 		exit(-1);
 	}
 	input.getInfo(&info);
 	output.open(target, modeWrite, 10);
-	if(!output.isOpen())
-	{
+	if(!output.isOpen()) {
 		cerr << "audiotool: " << target << ": cannot access" << endl;
  		exit(-1);
 	}
@@ -351,15 +326,12 @@ skip:
 
 	if(make.encoding == info.encoding)
 		AudioBuild::copyDirect(input, output);
-	else
-	{
-		if(!input.isStreamable())
-		{
+	else {
+		if(!input.isStreamable()) {
 			cerr << "audiotool: " << *argv << ": cannot load codec" << endl;
 			exit(-1);
 		}
-		if(!output.isStreamable())
-		{
+		if(!output.isStreamable()) {
 			cerr << "audiotool: " << target << ": cannot load codec" << endl;
 			exit(-1);
 		}

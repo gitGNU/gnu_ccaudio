@@ -54,7 +54,7 @@ AudioBase::~AudioBase()
 {
 }
 
-ssize_t AudioBase::putNative(Encoded data, size_t bytes)	
+ssize_t AudioBase::putNative(Encoded data, size_t bytes)
 {
 	swapEncoded(info, data, bytes);
 	return putBuffer(data, bytes);
@@ -70,5 +70,5 @@ ssize_t AudioBase::getNative(Encoded data, size_t bytes)
 	swapEncoded(info, data, result);
 	return result;
 }
-	
+
 

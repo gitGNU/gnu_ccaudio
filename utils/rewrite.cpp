@@ -1,17 +1,17 @@
 // Copyright (C) 1999-2001 Open Source Telecom Corporation.
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with this program; if not, write to the Free Software 
+// along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 #include "audiotool.h"
@@ -22,22 +22,20 @@ void Tool::rewrite(const char *source, char *target, size_t max)
 	char buffer[PATH_MAX];
 
 #ifdef	WIN32
-	char *ext; 
+	char *ext;
 	snprintf(buffer, sizeof(buffer), "%s", source);
 	while(NULL != (fn = strchr(buffer, '\\')))
 		*fn = '/';
 
 	fn = strrchr(buffer, '/');
-	if(fn)
-	{
+	if(fn) {
 		*(fn++) = 0;
 		ext = strrchr(fn, '.');
 		if(ext)
 			*ext = 0;
 		snprintf(target, max, "%s/%s.tmp", buffer, fn);
 	}
-	else
-	{
+	else {
 		ext = strrchr(buffer, '.');
 		if(ext)
 			*ext = 0;
@@ -46,13 +44,12 @@ void Tool::rewrite(const char *source, char *target, size_t max)
 #else
 	snprintf(buffer, sizeof(buffer), "%s", source);
 	fn = strrchr(buffer, '/');
-	if(fn)
-	{
+	if(fn) {
 		*(fn++) = 0;
 		snprintf(target, max, "%s/.tmp.%s", buffer, fn);
 	}
 	else
-		snprintf(target, max, ".tmp.%s", source);	
-#endif	
+		snprintf(target, max, ".tmp.%s", source);
+#endif
 }
-	
+

@@ -1,17 +1,17 @@
 // Copyright (C) 2005 David Sugar, Tycho Softworks
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with this program; if not, write to the Free Software 
+// along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 #include "tonetool.h"
@@ -24,46 +24,42 @@ using namespace ost;
 
 static const char *fname(const char *cp)
 {
-        const char *fn = strrchr(cp, '/');
-        if(!fn)
-                fn = strrchr(cp, '\\');
-        if(fn)
-                return ++fn;
-        return cp;
+	const char *fn = strrchr(cp, '/');
+	if(!fn)
+		fn = strrchr(cp, '\\');
+	if(fn)
+		return ++fn;
+	return cp;
 }
 
 void Tool::list(char **argv)
 {
-        const char *filename = "tones.conf";
+	const char *filename = "tones.conf";
 	const char *locale = NULL;
 	const char *option;
 	TelTone::tonekey_t *key;
 	TelTone::tonedef_t *def;
 
 retry:
-        option = *argv;
+	option = *argv;
 
-        if(!strcmp("--", option))
-        {
-                ++argv;
-                goto skip;
-        }
-
-        if(!strnicmp("--", option, 2))
-                ++option;
-
-        if(!strnicmp(option, "-file=", 6))
-        {
-                filename = option + 6;
-                ++argv;
-                goto retry;
-        }
-
-	if(!stricmp(option, "-file"))
-	{
+	if(!strcmp("--", option)) {
 		++argv;
-		if(*argv)
-		{
+		goto skip;
+	}
+
+	if(!strnicmp("--", option, 2))
+		++option;
+
+	if(!strnicmp(option, "-file=", 6)) {
+		filename = option + 6;
+		++argv;
+		goto retry;
+	}
+
+	if(!stricmp(option, "-file")) {
+		++argv;
+		if(*argv) {
 			cerr << "tonetool: -file: missing argument" << endl;
 			exit(-1);
 		}
@@ -71,18 +67,15 @@ retry:
 		goto retry;
 	}
 
-        if(!strnicmp(option, "-locale=", 8))
-        {
-                locale = option + 8;
-                ++argv;
-                goto retry;
-        }
-
-	if(!stricmp(option, "-locale"))
-	{
+	if(!strnicmp(option, "-locale=", 8)) {
+		locale = option + 8;
 		++argv;
-		if(*argv)
-		{
+		goto retry;
+	}
+
+	if(!stricmp(option, "-locale")) {
+		++argv;
+		if(*argv) {
 			cerr << "tonetool: -file: missing argument" << endl;
 			exit(-1);
 		}
@@ -92,57 +85,49 @@ retry:
 
 
 skip:
-        if(*argv && **argv == '-')
-        {
+	if(*argv && **argv == '-') {
 		printf("ERR!\n");
 	        cerr << "tonetool: " << *argv << ": unknown option" << endl;
-                exit(-1);
-        }
+		exit(-1);
+	}
 
-        if(!*argv)
-        {
-                cerr << "tonetool: tone name missing" << endl;
-                exit(-1);
-        }
+	if(!*argv) {
+		cerr << "tonetool: tone name missing" << endl;
+		exit(-1);
+	}
 
-	if(!TelTone::load(filename))
-	{
+	if(!TelTone::load(filename)) {
 		cerr << "tonetool: " << fname(filename) << ": unable to load" << endl;
 		exit(-1);
 	}
 
-	while(*argv)
-	{
-		cout << *argv << ':';		
+	while(*argv) {
+		cout << *argv << ':';
 		key = TelTone::find(*(argv++), locale);
-		if(!key)
-		{
+		if(!key) {
 			cout << " not found" << endl;
 			continue;
 		}
 		cout << endl;
 		def = key->first;
-		while(def)
-		{
+		while(def) {
 			cout << "   ";
-                        if(def->f2 && def->f1)
-				cout << def->f1 << "+" << def->f2;                                      
+			if(def->f2 && def->f1)
+				cout << def->f1 << "+" << def->f2;
 			else
-                        	cout << def->f1;
+				cout << def->f1;
 
 			if(def->duration)
 				cout << " " << def->duration << "ms" << endl;
-			else
-			{
+			else {
 				cout << " forever" << endl;
 				break;
 			}
-			
+
 			if(def->silence)
 				cout << "   silence " << def->silence << "ms" << endl;
 
-			if(def == key->last)
-			{
+			if(def == key->last) {
 				if(def->next == key->first)
 					cout << "   repeat full" << endl;
 				else if(def->next)

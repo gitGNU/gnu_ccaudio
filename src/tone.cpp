@@ -59,10 +59,10 @@ AudioTone::AudioTone(timeout_t duration, Rate r)
 AudioTone::AudioTone(unsigned freq, Level l, timeout_t duration, Rate r)
 {
 	rate = r;
-    df1 = (freq * M_PI * 2) / (long)rate;
-    df2 = (freq * M_PI * 2) / (long)rate;
-    p1 = 0, p2 = 0;
-    samples = (duration * (long)rate) / 1000;
+	df1 = (freq * M_PI * 2) / (long)rate;
+	df2 = (freq * M_PI * 2) / (long)rate;
+	p1 = 0, p2 = 0;
+	samples = (duration * (long)rate) / 1000;
 	m1 = l / 2;
 	m2 = l / 2;
 	silencer = false;
@@ -73,10 +73,10 @@ AudioTone::AudioTone(unsigned freq, Level l, timeout_t duration, Rate r)
 AudioTone::AudioTone(unsigned f1, unsigned f2, Level l1, Level l2, timeout_t duration, Rate r)
 {
 	rate = r;
-    df1 = (f1 * M_PI * 2) / (long)r;
-    df2 = (f2 * M_PI * 2) / (long)r;
-    p1 = 0, p2 = 0;
-    samples = (duration * (long)r) / 1000;
+	df1 = (f1 * M_PI * 2) / (long)r;
+	df2 = (f2 * M_PI * 2) / (long)r;
+	p1 = 0, p2 = 0;
+	samples = (duration * (long)r) / 1000;
 	m1 = l1 / 2;
 	m2 = l2 / 2;
 	silencer = false;
@@ -89,8 +89,7 @@ unsigned AudioTone::getFrames(Linear buffer, unsigned pages)
 	unsigned count = 0;
 	Linear save = frame;
 
-	while(count < pages)
-	{
+	while(count < pages) {
 		frame = buffer;
 		buffer += samples;
 		if(!getFrame())
@@ -103,7 +102,7 @@ unsigned AudioTone::getFrames(Linear buffer, unsigned pages)
 
 	frame = save;
 	return count;
-}	
+}
 
 
 bool AudioTone::isComplete(void)
@@ -124,19 +123,19 @@ void AudioTone::reset(void)
 
 void AudioTone::single(unsigned freq, Level l)
 {
-    df1 = (freq * M_PI * 2) / (long)rate;
-    df2 = (freq * M_PI * 2) / (long)rate;
-        m1 = l / 2; 
-        m2 = l / 2; 
+	df1 = (freq * M_PI * 2) / (long)rate;
+	df2 = (freq * M_PI * 2) / (long)rate;
+	m1 = l / 2;
+	m2 = l / 2;
 	silencer = false;
 }
 
 void AudioTone::dual(unsigned f1, unsigned f2, Level l1, Level l2)
 {
-    df1 = (f1 * M_PI * 2) / (long)rate;
-    df2 = (f2 * M_PI * 2) / (long)rate;
-        m1 = l1 / 2;
-        m2 = l2 / 2;
+	df1 = (f1 * M_PI * 2) / (long)rate;
+	df2 = (f2 * M_PI * 2) / (long)rate;
+	m1 = l1 / 2;
+	m2 = l2 / 2;
 	silencer = false;
 }
 
@@ -145,65 +144,55 @@ Audio::Linear AudioTone::getFrame(void)
 	unsigned count = samples;
 	Linear data = frame;
 
-	if(isSilent() && !p1 && !p2)
-	{
-		if(!p1 && !p2)
-		{
+	if(isSilent() && !p1 && !p2) {
+		if(!p1 && !p2) {
 			memset(frame, 0, samples * 2);
 			return frame;
 		}
 	}
 	else if(silencer)
 	{
-		while(count--)
-		{
-			if(p1 <= 0 && df1 >= p1)
-			{
+		while(count--) {
+			if(p1 <= 0 && df1 >= p1) {
 				p1 = 0;
 		 		df1 = 0;
 				m1 = 0;
 			}
-			if(p1 >= 0 && -df1 >= p1)
-			{
+			if(p1 >= 0 && -df1 >= p1) {
 				p1 = 0;
 				df1 = 0;
 				m1 = 0;
 			}
-                        if(p2 <= 0 && df2 >= p1)
-                        {
-                                p2 = 0;
-                                df2 = 0;
+			if(p2 <= 0 && df2 >= p1) {
+				p2 = 0;
+				df2 = 0;
 				m2 = 0;
-                        }
-                        if(p2 >= 0 && -df2 >= p1)
-                        {
-                                p2 = 0;
-                                df2 = 0;
+			}
+			if(p2 >= 0 && -df2 >= p1) {
+				p2 = 0;
+				df2 = 0;
 				m2 = 0;
-                        }
+			}
 
-			if(!m1 && !m2)
-			{
+			if(!m1 && !m2) {
 				*(data++) = 0;
 				continue;
 			}
-		
+
 	                *(data++) = (Level)(sin(p1) * (double)m1) +
-        	                (Level)(sin(p2) * (double)m2);
+			                (Level)(sin(p2) * (double)m2);
 
 			p1 += df1;
 			p2 += df2;
 		}
 	}
-	else
-	{
-		while(count--)
-		{
-                	*(data++) = (Level)(sin(p1) * (double)m1) +
-                        	(Level)(sin(p2) * (double)m2);
+	else {
+		while(count--) {
+					*(data++) = (Level)(sin(p1) * (double)m1) +
+				(Level)(sin(p2) * (double)m2);
 
 	                p1 += df1;
-        	        p2 += df2;
+			        p2 += df2;
 		}
 	}
 
@@ -217,8 +206,7 @@ AudioTone::~AudioTone()
 
 void AudioTone::cleanup(void)
 {
-	if(frame)
-	{
+	if(frame) {
 		delete[] frame;
 		frame = NULL;
 	}

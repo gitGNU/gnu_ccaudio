@@ -1,17 +1,17 @@
 // Copyright (C) 1999-2001 Open Source Telecom Corporation.
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with this program; if not, write to the Free Software 
+// along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 #include "audiotool.h"
@@ -54,17 +54,15 @@ void Tool::packetdump(char **argv)
 	Encoded buffer;
 	Info info;
 	ssize_t count;
-	
+
 	packetfile.open(argv);
 
-	if(!packetfile.isOpen())
-	{
+	if(!packetfile.isOpen()) {
 		cerr << "audiotool: " << path << ": unable to access" << endl;
 		exit(-1);
 	}
 
-	if(!packetfile.isStreamable())
-	{
+	if(!packetfile.isStreamable()) {
 		cerr << "audiotool: " << path << ": missing needed codec" << endl;
 		exit(-1);
 	}
@@ -74,10 +72,10 @@ void Tool::packetdump(char **argv)
 	buffer = new unsigned char[maxFramesize(info)];
 
 	while((count = packetfile.getPacket(buffer)) > 0)
-		cout << "-- " << count << endl;			
+		cout << "-- " << count << endl;
 
 	delete[] buffer;
-	packetfile.close();		
+	packetfile.close();
 	exit(0);
 }
 

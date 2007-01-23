@@ -45,8 +45,7 @@ AudioTone(duration)
 {
 	tone = k;
 
-	if(!tone)
-	{
+	if(!tone) {
 		complete = true;
 		return;
 	}
@@ -71,21 +70,18 @@ bool TelTone::isComplete(void)
 Audio::Linear TelTone::getFrame(void)
 {
 	if(complete)
-		return NULL;		
+		return NULL;
 
-	if(count >= def->count && !remaining && !silent)
-	{
+	if(count >= def->count && !remaining && !silent) {
 		def = def->next;
 		count = 0;
-		if(!def)
-		{
+		if(!def) {
 			complete = true;
 			return NULL;
 		}
 	}
 
-	if(!remaining && !silent)
-	{
+	if(!remaining && !silent) {
 		if(count && !def->duration)
 			return AudioTone::getFrame();
 
@@ -98,7 +94,7 @@ Audio::Linear TelTone::getFrame(void)
 		if(def->silence)
 			silent = (def->duration + def->silence) / framing - remaining;
 		else
-			silent = 0;	
+			silent = 0;
 	}
 
 	if(!remaining && m1 && silent)
@@ -109,5 +105,5 @@ Audio::Linear TelTone::getFrame(void)
 	else if(silent)
 		--silent;
 
-	return AudioTone::getFrame();			
+	return AudioTone::getFrame();
 }

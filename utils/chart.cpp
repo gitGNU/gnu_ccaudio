@@ -1,17 +1,17 @@
 // Copyright (C) 1999-2001 Open Source Telecom Corporation.
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with this program; if not, write to the Free Software 
+// along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 #include "audiotool.h"
@@ -38,26 +38,23 @@ void Tool::chart(char **argv)
 	short max, current;
 	unsigned long sum;
 	unsigned long count;
-	
+
 retry:
-	if(!*argv)
-	{
+	if(!*argv) {
 		cerr << "audiotool: -chart: missing arguments" << endl;
 		exit(-1);
 	}
 
 	fn = *argv;
 
-	if(!strcmp(fn, "--"))
-	{
+	if(!strcmp(fn, "--")) {
 		++argv;
 		goto skip;
 	}
 
 	if(!strnicmp(fn, "--", 2))
 		++fn;
-	if(!strnicmp(fn, "-framing=", 9))
-	{
+	if(!strnicmp(fn, "-framing=", 9)) {
 		framing = atoi(fn + 9);
 		++argv;
 		goto retry;
@@ -65,17 +62,15 @@ retry:
 	else if(!stricmp(fn, "-framing"))
 	{
 		++argv;
-		if(!*argv)
-		{
+		if(!*argv) {
 			cerr << "audiotool: -chart: -framing: missing argument" << endl;
 			exit(-1);
 		}
 		framing = atoi(*(argv++));
 		goto retry;
-	} 
+	}
 
-	if(!strnicmp(fn, "-silence=", 9))
-	{
+	if(!strnicmp(fn, "-silence=", 9)) {
 		silence = atoi(fn + 9);
 		++argv;
 		goto retry;
@@ -83,29 +78,25 @@ retry:
 	else if(!stricmp(fn, "-silence"))
 	{
 		++argv;
-		if(!*argv)
-		{
+		if(!*argv) {
 			cerr << "audiotool: -chart: -silence: argument missing" << endl;
 			exit(-1);
 		}
 		silence = atoi(*(argv++));
 		goto retry;
-	}		
+	}
 
 skip:
 
 	if(!framing)
 		framing = 20;
 
-	while(*argv)
-	{
-		if(!isFile(*argv))
-		{
+	while(*argv) {
+		if(!isFile(*argv)) {
 			cout << fname(*(argv++)) << ": invalid" << endl;
 			continue;
 		}
-		if(!canAccess(*argv))
-		{
+		if(!canAccess(*argv)) {
 			cout << fname(*(argv++)) << ": inaccessable" << endl;
 			continue;
 		}
@@ -113,8 +104,7 @@ skip:
 		file.getInfo(&info);
 		if(!isLinear(info.encoding))
 			codec = AudioCodec::getCodec(info, false);
-		if(!isLinear(info.encoding) && !codec)
-		{
+		if(!isLinear(info.encoding) && !codec) {
 			cout << fname(*(argv++)) << ": cannot load codec" << endl;
 			continue;
 		}
@@ -129,8 +119,7 @@ skip:
 
 		// autochart for silence value
 
-		while(!silence)
-		{
+		while(!silence) {
 			if(file.getBuffer(buffer, info.framesize) < (int)info.framesize)
 				break;
 			++count;
@@ -154,14 +143,12 @@ skip:
 			if(file.getBuffer(buffer, info.framesize) < (int)info.framesize)
 				break;
 			++count;
-			if(codec)
-			{
+			if(codec) {
 				current = codec->getPeak(buffer, info.framecount);
 				if(current > max)
 					max = current;
 				sum += codec->getImpulse(buffer, info.framecount);
-				if(codec->isSilent(silence, buffer, info.framecount))
-				{
+				if(codec->isSilent(silence, buffer, info.framecount)) {
 					if(codec->getPeak(buffer, info.framecount) >= silence)
 						cout << '^';
 					else
@@ -178,8 +165,7 @@ skip:
 				max = current;
 
 			sum += getImpulse(info, buffer, info.framecount);
-			if(getImpulse(info, buffer, info.framecount) < silence)
-			{
+			if(getImpulse(info, buffer, info.framecount) < silence) {
 				if(getPeak(info, buffer, info.framecount) >= silence)
 					cout << '^';
 				else
@@ -192,7 +178,7 @@ skip:
 		cout << endl;
 		if(count)
 			cout 	<< "silence threashold = " << silence
-				<< ", avg frame energy = " << (sum / count) 
+				<< ", avg frame energy = " << (sum / count)
 				<< ", peak level = " << max << endl;
 
 		if(buffer)
@@ -204,7 +190,7 @@ skip:
 
 		codec = NULL;
 		buffer = NULL;
-		
+
 		file.close();
 	}
 	exit(0);

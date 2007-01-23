@@ -1,19 +1,19 @@
 // Copyright (C) 1999-2005 Open Source Telecom Corporation.
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with this program; if not, write to the Free Software 
+// along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-// 
+//
 // As a special exception, you may use this file as part of a free software
 // library without restriction.  Specifically, if other files instantiate
 // templates or use macros or inline functions from this file, or you compile
@@ -59,7 +59,7 @@ bool AudioFile::afCreate(const char *name, bool exclusive)
 	mode = modeWrite;
 #ifdef	WIN32
 	if(exclusive)
-		SETFD(file, CreateFile(name, GENERIC_READ | GENERIC_WRITE, 0, 
+		SETFD(file, CreateFile(name, GENERIC_READ | GENERIC_WRITE, 0,
 			NULL, CREATE_NEW, FILE_ATTRIBUTE_NORMAL, NULL));
 	else
 		SETFD(file, CreateFile(name, GENERIC_READ | GENERIC_WRITE, 0,
@@ -81,8 +81,7 @@ bool AudioFile::afOpen(const char *name, Mode m)
 	AudioFile::close();
 	mode = m;
 #ifdef	WIN32
-	switch(m)
-	{
+	switch(m) {
 	case modeWrite:
 	case modeCache:
 		SETFD(file, CreateFile(name, GENERIC_READ | GENERIC_WRITE, 0,
@@ -95,13 +94,12 @@ bool AudioFile::afOpen(const char *name, Mode m)
 	case modeReadAny:
 	case modeReadOne:
 		SETFD(file, CreateFile(name,GENERIC_READ, 0,
-                        NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL));
+			NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL));
 	default:
 		break;
 	}
 #else
-	switch(m)
-	{
+	switch(m) {
 	case modeWrite:
 	case modeCache:
 		file.fd = ::open(name, O_RDWR);
@@ -157,8 +155,8 @@ bool AudioFile::afSeek(unsigned long pos)
 #ifdef	WIN32
 	if(SetFilePointer(FD(file), pos, NULL, FILE_BEGIN) != INVALID_SET_FILE_POINTER)
 #else
-	if(::lseek(file.fd, pos, SEEK_SET) != -1)	
-#endif	
+	if(::lseek(file.fd, pos, SEEK_SET) != -1)
+#endif
 		return true;
 	else
 		return false;
@@ -180,8 +178,7 @@ void AudioFile::afClose(void)
 {
 	unsigned long size = ~0;
 #ifdef	WIN32
-	if(FD(file) != INVALID_HANDLE_VALUE)
-	{
+	if(FD(file) != INVALID_HANDLE_VALUE) {
 		size = getPosition();
 		CloseHandle(FD(file));
 		if(size < minimum && pathname && mode == modeWrite)
@@ -189,8 +186,7 @@ void AudioFile::afClose(void)
 	}
 	SETFD(file, INVALID_HANDLE_VALUE);
 #else
-	if(file.fd > -1)
-	{
+	if(file.fd > -1) {
 		size = getPosition();
 		if(size < minimum && pathname && mode == modeWrite)
 			::remove(pathname);
@@ -217,72 +213,71 @@ void AudioFile::initialize(void)
 
 Audio::Error AudioFile::setPosition(unsigned long samples)
 {
-        long pos;
-        long eof;
+	long pos;
+	long eof;
 
-        if(!isOpen())
-                return errNotOpened;
-
-#ifdef  WIN32
-        eof = SetFilePointer(FD(file), 0l, NULL, FILE_END);
-#else
-        eof = ::lseek(file.fd, 0l, SEEK_END);
-#endif
-        if(samples == (unsigned long)~0l)
-                return errSuccess;
-
-        pos = header + toBytes(info, samples);
-        if(pos > eof)
-        {
-                pos = eof;
-                return errSuccess;
-        }
+	if(!isOpen())
+		return errNotOpened;
 
 #ifdef  WIN32
-        SetFilePointer(FD(file), pos, NULL, FILE_BEGIN);
+	eof = SetFilePointer(FD(file), 0l, NULL, FILE_END);
 #else
-        ::lseek(file.fd, pos, SEEK_SET);
+	eof = ::lseek(file.fd, 0l, SEEK_END);
 #endif
-        return errSuccess;
+	if(samples == (unsigned long)~0l)
+		return errSuccess;
+
+	pos = header + toBytes(info, samples);
+	if(pos > eof) {
+		pos = eof;
+		return errSuccess;
+	}
+
+#ifdef  WIN32
+	SetFilePointer(FD(file), pos, NULL, FILE_BEGIN);
+#else
+	::lseek(file.fd, pos, SEEK_SET);
+#endif
+	return errSuccess;
 }
 
 unsigned long AudioFile::getAbsolutePosition(void)
 {
-        unsigned long pos;
-        if(!isOpen())
-                return 0;
- 
+	unsigned long pos;
+	if(!isOpen())
+		return 0;
+
 #ifdef  WIN32
-        pos = SetFilePointer(FD(file), 0l, NULL, FILE_CURRENT);
+	pos = SetFilePointer(FD(file), 0l, NULL, FILE_CURRENT);
 	if(pos == INVALID_SET_FILE_POINTER) {
 #else
-        pos = ::lseek(file.fd, 0l, SEEK_CUR);
+		pos = ::lseek(file.fd, 0l, SEEK_CUR);
 	if(pos == (unsigned long)-1l) {
 #endif
 		close();
 		return 0;
 	}
-        return pos;
-}
+		return pos;
+	}
 
 unsigned long AudioFile::getPosition(void)
 {
-        unsigned long pos;
-        if(!isOpen())
-                return 0;
+		unsigned long pos;
+		if(!isOpen())
+		return 0;
 
 #ifdef  WIN32
-        pos = SetFilePointer(FD(file), 0l, NULL, FILE_CURRENT);
+		pos = SetFilePointer(FD(file), 0l, NULL, FILE_CURRENT);
 	if(pos == INVALID_SET_FILE_POINTER) {
 #else
-        pos = getAbsolutePosition();
+		pos = getAbsolutePosition();
 	if(pos == (unsigned long)-1l) {
 #endif
 		close();
 		return 0;
 	}
-        pos = toSamples(info, pos - header);
-        return pos;
-}
+		pos = toSamples(info, pos - header);
+		return pos;
+		}
 
 

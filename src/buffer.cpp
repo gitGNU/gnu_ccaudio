@@ -40,7 +40,7 @@
 
 using namespace ost;
 
-AudioBuffer::AudioBuffer(Info *i, size_t sz) : 
+AudioBuffer::AudioBuffer(Info *i, size_t sz) :
 AudioBase(i)
 {
 	size = sz;
@@ -72,7 +72,7 @@ void AudioBuffer::enter(void)
 void AudioBuffer::leave(void)
 {
 	ccAudio_Mutex_ *mutex = (ccAudio_Mutex_ *)mutexObject;
-	
+
 	mutex->leave();
 }
 
@@ -84,8 +84,7 @@ ssize_t AudioBuffer::getBuffer(Encoded data, size_t amount)
 		return 0;
 
 	enter();
-	if(len == 0)
-	{
+	if(len == 0) {
 		memset(data, 0, amount);
 		leave();
 		return (ssize_t)amount;
@@ -95,8 +94,7 @@ ssize_t AudioBuffer::getBuffer(Encoded data, size_t amount)
 		memset(data + len, 0, amount - len);
 
 	left = ((amount) < (len) ? amount : len);
-	if((start + left) > size)
-	{
+	if((start + left) > size) {
 		copied = size - start;
 		memcpy(data, buf + start, copied);
 		data += copied;
@@ -105,8 +103,7 @@ ssize_t AudioBuffer::getBuffer(Encoded data, size_t amount)
 		start = 0;
 	}
 
-	if(left > 0)
-	{
+	if(left > 0) {
 		memcpy(data, buf + start, left);
 		len -= left;
 		start = (start + left) % size;
@@ -124,16 +121,14 @@ ssize_t AudioBuffer::putBuffer(Encoded data, size_t amount)
 
 	enter();
 	nl = len + amount;
-	if(len > size)
-	{
+	if(len > size) {
 		removed = nl - size;
 		start = (start + removed) % size;
 		len -= removed;
 	}
 
 	offset = (start + len) % size;
-	if((offset + amount) > size)
-	{
+	if((offset + amount) > size) {
 		written = size - offset;
 		memcpy(buf + offset, data, written);
 		offset = 0;
@@ -142,8 +137,7 @@ ssize_t AudioBuffer::putBuffer(Encoded data, size_t amount)
 		len += written;
 	}
 
-	if(amount > 0)
-	{
+	if(amount > 0) {
 		memcpy(buf + offset, data, amount);
 		len += amount;
 	}

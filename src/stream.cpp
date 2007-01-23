@@ -1,19 +1,19 @@
 // Copyright (C) 2004-2005 Open Source Telecom Corporation.
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with this program; if not, write to the Free Software 
+// along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-// 
+//
 // As a special exception, you may use this file as part of a free software
 // library without restriction.  Specifically, if other files instantiate
 // templates or use macros or inline functions from this file, or you compile
@@ -61,8 +61,7 @@ unsigned AudioDevice::bufMono(Linear samples, unsigned count)
 	if(!isStereo(info.encoding))
 		return putSamples(samples, count);
 
-	while(count)
-	{
+	while(count) {
 		if(count < 80)
 			fill = count;
 		else
@@ -87,8 +86,7 @@ unsigned AudioDevice::bufStereo(Linear samples, unsigned count)
 	if(isStereo(info.encoding))
 		return putSamples(samples, count);
 
-	while(count)
-	{
+	while(count) {
 		if(count < 80)
 			fill = count;
 		else
@@ -172,7 +170,7 @@ ssize_t AudioStream::getPacket(Encoded data)
 
 		if(status)
 			return status;
-	}		
+	}
 
 	return 0;
 }
@@ -195,8 +193,7 @@ void AudioStream::flush(void)
 	if(!bufferFrame)
 		return;
 
-	if(bufferPosition)
-	{
+	if(bufferPosition) {
 		for(pos = bufferPosition; pos < getCount() * bufferChannels; ++pos)
 			bufferFrame[pos] = 0;
 		if(bufferChannels == 1)
@@ -249,8 +246,7 @@ void AudioStream::create(const char *fname, Info *info, bool exclusive, timeout_
 		return;
 
 	codec = AudioCodec::getCodec(AudioFile::info, false);
-	if(!codec)
-	{
+	if(!codec) {
 		streamable = false;
 		return;
 	}
@@ -309,14 +305,12 @@ unsigned AudioStream::getMono(Linear buffer, unsigned frames)
 	else if(dbuf)
 		iobuf = (unsigned char *)dbuf;
 
-	while(frames--)
-	{
+	while(frames--) {
 		len = AudioFile::getBuffer(iobuf);	// packet read
 		if(len < (ssize_t)info.framesize)
 			break;
 		++copied;
-		if(codec)
-		{
+		if(codec) {
 			codec->decode(buffer, iobuf, info.framecount);
 			goto stereo;
 		}
@@ -327,8 +321,7 @@ unsigned AudioStream::getMono(Linear buffer, unsigned frames)
 			swapEndian(info, buffer, info.framecount);
 
 stereo:
-		if(!dbuf)
-		{
+		if(!dbuf) {
 			buffer += info.framecount;
 			continue;
 		}
@@ -354,50 +347,46 @@ unsigned AudioStream::getStereo(Linear buffer, unsigned frames)
 
 	if(!isStreamable())
 		return 0;
-	
+
 	if(!frames)
 		++frames;
 
 	count = frames * getCount();
-	
+
 	if(codec)
 		iobuf = framebuf;
 
-	while(frames--)
-	{
+	while(frames--) {
 		len = AudioFile::getBuffer(iobuf);	// packet read
-		if(len < (ssize_t)info.framesize)		
+		if(len < (ssize_t)info.framesize)
 			break;
 		++copied;
 
-		if(codec)
-		{
+		if(codec) {
 			codec->decode(buffer, iobuf, info.framecount);
 			goto stereo;
 		}
 		swapEndian(info, buffer, info.framecount);
 
 stereo:
-		if(isStereo(info.encoding))
-		{
+		if(isStereo(info.encoding)) {
 			buffer += (info.framecount * 2);
 			continue;
 		}
 		offset = info.framecount;
-		while(offset--)
-		{
+		while(offset--) {
 			buffer[offset * 2] = buffer[offset];
 			buffer[offset * 2 + 1] = buffer[offset];
 		}
 		buffer += (info.framecount * 2);
 	}
 	return copied;
-}		
+}
 
 unsigned AudioStream::putMono(Linear buffer, unsigned frames)
 {
-        Linear iobuf = buffer, dbuf = NULL;
-        unsigned count, offset, copied = 0;
+	Linear iobuf = buffer, dbuf = NULL;
+	unsigned count, offset, copied = 0;
 	ssize_t len;
 
 	if(!isStreamable())
@@ -408,22 +397,18 @@ unsigned AudioStream::putMono(Linear buffer, unsigned frames)
 
 	count = frames * getCount();
 
-	if(isStereo(info.encoding))
-	{
+	if(isStereo(info.encoding)) {
 		dbuf = new Sample[info.framecount * 2];
 		iobuf = dbuf;
 	}
 
-	while(frames--)
-	{
-		if(dbuf)
-		{
+	while(frames--) {
+		if(dbuf) {
 			for(offset = 0; offset < info.framecount; ++offset)
 				dbuf[offset * 2] = dbuf[offset * 2 + 1] = buffer[offset];
 		}
-		
-		if(codec)
-		{
+
+		if(codec) {
 			codec->encode(iobuf, framebuf, info.framecount);
 			len = putBuffer(framebuf);
 			if(len < (ssize_t)info.framesize)
@@ -431,7 +416,7 @@ unsigned AudioStream::putMono(Linear buffer, unsigned frames)
 			++copied;
 			buffer += info.framecount;
 			continue;
-		}		
+		}
 		swapEndian(info, iobuf, info.framecount);
 		len = putBuffer((Encoded)iobuf);
 		if(len < (ssize_t)info.framesize)
@@ -443,38 +428,34 @@ unsigned AudioStream::putMono(Linear buffer, unsigned frames)
 		delete[] dbuf;
 
 	return copied;
-}			
+}
 
 unsigned AudioStream::putStereo(Linear buffer, unsigned frames)
 {
-        Linear iobuf = buffer, mbuf = NULL;
-        unsigned count, offset, copied = 0;
+	Linear iobuf = buffer, mbuf = NULL;
+	unsigned count, offset, copied = 0;
 	ssize_t len;
 
 	if(!isStreamable())
 		return 0;
 
-        if(!frames)
-                ++frames;
+	if(!frames)
+		++frames;
 
-        count = frames * getCount();
+	count = frames * getCount();
 
-	if(!isStereo(info.encoding))
-	{
+	if(!isStereo(info.encoding)) {
 		mbuf = new Sample[info.framecount];
 		iobuf = mbuf;
 	}
 
-	while(frames--)
-	{
-		if(mbuf)
-		{
+	while(frames--) {
+		if(mbuf) {
 			for(offset = 0; offset < info.framecount; ++offset)
 				mbuf[offset] = buffer[offset * 2] / 2 + buffer[offset * 2 + 1] / 2;
 		}
 
-		if(codec)
-		{
+		if(codec) {
 			codec->encode(iobuf, framebuf, info.framecount);
 			len = putBuffer(framebuf);
 			if(len < (ssize_t)info.framesize)
@@ -502,8 +483,7 @@ unsigned AudioStream::bufMono(Linear samples, unsigned count)
 	if(bufferChannels != 1)
 		flush();
 
-	if(!bufferFrame)
-	{
+	if(!bufferFrame) {
 		bufferFrame = new Sample[size];
 		bufferChannels = 1;
 		bufferPosition = 0;
@@ -518,8 +498,7 @@ unsigned AudioStream::bufStereo(Linear samples, unsigned count)
 	if(bufferChannels != 2)
 		flush();
 
-	if(!bufferFrame)
-	{
+	if(!bufferFrame) {
 		bufferFrame = new Sample[size];
 		bufferChannels = 2;
 		bufferPosition = 0;
@@ -533,23 +512,21 @@ unsigned AudioStream::bufAudio(Linear samples, unsigned count, unsigned size)
 	unsigned frames = 0, copy, result;
 
 	if(bufferPosition)
-		fill = size - bufferPosition;	
+		fill = size - bufferPosition;
 	else if(count < size)
 		fill = count;
 
 	if(fill > count)
 		fill = count;
 
-	if(fill)
-	{
+	if(fill) {
 		memcpy(&bufferFrame[bufferPosition], samples, fill * 2);
 		bufferPosition += fill;
 		samples += fill;
 		count -= fill;
 	}
-	
-	if(bufferPosition == size)
-	{
+
+	if(bufferPosition == size) {
 		if(bufferChannels == 1)
 			frames = putMono(bufferFrame, 1);
 		else
@@ -562,8 +539,7 @@ unsigned AudioStream::bufAudio(Linear samples, unsigned count, unsigned size)
 	if(!count)
 		return frames;
 
-	if(count >= size)
-	{
+	if(count >= size) {
 		copy = (count / size);
 		if(bufferChannels == 1)
 			result = putMono(samples, copy);
@@ -576,9 +552,8 @@ unsigned AudioStream::bufAudio(Linear samples, unsigned count, unsigned size)
 		samples += copy * size;
 		count -= copy * size;
 		frames += result;
-	}		
-	if(count)
-	{
+	}
+	if(count) {
 		memcpy(bufferFrame, samples, count * 2);
 		bufferPosition = count;
 	}
@@ -592,8 +567,7 @@ unsigned AudioStream::getEncoded(Encoded addr, unsigned frames)
 	if(isLinear(info.encoding))
 		return getMono((Linear)addr, frames);
 
-	while(frames--)
-	{
+	while(frames--) {
 		len = AudioFile::getBuffer(addr);	// packet read
 		if(len < info.framesize)
 			break;
@@ -601,7 +575,7 @@ unsigned AudioStream::getEncoded(Encoded addr, unsigned frames)
 		++count;
 	}
 	return count;
-}			
+}
 
 unsigned AudioStream::putEncoded(Encoded addr, unsigned frames)
 {
@@ -611,8 +585,7 @@ unsigned AudioStream::putEncoded(Encoded addr, unsigned frames)
 	if(isLinear(info.encoding))
 		return putMono((Linear)addr, frames);
 
-	while(frames--)
-	{
+	while(frames--) {
 		len = putBuffer(addr);
 		if(len < (ssize_t)info.framesize)
 			break;
@@ -620,7 +593,7 @@ unsigned AudioStream::putEncoded(Encoded addr, unsigned frames)
 		++count;
 	}
 	return count;
-}			
+}
 
 unsigned AudioStream::getEncoded(AudioCodec *codec, Encoded addr, unsigned frames)
 {
@@ -644,8 +617,7 @@ unsigned AudioStream::getEncoded(AudioCodec *codec, Encoded addr, unsigned frame
 	while(bufsize < ci.framesize)
 		bufsize += info.framesize;
 
-	if(encSize != bufsize)
-	{
+	if(encSize != bufsize) {
 		if(encBuffer)
 			delete[] encBuffer;
 
@@ -653,12 +625,9 @@ unsigned AudioStream::getEncoded(AudioCodec *codec, Encoded addr, unsigned frame
 		encSize = bufsize;
 	}
 
-	while(count < frames && !eof)
-	{	
-		while(used < ci.framesize)
-		{
-			if(getMono(encBuffer + used, 1) < 1)
-			{
+	while(count < frames && !eof) {
+		while(used < ci.framesize) {
+			if(getMono(encBuffer + used, 1) < 1) {
 				eof = true;
 				break;
 			}
@@ -677,26 +646,24 @@ unsigned AudioStream::putEncoded(AudioCodec *codec, Encoded addr, unsigned frame
 	Info ci;
 	unsigned count = 0;
 
-        if(!codec)
-                return putEncoded(addr, frames);
+	if(!codec)
+		return putEncoded(addr, frames);
 
-        ci = codec->getInfo();
-        if(ci.encoding == info.encoding && ci.framecount == info.framecount)
-                return putEncoded(addr, frames);
+	ci = codec->getInfo();
+	if(ci.encoding == info.encoding && ci.framecount == info.framecount)
+		return putEncoded(addr, frames);
 
 	if(!isStreamable())
 		return 0;
 
-	if(ci.framecount != decSize)
-	{
+	if(ci.framecount != decSize) {
 		if(decBuffer)
 			delete[] decBuffer;
 		decBuffer = new Sample[ci.framecount];
 		decSize = ci.framecount;
 	}
-	
-	while(count < frames)
-	{
+
+	while(count < frames) {
 		codec->decode(decBuffer, addr, ci.framecount);
 		if(bufMono(decBuffer, ci.framecount) < ci.framecount)
 			break;
@@ -704,5 +671,5 @@ unsigned AudioStream::putEncoded(AudioCodec *codec, Encoded addr, unsigned frame
 		addr += ci.framesize;
 	}
 
-        return count;
+	return count;
 }

@@ -44,32 +44,28 @@ using namespace ost;
 AudioResample::AudioResample(Rate div, Rate mul)
 {
 	bool common = true;
-	while(common)
-	{
+	while(common) {
 		common = false;
 
-		while(!(mul & 0x01) && !(div & 0x01))
-		{
+		while(!(mul & 0x01) && !(div & 0x01)) {
 			mul = (Rate)(mul >> 1);
 			div = (Rate)(div >> 1);
 			common = true;
 		}
 
-		while(!(mul % 3) && !(div % 3))
-		{
+		while(!(mul % 3) && !(div % 3)) {
 			mul = (Rate)(mul / 3);
 			div = (Rate)(div / 3);
 			common = true;
 		}
 
-		while(!(mul % 5) && !(div %5)) 	
-		{
+		while(!(mul % 5) && !(div %5)) {
 			mul = (Rate)(mul / 5);
 			div = (Rate)(div / 5);
 			common = true;
 		}
 	}
-		
+
 
 	mfact = (unsigned)mul;
 	dfact = (unsigned)div;
@@ -104,15 +100,13 @@ size_t AudioResample::process(Linear from, Linear dest, size_t count)
 	unsigned pos;
 	unsigned dpos;
 
-	while(count--)
-	{
+	while(count--) {
 		current = *(from++);
 		diff = (current - last) / mfact;
 		pos = mfact;
-		while(pos--)
-		{
+		while(pos--) {
 			last += diff;
-			buffer[ppos++] = current;			
+			buffer[ppos++] = current;
 			if(ppos >= max)
 				ppos = 0;
 
@@ -120,8 +114,7 @@ size_t AudioResample::process(Linear from, Linear dest, size_t count)
 				dpos = ppos - gpos;
 			else
 				dpos = max - (gpos - ppos);
-			if(dpos >= dfact)
-			{
+			if(dpos >= dfact) {
 				*(dest++) = buffer[gpos];
 				++saved;
 				gpos += dfact;

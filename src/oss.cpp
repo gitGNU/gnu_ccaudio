@@ -1,5 +1,5 @@
 // Copyright (C) 1999-2005 Open Source Telecom Corporation.
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
@@ -87,13 +87,12 @@ OSSAudioDevice::OSSAudioDevice(int fdsp, int fmixer, DeviceMode mode)
 	fcntl(dsp, F_SETFL, flags);
 
 	ioctl(mixer, MIXER_READ(SOUND_MIXER_SPEAKER), &volspeaker);
-        ioctl(mixer, MIXER_READ(SOUND_MIXER_PCM), &volpcm);
-        ioctl(mixer, MIXER_READ(SOUND_MIXER_MIC), &volmic);
-        ioctl(mixer, MIXER_READ(SOUND_MIXER_SYNTH), &volsynth);
-        ioctl(mixer, MIXER_READ(SOUND_MIXER_VOLUME), &volline);
+	ioctl(mixer, MIXER_READ(SOUND_MIXER_PCM), &volpcm);
+	ioctl(mixer, MIXER_READ(SOUND_MIXER_MIC), &volmic);
+	ioctl(mixer, MIXER_READ(SOUND_MIXER_SYNTH), &volsynth);
+	ioctl(mixer, MIXER_READ(SOUND_MIXER_VOLUME), &volline);
 
-	switch(mode)
-	{
+	switch(mode) {
 	case PLAY:
 		disableRecord();
 		break;
@@ -131,8 +130,7 @@ void OSSAudioDevice::flush(void)
 {
 	unsigned pos;
 
-	if(sendpos && sendbuf)
-	{
+	if(sendpos && sendbuf) {
 		for(pos = sendpos; pos < bufsize / 2; ++pos)
 			sendbuf[pos] = 0;
 		if(::write(dsp, sendbuf, bufsize) < (ssize_t)(bufsize))
@@ -148,13 +146,11 @@ bool OSSAudioDevice::setAudio(Rate rate, bool stereo, timeout_t framing)
 	int div = 1;
 	int blksize;
 
-	if(stereo)
-	{
+	if(stereo) {
 		channels = 2;
 		info.encoding = pcm16Stereo;
 	}
-	else
-	{
+	else {
 		info.encoding = pcm16Mono;
 		channels = 1;
 	}
@@ -190,7 +186,7 @@ bool OSSAudioDevice::setAudio(Rate rate, bool stereo, timeout_t framing)
 	ioctl(dsp, SOUND_PCM_READ_RATE, &srate);
 	ioctl(dsp, SOUND_PCM_READ_CHANNELS, &channels);
 	ioctl(dsp, SNDCTL_DSP_GETBLKSIZE, &blksize);
-	info.framesize = blksize;	
+	info.framesize = blksize;
 	info.framecount = toSamples(info.encoding, blksize);
 	info.framing = (info.framecount * 1000l) / srate;
 
@@ -205,35 +201,35 @@ bool OSSAudioDevice::setAudio(Rate rate, bool stereo, timeout_t framing)
 	enabled = true;
 	return true;
 }
-	
+
 void OSSAudioDevice::resetPlay(void)
 {
 	ioctl(mixer, MIXER_WRITE(SOUND_MIXER_PCM), &volpcm);
-        ioctl(mixer, MIXER_WRITE(SOUND_MIXER_SPEAKER), &volspeaker);
-        ioctl(mixer, MIXER_WRITE(SOUND_MIXER_SYNTH), &volsynth);
-        ioctl(mixer, MIXER_WRITE(SOUND_MIXER_VOLUME), &volline);
+	ioctl(mixer, MIXER_WRITE(SOUND_MIXER_SPEAKER), &volspeaker);
+	ioctl(mixer, MIXER_WRITE(SOUND_MIXER_SYNTH), &volsynth);
+	ioctl(mixer, MIXER_WRITE(SOUND_MIXER_VOLUME), &volline);
 }
 
 void OSSAudioDevice::mutePlay(void)
 {
 	int zero = 0;
 
-        ioctl(mixer, MIXER_WRITE(SOUND_MIXER_PCM), &zero);
-        ioctl(mixer, MIXER_WRITE(SOUND_MIXER_SPEAKER), &zero);
-        ioctl(mixer, MIXER_WRITE(SOUND_MIXER_SYNTH), &zero);
-        ioctl(mixer, MIXER_WRITE(SOUND_MIXER_VOLUME), &zero);
+	ioctl(mixer, MIXER_WRITE(SOUND_MIXER_PCM), &zero);
+	ioctl(mixer, MIXER_WRITE(SOUND_MIXER_SPEAKER), &zero);
+	ioctl(mixer, MIXER_WRITE(SOUND_MIXER_SYNTH), &zero);
+	ioctl(mixer, MIXER_WRITE(SOUND_MIXER_VOLUME), &zero);
 }
 
 void OSSAudioDevice::resetRecord(void)
 {
-	ioctl(mixer, MIXER_WRITE(SOUND_MIXER_MIC), &volmic); 
+	ioctl(mixer, MIXER_WRITE(SOUND_MIXER_MIC), &volmic);
 }
 
 void OSSAudioDevice::enableRecord(void)
 {
 	int level = 0x5c5c;
 
-        ioctl(mixer, MIXER_WRITE(SOUND_MIXER_MIC), &level);
+	ioctl(mixer, MIXER_WRITE(SOUND_MIXER_MIC), &level);
 }
 
 void OSSAudioDevice::disableRecord(void)
@@ -268,8 +264,7 @@ unsigned OSSAudioDevice::putSamples(Linear samples, unsigned count)
 
 	count *= channels;
 
-	if(sendpos)
-	{
+	if(sendpos) {
 		fill = bufsize - sendpos;
 		if(fill > count)
 			fill = count;
@@ -279,9 +274,8 @@ unsigned OSSAudioDevice::putSamples(Linear samples, unsigned count)
 		samples += fill;
 		sendpos += fill;
 	}
- 
-	if(sendpos == bufsize)
-	{
+
+	if(sendpos == bufsize) {
 		sendpos = 0;
 		if(::write(dsp, sendbuf, bufsize * 2) < (ssize_t)(bufsize * 2))
 			return 0;
@@ -289,33 +283,30 @@ unsigned OSSAudioDevice::putSamples(Linear samples, unsigned count)
 	}
 	else if(sendpos)
 		return fill / channels;
-	
+
 	fill = count / bufsize;
-	
-	if(fill)
-	{
+
+	if(fill) {
 		fill *= bufsize;
 		if(::write(dsp, samples, fill * 2) < (ssize_t)(fill * 2))
 			return 0;
 
 		total += (fill / channels);
 	}
-	
-	if(fill)
-	{
+
+	if(fill) {
 		count -= fill;
 		samples += fill;
 	}
-	
-	if(count)
-	{
+
+	if(count) {
 		memcpy(sendbuf, samples, count * 2);
 		sendpos = count;
 		total += (count / channels);
 	}
 
 	return total;
-}	
+}
 
 bool Audio::hasDevice(unsigned index)
 {
@@ -352,8 +343,7 @@ AudioDevice *Audio::getDevice(unsigned index, DeviceMode mode)
 		snprintf(fname, sizeof(fname), "/dev/mixer");
 
 	mixer = ::open(fname, O_RDWR | O_NONBLOCK);
-	if(mixer < 0)
-	{
+	if(mixer < 0) {
 		::close(dsp);
 		return NULL;
 	}

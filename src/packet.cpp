@@ -1,5 +1,5 @@
 // Copyright (C) 2006 David Sugar, Tycho Softworks
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
@@ -43,8 +43,7 @@ using namespace ost;
 AudioPacket::AudioPacket(Info *i, Encoded d)
 {
 	memcpy(&info, i, sizeof(info));
-	if(d)
-	{
+	if(d) {
 		data = new unsigned char [info.framesize];
 		memcpy(data, d, info.framesize);
 	}
@@ -54,8 +53,7 @@ AudioPacket::AudioPacket(Info *i, Encoded d)
 
 AudioPacket::~AudioPacket()
 {
-	if(data)
-	{
+	if(data) {
 		delete[] data;
 		data = NULL;
 	}
@@ -71,8 +69,7 @@ bool AudioPacket::isEmpty(void)
 
 void AudioPacket::setData(Encoded d, unsigned size)
 {
-	if(data)
-	{
+	if(data) {
 		delete[] data;
 		data = NULL;
 	}
@@ -82,8 +79,7 @@ void AudioPacket::setData(Encoded d, unsigned size)
 	else
 		info.framesize = size;
 
-	if(d)
-	{
+	if(d) {
 		data = new unsigned char[size];
 		memcpy(data, d, size);
 	}

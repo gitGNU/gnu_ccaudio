@@ -1,5 +1,5 @@
 // Copyright (C) 1999-2005 Open Source Telecom Corporation.
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
@@ -49,7 +49,7 @@
 #endif
 
 #if defined(_MSC_VER) && _MSC_VER >= 1300
-#if defined(_WIN64) 
+#if defined(_WIN64)
 #define	RLL_SUFFIX ".x64"
 #elif defined(_M_IX86)
 #define	RLL_SUFFIX ".x86"
@@ -152,8 +152,7 @@ void AudioCodec::endCodec(AudioCodec *codec)
 
 bool AudioCodec::load(Encoding e)
 {
-	switch(e)
-	{
+	switch(e) {
 	case mulawAudio:
 	case alawAudio:
 		return load("g.711");
@@ -192,8 +191,7 @@ bool AudioCodec::load(const char *name)
 	unsigned len;
 
 	snprintf(fn, sizeof(fn) - 3, "%s", name);
-	while(*p)
-	{
+	while(*p) {
 		if(*p != '.')
 			*(q++) = *p;
 		++p;
@@ -221,16 +219,14 @@ AudioCodec *AudioCodec::getCodec(Encoding e, const char *format, bool loaded)
 retry:
 	codec = first;
 
-	while(codec)
-	{
+	while(codec) {
 		if(e == codec->encoding)
 			break;
 		codec = codec->next;
 	}
 
 	if(!codec && !loaded)
-		if(load(e))
-		{
+		if(load(e)) {
 			loaded = true;
 			goto retry;
 		}
@@ -250,16 +246,14 @@ AudioCodec *AudioCodec::getCodec(Info &info, bool loaded)
 retry:
 	codec = first;
 
-	while(codec)
-	{
+	while(codec) {
 		if(info.encoding == codec->encoding)
 			break;
 		codec = codec->next;
 	}
 
 	if(!codec && !loaded)
-		if(load(info.encoding))
-		{
+		if(load(info.encoding)) {
 			loaded = true;
 			goto retry;
 		}
@@ -293,8 +287,7 @@ Audio::Level AudioCodec::getImpulse(void *data, unsigned samples)
 	long count = decode(ldata, data, samples);
 
 	samples = count;
-	while(samples--)
-	{
+	while(samples--) {
 		if(*ldata < 0)
 			sum -= *(ldata++);
 		else
@@ -313,8 +306,7 @@ Audio::Level AudioCodec::getPeak(void *data, unsigned samples)
 	long count = decode(ldata, data, samples);
 
 	samples = count;
-	while(samples--)
-	{
+	while(samples--) {
 		value = *(ldata++);
 		if(value < 0)
 			value = -value;

@@ -1,17 +1,17 @@
 // Copyright (C) 1999-2001 Open Source Telecom Corporation.
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with this program; if not, write to the Free Software 
+// along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 #include "audiotool.h"
@@ -55,11 +55,10 @@ void Tool::play(char **argv)
 	Linear buffer;
 	Info info;
 	unsigned bufcount, pages;
-	
+
 	dev = getDevice();
 
-	if(!hasDevice() && !dev)
-	{
+	if(!hasDevice() && !dev) {
 		cerr << "no device supported" << endl;
 		exit(-1);
 	}
@@ -71,21 +70,18 @@ void Tool::play(char **argv)
 
 	playfile.open(argv);
 
-	if(!playfile.isOpen())
-	{
+	if(!playfile.isOpen()) {
 		cerr << "audiotool: " << path << ": unable to access" << endl;
 		exit(-1);
 	}
 
-	if(!playfile.isStreamable())
-	{
+	if(!playfile.isStreamable()) {
 		cerr << "audiotool: " << path << ": missing needed codec" << endl;
 		exit(-1);
 	}
 
 	playfile.getInfo(&info);
-	if(!dev->setAudio((Rate)info.rate, isStereo(info.encoding), 10))
-	{
+	if(!dev->setAudio((Rate)info.rate, isStereo(info.encoding), 10)) {
 		cerr << "audiotool: sound device does not support rate" << endl;
 		exit(-1);
 	}
@@ -111,7 +107,7 @@ void Tool::play(char **argv)
 
 	dev->sync();
 	delete dev;
-	playfile.close();		
+	playfile.close();
 	exit(0);
 }
 

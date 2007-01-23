@@ -1,19 +1,19 @@
 // Copyright (C) 1999-2005 Open Source Telecom Corporation.
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with this program; if not, write to the Free Software 
+// along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-// 
+//
 // As a special exception, you may use this file as part of a free software
 // library without restriction.  Specifically, if other files instantiate
 // templates or use macros or inline functions from this file, or you compile
@@ -70,8 +70,7 @@ static const char * const ErrorStrs[] = {
 AudioCodec *AudioFile::getCodec(void)
 {
 	Encoding e = getEncoding();
-	switch(e)
-	{
+	switch(e) {
 	case alawAudio:
 		return AudioCodec::getCodec(e, "g.711");
 	case mulawAudio:
@@ -93,13 +92,11 @@ AudioCodec *AudioFile::getCodec(void)
 
 void AudioFile::setShort(unsigned char *data, unsigned short val)
 {
-	if(info.order == __BIG_ENDIAN)
-	{
+	if(info.order == __BIG_ENDIAN) {
 		data[0] = val / 256;
 		data[1] = val % 256;
 	}
-	else
-	{
+	else {
 		data[1] = val / 256;
 		data[0] = val % 256;
 	}
@@ -117,8 +114,7 @@ void AudioFile::setLong(unsigned char *data, unsigned long val)
 {
 	int i = 4;
 
-	while(i-- > 0)
-	{
+	while(i-- > 0) {
 		if(info.order == __BIG_ENDIAN)
 			data[i] = (unsigned char)(val & 0xff);
 		else
@@ -132,8 +128,7 @@ unsigned long AudioFile::getLong(unsigned char * data)
 	int i = 4;
 	unsigned long val =0;
 
-	while(i-- > 0)
-	{
+	while(i-- > 0) {
 		if(info.order == __BIG_ENDIAN)
 			val = (val << 8) | data[3 - i];
 		else
@@ -192,7 +187,7 @@ void AudioFile::create(const char *name, Info *myinfo, bool exclusive, timeout_t
 		ext = ".none";
 
 	mode = modeWrite;
-	
+
 	if(!afCreate(name, exclusive))
 		return;
 
@@ -201,14 +196,12 @@ void AudioFile::create(const char *name, Info *myinfo, bool exclusive, timeout_t
 	info.annotation = NULL;
 	pathname = new char[strlen(name) + 1];
 	strcpy(pathname, name);
-	if(myinfo->annotation)
-	{
+	if(myinfo->annotation) {
 		info.annotation = new char[strlen(myinfo->annotation) + 1];
 		strcpy(info.annotation, myinfo->annotation);
 	}
 
-	if(!stricmp(ext, ".raw") || !stricmp(ext, ".bin"))
-	{
+	if(!stricmp(ext, ".raw") || !stricmp(ext, ".bin")) {
 		info.format = raw;
 		if(info.encoding == unknownEncoding)
 			info.encoding = pcm16Mono;
@@ -303,8 +296,7 @@ void AudioFile::create(const char *name, Info *myinfo, bool exclusive, timeout_t
 		info.rate = 44100;
 	}
 
-	switch(info.format)
-	{
+	switch(info.format) {
 	case wave:
 	case riff:
 		/*
@@ -334,8 +326,7 @@ void AudioFile::create(const char *name, Info *myinfo, bool exclusive, timeout_t
 
 		memset(riffhdr + 4, 0xff, 4);
 		strncpy((char *)riffhdr + 8, "WAVE", 4);
-		if(afWrite(riffhdr, 12) != 12)
-		{
+		if(afWrite(riffhdr, 12) != 12) {
 			AudioFile::close();
 			return;
 		}
@@ -358,7 +349,7 @@ void AudioFile::create(const char *name, Info *myinfo, bool exclusive, timeout_t
 		 * (10) 22-23: Number of channels.  Mono = 0x01,
 		 * Stereo = 0x02.
 		 *
-		 * (12) 24-27: Sample rate in samples per second. (8000, 
+		 * (12) 24-27: Sample rate in samples per second. (8000,
 		 * 44100, etc)
 		 *
 		 * (16) 28-31: Bytes per second = SampleRate *
@@ -378,13 +369,13 @@ void AudioFile::create(const char *name, Info *myinfo, bool exclusive, timeout_t
 		 *
 		 * Subchunk 3: Optional 'fact' subchunk for non-PCM formats
 		 * (26) 38-41: WAVE metadata magic 'fact' (0x 66 61 63 74)
-		 * 
+		 *
 		 * (30) 42-45: Length of 'fact' subchunk, not
 		 * including this field and the fact
 		 * identification field (usually 4)
 		 *
 		 * (34) 46-49: ??? sndrec32.exe outputs 0x 00 00 00 00
-		 * here.  See 
+		 * here.  See
 		 * http://www.health.uottawa.ca/biomech/csb/ARCHIVES/riff-for.txt
 		 *
 		 */
@@ -409,8 +400,7 @@ void AudioFile::create(const char *name, Info *myinfo, bool exclusive, timeout_t
 		setShort(riffhdr + 20, (snd16_t)toBytes(info, 1));
 		setShort(riffhdr + 22, 0);
 
-		switch(info.encoding)
-		{
+		switch(info.encoding) {
 		case pcm8Mono:
 		case pcm8Stereo:
 			setShort(riffhdr + 22, 8);
@@ -477,28 +467,26 @@ void AudioFile::create(const char *name, Info *myinfo, bool exclusive, timeout_t
 			strncpy((char *)(riffhdr + 26), "fact", 4);
 			setLong(riffhdr + 30, 4);
 			setLong(riffhdr + 34, 0);
-			if(afWrite(riffhdr, 38) != 38)
-			{
+			if(afWrite(riffhdr, 38) != 38) {
 				AudioFile::close();
 				return;
 			}
 		}
 		else {
-			if(afWrite(riffhdr, 24) != 24)
-			{
+			if(afWrite(riffhdr, 24) != 24) {
 				AudioFile::close();
 				return;
 			}
 		}
-		
-		/* 
+
+		/*
 		 * Subchunk 2: data subchunk
 		 *
 		 * Length: 8+
 		 *
 		 * (0) 36-39: data subchunk magic "data" (0x 64 61 74 61)
 		 *
-		 * (4) 40-43: subchunk 2 size = 
+		 * (4) 40-43: subchunk 2 size =
 		 * NumSamples * NumChannels * (BitsPerSample / 8)
 		 * Note that this does not include the size of this
 		 * field and the previous one.
@@ -509,12 +497,11 @@ void AudioFile::create(const char *name, Info *myinfo, bool exclusive, timeout_t
 		memset(riffhdr, 0, sizeof(riffhdr));
 		strncpy((char *)riffhdr, "data", 4);
 		memset(riffhdr + 4, 0xff, 4);
-		if(afWrite(riffhdr, 8) != 8)
-		{
+		if(afWrite(riffhdr, 8) != 8) {
 			AudioFile::close();
 			return;
 		}
-		
+
 		header = getAbsolutePosition();
 		length = getAbsolutePosition();
 		break;
@@ -535,8 +522,7 @@ void AudioFile::create(const char *name, Info *myinfo, bool exclusive, timeout_t
 			setLong(aufile + 4, 24);
 		header = getLong(aufile + 4);
 		setLong(aufile + 8, ~0l);
-		switch(info.encoding)
-		{
+		switch(info.encoding) {
 		case pcm8Stereo:
 		case pcm8Mono:
 			setLong(aufile + 12, 2);
@@ -579,8 +565,7 @@ void AudioFile::create(const char *name, Info *myinfo, bool exclusive, timeout_t
 			setLong(aufile + 20, 1);
 		else
 			setLong(aufile + 20, 2);
-		if(afWrite(aufile, 24) != 24)
-		{
+		if(afWrite(aufile, 24) != 24) {
 			AudioFile::close();
 			return;
 		}
@@ -597,7 +582,7 @@ void AudioFile::create(const char *name, Info *myinfo, bool exclusive, timeout_t
 	}
 	if(framing)
 		info.setFraming(framing);
-	else	
+	else
 		info.set();
 }
 
@@ -610,20 +595,17 @@ void AudioFile::getWaveFormat(int request)
 	if(request > 24)
 		request = 24;
 
-	if(!afPeek(filehdr, request))
-	{
+	if(!afPeek(filehdr, request)) {
 		AudioFile::close();
 		return;
 	}
 	channels = getShort(filehdr + 2);
 	info.rate = getLong(filehdr + 4);
 
-	switch(getShort(filehdr))
-	{
+	switch(getShort(filehdr)) {
 	case 1:
 		bitsize = getShort(filehdr + 14);
-		switch(bitsize)
-		{
+		switch(bitsize) {
 		case 8:
 			if(channels > 1)
 				info.encoding = pcm8Stereo;
@@ -631,8 +613,7 @@ void AudioFile::getWaveFormat(int request)
 				info.encoding = pcm8Mono;
 			break;
 		case 16:
-			if(info.rate == 44100)
-			{
+			if(info.rate == 44100) {
 				if(channels > 1)
 					info.encoding = cdaStereo;
 				else
@@ -693,12 +674,11 @@ void AudioFile::open(const char *name, Mode m, timeout_t framing)
 	unsigned int count;
 	char *ext;
 	unsigned channels;
-	mpeg_audio *mp3 = (mpeg_audio *)&filehdr;	
+	mpeg_audio *mp3 = (mpeg_audio *)&filehdr;
 	mode = m;
 
 
-	while(!afOpen(name, m))
-	{
+	while(!afOpen(name, m)) {
 		if(mode == modeReadAny || mode == modeReadOne)
 			name = getContinuation();
 		else
@@ -722,8 +702,7 @@ void AudioFile::open(const char *name, Mode m, timeout_t framing)
 		goto done;
 
 	info.encoding = Audio::getEncoding(ext);
-	switch(info.encoding)
-	{
+	switch(info.encoding) {
 	case cdaStereo:
 		info.order = __LITTLE_ENDIAN;
 		break;
@@ -731,40 +710,34 @@ void AudioFile::open(const char *name, Mode m, timeout_t framing)
 		info.encoding = mulawAudio;
 	default:
 		break;
-	}		
+	}
 
 	strcpy((char *)filehdr, ".xxx");
 
-	if(!afPeek(filehdr, 24))
-	{
+	if(!afPeek(filehdr, 24)) {
 		AudioFile::close();
 		return;
 	}
 
-	if(!strncmp((char *)filehdr, "RIFF", 4))
-	{
+	if(!strncmp((char *)filehdr, "RIFF", 4)) {
 		info.format = riff;
 		info.order = __LITTLE_ENDIAN;
 	}
 
-	if(!strncmp((char *)filehdr, "RIFX", 4))
-	{
+	if(!strncmp((char *)filehdr, "RIFX", 4)) {
 		info.order = __BIG_ENDIAN;
 		info.format = riff;
 	}
 
-	if(!strncmp((char *)filehdr + 8, "WAVE", 4) && info.format == riff)
-	{
+	if(!strncmp((char *)filehdr + 8, "WAVE", 4) && info.format == riff) {
 		header = 12;
 		for(;;)
 		{
-			if(!afSeek(header))
-			{
+			if(!afSeek(header)) {
 				AudioFile::close();
 				return;
 			}
-			if(!afPeek(filehdr, 8))
-			{
+			if(!afPeek(filehdr, 8)) {
 				AudioFile::close();
 				return;
 			}
@@ -781,16 +754,14 @@ void AudioFile::open(const char *name, Mode m, timeout_t framing)
 		afSeek(header);
 		goto done;
 	}
-	if(!strncmp((char *)filehdr, ".snd", 4))
-	{
+	if(!strncmp((char *)filehdr, ".snd", 4)) {
 		info.format = snd;
 		info.order = __BIG_ENDIAN;
 		header = getLong(filehdr + 4);
 		info.rate = getLong(filehdr + 16);
 		channels = getLong(filehdr + 20);
 
-		switch(getLong(filehdr + 12))
-		{
+		switch(getLong(filehdr + 12)) {
 		case 2:
 			if(channels > 1)
 				info.encoding = pcm8Stereo;
@@ -798,8 +769,7 @@ void AudioFile::open(const char *name, Mode m, timeout_t framing)
 				info.encoding = pcm8Mono;
 			break;
 		case 3:
-			if(info.rate == 44100)
-			{
+			if(info.rate == 44100) {
 				if(channels > 1)
 					info.encoding = cdaStereo;
 				else
@@ -841,8 +811,7 @@ void AudioFile::open(const char *name, Mode m, timeout_t framing)
 		default:
 			info.encoding = unknownEncoding;
 		}
-		if(header > 24)
-		{
+		if(header > 24) {
 			info.annotation = new char[header - 24];
 			afSeek(24);
 			afRead((unsigned char *)info.annotation, header - 24);
@@ -850,8 +819,7 @@ void AudioFile::open(const char *name, Mode m, timeout_t framing)
 		goto done;
 	}
 
-	if(!strnicmp((char *)filehdr, "ID3", 3))
-	{
+	if(!strnicmp((char *)filehdr, "ID3", 3)) {
 		afSeek(10);
 		info.order = __BIG_ENDIAN;
 		header = 10;
@@ -866,9 +834,9 @@ void AudioFile::open(const char *name, Mode m, timeout_t framing)
 		afRead(filehdr, 4);
 		goto mp3;
 	}
-		
+
 	if(mp3->mp_sync1 == 0xff && mp3->mp_sync2 == 0x07)
-		goto mp3; 
+		goto mp3;
 	else
 		afSeek(0);
 
@@ -890,8 +858,7 @@ done:
 	else
 		info.set();
 
-	if(mode == modeFeed)
-	{
+	if(mode == modeFeed) {
 		setPosition();
 		iolimit = (unsigned long)toBytes(info, getPosition());
 		setPosition(0);
@@ -906,8 +873,7 @@ void AudioFile::mp3info(mpeg_audio *mp3)
 	if(mp3->mp_pad)
 		info.padding = 1;
 
-	switch(mp3->mp_layer)
-	{
+	switch(mp3->mp_layer) {
 	case 0x03:
 		if(mp3->mp_pad)
 			info.padding = 4;
@@ -921,12 +887,10 @@ void AudioFile::mp3info(mpeg_audio *mp3)
 		break;
 	}
 
-	switch(mp3->mp_ver)
-	{
+	switch(mp3->mp_ver) {
 	case 0x03:
 		info.bitrate = 32000;
-		switch(mp3->mp_srate)
-		{
+		switch(mp3->mp_srate) {
 		case 00:
 			info.rate = 44100;
 			break;
@@ -936,20 +900,18 @@ void AudioFile::mp3info(mpeg_audio *mp3)
 		case 02:
 			info.rate = 32000;
 		}
-		switch(mp3->mp_layer)
-		{
+		switch(mp3->mp_layer) {
 		case 0x03:
 			info.bitrate = 32000 * mp3->mp_brate;
 			break;
 		case 0x02:
 			if(mp3->mp_brate < 8)
 				info.bitrate = 16000 * (mp3->mp_brate + 1);
-			else	
-				info.bitrate = 32000 * (mp3->mp_brate - 4); 
+			else
+				info.bitrate = 32000 * (mp3->mp_brate - 4);
 			break;
 		case 0x01:
-			switch(mp3->mp_brate)
-			{
+			switch(mp3->mp_brate) {
 			case 0x02:
 				info.bitrate = 40000;
 				break;
@@ -990,12 +952,11 @@ void AudioFile::mp3info(mpeg_audio *mp3)
 				info.bitrate = 320000;
 				break;
 			}
-			break;	
+			break;
 		}
 		break;
 	case 0x00:
-		switch(mp3->mp_srate)
-		{
+		switch(mp3->mp_srate) {
 		case 00:
 			info.rate = 11025;
 			break;
@@ -1007,10 +968,8 @@ void AudioFile::mp3info(mpeg_audio *mp3)
 			break;
 		}
 	case 0x02:
-		if(mp3->mp_ver == 0x02)
-		{
-			switch(mp3->mp_srate)
-			{
+		if(mp3->mp_ver == 0x02) {
+			switch(mp3->mp_srate) {
 			case 00:
 				info.rate = 22050;
 				break;
@@ -1022,8 +981,7 @@ void AudioFile::mp3info(mpeg_audio *mp3)
 				break;
 			}
 		}
-		switch(mp3->mp_layer)
-		{
+		switch(mp3->mp_layer) {
 		case 0x03:
 			if(mp3->mp_brate < 0x0d)
 				info.bitrate = 16000 * (mp3->mp_brate + 1);
@@ -1061,7 +1019,7 @@ void Audio::Info::setRate(Rate r)
 {
 	rate = getRate(encoding, r);
 	set();
-}	
+}
 
 void Audio::Info::setFraming(timeout_t timeout)
 {
@@ -1072,8 +1030,7 @@ void Audio::Info::setFraming(timeout_t timeout)
 	if(!timeout)
 		return;
 
-	if(framing)
-	{
+	if(framing) {
 		timeout = (timeout / framing);
 		if(!timeout)
 			timeout = framing;
@@ -1081,8 +1038,7 @@ void Audio::Info::setFraming(timeout_t timeout)
 			timeout = timeout * framing;
 	}
 
-	switch(timeout)
-	{
+	switch(timeout) {
 	case 10:
 	case 15:
 	case 20:
@@ -1101,8 +1057,7 @@ void Audio::Info::setFraming(timeout_t timeout)
 void Audio::Info::set(void)
 {
 
-	switch(encoding)
-	{
+	switch(encoding) {
 	case mp1Audio:
 		framecount = 384;
 		framesize = (12 * bitrate / rate) * 4 + headersize + padding;
@@ -1139,8 +1094,7 @@ void AudioFile::close(void)
 	if(! isOpen())
 		return;
 
-	if(mode != modeWrite)
-	{
+	if(mode != modeWrite) {
 		afClose();
 		clear();
 		return;
@@ -1150,7 +1104,7 @@ void AudioFile::close(void)
 		afClose();
 		clear();
 		return;
-	}	
+	}
 
 	if(-1 == afRead(buf, 58)) {
 		afClose();
@@ -1165,15 +1119,14 @@ void AudioFile::close(void)
 	case wave:
 #ifndef	WIN32
 		fstat(file.fd, &ino);
-		length = ino.st_size;		
+		length = ino.st_size;
 #endif
 		// RIFF header
 		setLong(buf + 4, length - 8);
 
 		// If it's a non-PCM datatype, the offsets are a bit
 		// different for subchunk 2.
-		switch(info.encoding)
-		{
+		switch(info.encoding) {
 		case cdaStereo:
 		case cdaMono:
 		case pcm8Stereo:
@@ -1207,14 +1160,12 @@ void AudioFile::close(void)
 
 void AudioFile::clear(void)
 {
-	if(pathname)
-	{
+	if(pathname) {
 		if(pathname)
 			delete[] pathname;
 		pathname = NULL;
 	}
-	if(info.annotation)
-	{
+	if(info.annotation) {
 		if(info.annotation)
 			delete[] info.annotation;
 		info.annotation = NULL;
@@ -1264,8 +1215,7 @@ unsigned AudioFile::getLinear(Linear addr, unsigned samples)
 	if(!samples)
 		samples = info.framecount;
 
-	if(getEncoding() == pcm16Mono)
-	{
+	if(getEncoding() == pcm16Mono) {
 		count = getNative((Encoded)addr, samples * 2);
 		if(count < 0)
 			return 0;
@@ -1282,8 +1232,7 @@ unsigned AudioFile::getLinear(Linear addr, unsigned samples)
 
 	Encoded buffer = new unsigned char[count];
 	count = getBuffer(buffer, count);
-	if(count < 1)
-	{
+	if(count < 1) {
 		delete[] buffer;
 		return 0;
 	}
@@ -1302,8 +1251,7 @@ unsigned AudioFile::putLinear(Linear addr, unsigned samples)
 	if(!samples)
 		samples = info.framecount;
 
-	if(getEncoding() == pcm16Mono)
-	{
+	if(getEncoding() == pcm16Mono) {
 		count = putNative((Encoded)addr, samples * 2);
 		if(count < 0)
 			return 0;
@@ -1320,8 +1268,7 @@ unsigned AudioFile::putLinear(Linear addr, unsigned samples)
 	Encoded buffer = new unsigned char[count];
 
 	samples = codec->encode(addr, buffer, samples);
-	if(samples < 1)
-	{
+	if(samples < 1) {
 		delete[] buffer;
 		return 0;
 	}
@@ -1342,47 +1289,43 @@ ssize_t AudioFile::getBuffer(Encoded addr, size_t bytes)
 	unsigned long curpos, xfer = 0;
 	mpeg_audio *mp3 = (mpeg_audio *)addr;
 
-	if(!bytes && info.format == mpeg)
-	{
+	if(!bytes && info.format == mpeg) {
 rescan:
 		count = afRead(addr, 4);
 		if(count < 0)
 			return count;
 		if(count < 4)
 			return 0;
-		if(mp3->mp_sync1 != 0xff || mp3->mp_sync2 != 0x07)
-		{
+		if(mp3->mp_sync1 != 0xff || mp3->mp_sync2 != 0x07) {
 			afSeek(getAbsolutePosition() - 3);
 			goto rescan;
-		}	
+		}
 		mp3info(mp3);
 		count = afRead(addr + 4, info.framesize - 4);
 		if(count > 0)
 			count += 4;
 		return count;
 	}
-			
+
 	if(!bytes)
 		bytes = info.framesize;
 
-    curpos = (unsigned long)toBytes(info, getPosition());
-	if(curpos >= iolimit && mode == modeFeed)
-	{
+	curpos = (unsigned long)toBytes(info, getPosition());
+	if(curpos >= iolimit && mode == modeFeed) {
 		curpos = 0;
 		setPosition(0);
 	}
-        if (iolimit && ((curpos + bytes) > iolimit))
-                bytes = iolimit - curpos;
-        if (bytes < 0)
-                bytes = 0;
+	if (iolimit && ((curpos + bytes) > iolimit))
+		bytes = iolimit - curpos;
+	if (bytes < 0)
+		bytes = 0;
 
 	getInfo(&prior);
 
 	for(;;)
 	{
 		count = afRead(addr, (unsigned)bytes);
-		if(count < 0)
-		{
+		if(count < 0) {
 			if(!xfer)
 				return count;
 			return xfer;
@@ -1390,8 +1333,7 @@ rescan:
 		xfer += count;
 		if(count == (int)bytes)
 			return xfer;
-		if(mode == modeFeed)
-		{
+		if(mode == modeFeed) {
 			setPosition(0l);
 			goto cont;
 		}
@@ -1406,15 +1348,13 @@ retry:
 			return xfer;
 		AudioFile::close();
 		AudioFile::open(fname, modeRead, info.framing);
-		if(!isOpen())
-		{
+		if(!isOpen()) {
 			if(mode == modeReadAny)
 				goto retry;
 			return xfer;
 		}
 
-		if(prior.encoding != info.encoding)
-		{
+		if(prior.encoding != info.encoding) {
 			AudioFile::close();
 			return xfer;
 		}
@@ -1445,16 +1385,14 @@ Audio::Error AudioFile::getSamples(void *addr, unsigned request)
 		if(count < 0)
 			return errReadFailure;
 
-		if(count > 0)
-		{
+		if(count > 0) {
 			caddr += count;
 			count = request - toSamples(info.encoding, count);
 		}
 		else
 			count = request;
 
-		if(mode == modeFeed)
-		{
+		if(mode == modeFeed) {
 			setPosition(0);
 			request = count;
 			continue;
@@ -1471,8 +1409,7 @@ retry:
 
 		AudioFile::close();
 		AudioFile::open(fname, modeRead);
-		if(!isOpen())
-		{
+		if(!isOpen()) {
 			if(mode == modeReadAny)
 				goto retry;
 			break;
@@ -1491,8 +1428,7 @@ ssize_t AudioFile::putBuffer(Encoded addr, size_t len)
 	unsigned long curpos;
 	mpeg_audio *mp3 = (mpeg_audio *)addr;
 
-	if(!len && info.format == mpeg)
-	{
+	if(!len && info.format == mpeg) {
 		mp3info(mp3);
 		len = info.framesize;
 	}
@@ -1501,17 +1437,16 @@ ssize_t AudioFile::putBuffer(Encoded addr, size_t len)
 		len = info.framesize;
 
 	curpos = (unsigned long)toBytes(info, getPosition());
-        if(curpos >= iolimit && mode == modeFeed)
-        {
-                curpos = 0;
-                setPosition(0);
-        }
+	if(curpos >= iolimit && mode == modeFeed) {
+		curpos = 0;
+		setPosition(0);
+	}
 
-        if (iolimit && ((curpos + len) > iolimit))
-                len = iolimit - curpos;
+	if (iolimit && ((curpos + len) > iolimit))
+		len = iolimit - curpos;
 
-        if (len <= 0)
-		return 0;  
+	if (len <= 0)
+		return 0;
 
 	count = afWrite((unsigned char *)addr, (unsigned)len);
 	if(count == (int)len) {
@@ -1570,8 +1505,7 @@ Audio::Error AudioFile::setLimit(unsigned long samples)
 	if(!isOpen())
 		return setError(errNotOpened);
 
-	if(!samples)
-	{
+	if(!samples) {
 		iolimit = 0;
 		return errSuccess;
 	}
@@ -1583,16 +1517,14 @@ Audio::Error AudioFile::setLimit(unsigned long samples)
 
 bool AudioFile::isSigned(void)
 {
-	switch(info.format)
-	{
+	switch(info.format) {
 	case snd:
 		return false;
 	default:
 		break;
 	}
 
-	switch(info.encoding)
-	{
+	switch(info.encoding) {
 	case pcm8Mono:
 	case pcm8Stereo:
 	case pcm16Mono:
@@ -1620,6 +1552,6 @@ void AudioFile::getPosition(char *timestamp, size_t size)
 	pos /= info.framecount;
 	toTimestamp(pos * info.framing, timestamp, size);
 }
-	
-	
+
+
 

@@ -1,17 +1,17 @@
 // Copyright (C) 1999-2005 Open Source Telecom Corporation.
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with this program; if not, write to the Free Software 
+// along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
 // As a special exception, you may use this file as part of a free software
@@ -19,9 +19,9 @@
 // templates or use macros or inline functions from this file, or you compile
 // this file and link it with other files to produce an executable, this
 // file does not by itself cause the resulting executable to be covered by
-// the GNU General Public License.  This exception does not however    
+// the GNU General Public License.  This exception does not however
 // invalidate any other reasons why the executable file might be covered by
-// the GNU General Public License.    
+// the GNU General Public License.
 //
 // This exception applies only to the code released under the name GNU
 // ccAudio.  If you copy code from other releases into a copy of GNU
@@ -49,7 +49,7 @@
 #define CCXX_PACKED
 #elif !defined(__hpux) && !defined(_AIX)
 #define CCXX_PACKED
-#endif 
+#endif
 #endif
 
 #ifndef	W32
@@ -125,15 +125,13 @@ public:
 
 	static const unsigned ndata;
 
-	typedef struct
-	{
+	typedef struct {
 	float v2;
 		float v3;
 		float fac;
 	} goertzel_state_t;
 
-	typedef struct
-	{
+	typedef struct {
 		int hit1;
 		int hit2;
 		int hit3;
@@ -157,8 +155,7 @@ public:
 		int fax_hits;
 	} dtmf_detect_state_t;
 
-	typedef struct
-	{
+	typedef struct {
 		float fac;
 	} tone_detection_descriptor_t;
 
@@ -167,8 +164,7 @@ public:
 	/**
 	 * Audio encoding rate, samples per second.
 	 */
-	enum	Rate
-	{
+	enum	Rate {
 		rateUnknown,
 		rate6khz = 6000,
 		rate8khz = 8000,
@@ -182,8 +178,7 @@ public:
 	/**
 	 * File processing mode, whether to skip missing files, etc.
 	 */
-	enum	Mode
-	{
+	enum	Mode {
 		modeRead,
 		modeReadAny,
 		modeReadOne,
@@ -201,8 +196,7 @@ public:
 	/**
 	 * Audio encoding formats.
 	 */
-	enum	Encoding
-	{
+	enum	Encoding {
 		unknownEncoding = 0,
 		g721ADPCM,
 		g722Audio,
@@ -252,8 +246,7 @@ public:
 	/**
 	 * Audio container file format.
 	 */
-	enum Format
-	{
+	enum Format {
 		raw,
 		snd,
 		riff,
@@ -265,8 +258,7 @@ public:
 	/**
 	 * Audio device access mode.
 	 */
-	enum DeviceMode
-	{
+	enum DeviceMode {
 		PLAY,
 		RECORD,
 		PLAYREC
@@ -276,8 +268,7 @@ public:
 	/**
 	 * Audio error conditions.
 	 */
-	enum Error
-	{
+	enum Error {
 		errSuccess = 0,
 		errReadLast,
 		errNotOpened,
@@ -306,8 +297,7 @@ public:
 #pragma pack(1)
 #endif
 
-	typedef	struct 
-	{
+	typedef	struct {
 #if	__BYTE_ORDER == __LITTLE_ENDIAN
 		unsigned char mp_sync1 : 8;
 		unsigned char mp_crc   : 1;
@@ -327,28 +317,27 @@ public:
 		unsigned char mp_channels : 2;
 
 #else
-                unsigned char mp_sync1 : 8;
+		unsigned char mp_sync1 : 8;
 
-                unsigned char mp_sync2 : 3;
-                unsigned char mp_ver   : 2;
-                unsigned char mp_layer : 2;
-                unsigned char mp_crc   : 1;
+		unsigned char mp_sync2 : 3;
+		unsigned char mp_ver   : 2;
+		unsigned char mp_layer : 2;
+		unsigned char mp_crc   : 1;
 
-                unsigned char mp_brate : 4;
-                unsigned char mp_srate : 2;
-                unsigned char mp_pad   : 1;
-                unsigned char mp_priv  : 1;
+		unsigned char mp_brate : 4;
+		unsigned char mp_srate : 2;
+		unsigned char mp_pad   : 1;
+		unsigned char mp_priv  : 1;
 
-                unsigned char mp_channels : 2;
-                unsigned char mp_extend   : 2;
-                unsigned char mp_copyright : 1;
-                unsigned char mp_original : 1;
-                unsigned char mp_emp : 2;
+		unsigned char mp_channels : 2;
+		unsigned char mp_extend   : 2;
+		unsigned char mp_copyright : 1;
+		unsigned char mp_original : 1;
+		unsigned char mp_emp : 2;
 #endif
 	}	mpeg_audio;
 
-	typedef struct
-	{
+	typedef struct {
 		char tag_id[3];
 		char tag_title[30];
 		char tag_artist[30];
@@ -411,7 +400,7 @@ public:
 
 	/**
 	 * Get a audio device object that can be used to play or record
-	 * audio.  This is normally a local soundcard, though an 
+	 * audio.  This is normally a local soundcard, though an
 	 * abstract base class is returned, so the underlying device may
 	 * be different.
 	 *
@@ -448,7 +437,7 @@ public:
 
 	/**
 	 * Get the preferred file extension name to use for a given
-	 * audio encoding type.  
+	 * audio encoding type.
 	 *
 	 * @param encoding format.
 	 * @return ascii file extension to use.
@@ -593,16 +582,16 @@ public:
 	 */
 	static void swapEncoded(Info &info, Encoded data, size_t bytes);
 
-       /**
-         * Optionally swap endian of audio data if the audio source
+	   /**
+	 * Optionally swap endian of audio data if the audio source
 	 * description byte order is different from the machine's native
 	 * endian byte order.
-         *
-         * @return true if endian format was different.
-         * @param info source description object of data.
-         * @param buffer of audio data.
-         * @param number of audio samples.
-         */
+	 *
+	 * @return true if endian format was different.
+	 * @param info source description object of data.
+	 * @param buffer of audio data.
+	 * @param number of audio samples.
+	 */
 	static bool swapEndian(Info &info, void *buffer, unsigned number);
 
 	/**
@@ -615,18 +604,18 @@ public:
 	 */
 	static Level getImpulse(Encoding encoding, void *buffer, unsigned number);
 
-        /**
-         * Get the energey impulse level of a frame of audio data.
-         *
-         * @return impulse energy level of audio data.
-         * @param info encoding source description object.
-         * @param buffer of audio data to examine.
-         * @param number of audio samples to examine.
-         */
+	/**
+	 * Get the energey impulse level of a frame of audio data.
+	 *
+	 * @return impulse energy level of audio data.
+	 * @param info encoding source description object.
+	 * @param buffer of audio data to examine.
+	 * @param number of audio samples to examine.
+	 */
 	static Level getImpulse(Info &info, void *buffer, unsigned number = 0);
 
 	/**
-	 * Get the peak (highest energy) level found in a frame of audio 
+	 * Get the peak (highest energy) level found in a frame of audio
 	 * data.
 	 *
 	 * @return peak energy level found in data.
@@ -634,18 +623,18 @@ public:
 	 * @param buffer of audio data.
 	 * @param number of samples to examine.
 	 */
-        static Level getPeak(Encoding encoding, void *buffer, unsigned number);
+	static Level getPeak(Encoding encoding, void *buffer, unsigned number);
 
 	/**
-         * Get the peak (highest energy) level found in a frame of audio
-         * data.
-         *
-         * @return peak energy level found in data.
-         * @param info description object of audio data.
-         * @param buffer of audio data.
-         * @param number of samples to examine.
-         */
-        static Level getPeak(Info &info, void *buffer, unsigned number = 0);
+	 * Get the peak (highest energy) level found in a frame of audio
+	 * data.
+	 *
+	 * @return peak energy level found in data.
+	 * @param info description object of audio data.
+	 * @param buffer of audio data.
+	 * @param number of samples to examine.
+	 */
+	static Level getPeak(Info &info, void *buffer, unsigned number = 0);
 
 	/**
 	 * Provide ascii timestamp representation of a timeout value.
@@ -712,14 +701,14 @@ public:
 	 */
 	static unsigned long toSamples(Encoding encoding, size_t bytes);
 
-        /**
-         * Compute byte counts of audio data into number of samples
-         * based on the audio source description used.
-         *
-         * @return number of audio samples in specified data.
-         * @param info encoding source description.
-         * @param bytes of data.
-         */
+	/**
+	 * Compute byte counts of audio data into number of samples
+	 * based on the audio source description used.
+	 *
+	 * @return number of audio samples in specified data.
+	 * @param info encoding source description.
+	 * @param bytes of data.
+	 */
 	static unsigned long toSamples(Info &info, size_t bytes);
 
 	/**
@@ -732,14 +721,14 @@ public:
 	 */
 	static size_t toBytes(Info &info, unsigned long number);
 
-        /**
-         * Compute the number of bytes a given number of samples in
-         * a given audio encoding will occupy.
-         *
-         * @return number of bytes samples will occupy.
-         * @param encoding format.
-         * @param number of samples.
-         */
+	/**
+	 * Compute the number of bytes a given number of samples in
+	 * a given audio encoding will occupy.
+	 *
+	 * @return number of bytes samples will occupy.
+	 * @param encoding format.
+	 * @param number of samples.
+	 */
 	static size_t toBytes(Encoding encoding, unsigned long number);
 
 	/**
@@ -813,7 +802,7 @@ protected:
 
 	/**
 	 * Set the frame to silent.
-	 */	
+	 */
 	void silence(void);
 
 	/**
@@ -875,7 +864,7 @@ public:
 	 *
 	 * @return pointer to samples.
 	 */
-	virtual Linear getFrame(void);	
+	virtual Linear getFrame(void);
 
 	/**
 	 * This is used to copy one or more pages of framed audio
@@ -913,7 +902,7 @@ public:
 	 * @param duration of frame in milliseconds.
 	 * @param sample rate being generated.
 	 */
-	AudioTone(unsigned f1, unsigned f2, Level l1, Level l2, 
+	AudioTone(unsigned f1, unsigned f2, Level l1, Level l2,
 		timeout_t duration = 20, Rate sample = rate8khz);
 
 	/**
@@ -924,7 +913,7 @@ public:
 	 * @param duration of frame in milliseconds.
 	 * @param sample rate being generated.
 	 */
-	AudioTone(unsigned freq, Level level, timeout_t duration = 20, Rate sample = rate8khz); 
+	AudioTone(unsigned freq, Level level, timeout_t duration = 20, Rate sample = rate8khz);
 
 	virtual ~AudioTone();
 };
@@ -964,7 +953,7 @@ public:
 	 * @return audio encoding of this object.
 	 */
 	inline Encoding getEncoding(void)
-        	{return info.encoding;};
+		{return info.encoding;};
 
 	/**
 	 * Generic sample rate.
@@ -972,7 +961,7 @@ public:
 	 * @return audio sample rate of this object.
 	 */
 	inline unsigned getSampleRate(void)
-        	{return info.rate;};
+		{return info.rate;};
 
 	/**
 	 * Abstract interface to put raw data.
@@ -993,13 +982,13 @@ public:
 	 */
 	ssize_t putNative(Encoded data, size_t size);
 
-        /**
-         * Abstract interface to get raw data.
-         *
+	/**
+	 * Abstract interface to get raw data.
+	 *
 	 * @return data received in buffer.
-         * @param data to get.
-         * @param size of data to get.
-         */
+	 * @param data to get.
+	 * @param size of data to get.
+	 */
 	virtual ssize_t getBuffer(Encoded data, size_t size) = 0;
 
 	/**
@@ -1031,8 +1020,8 @@ public:
 class __EXPORT AudioBuffer : public AudioBase
 {
 public:
-        AudioBuffer(Info *info, size_t size = 4096);
-        virtual ~AudioBuffer();
+	AudioBuffer(Info *info, size_t size = 4096);
+	virtual ~AudioBuffer();
 
 	/**
 	 * save audio data from buffer data.
@@ -1041,7 +1030,7 @@ public:
 	 * @param data save buffer.
 	 * @param number of bytes to save.
 	 */
-        ssize_t getBuffer(Encoded data, size_t number);
+	ssize_t getBuffer(Encoded data, size_t number);
 
 	/**
 	 * Put data into the audio buffer.
@@ -1050,11 +1039,11 @@ public:
 	 * @param data of data to load.
 	 * @param number of bytes to load.
 	 */
-        ssize_t putBuffer(Encoded data, size_t number);
+	ssize_t putBuffer(Encoded data, size_t number);
 
 private:
-        char *buf;
-        size_t size, start, len;
+	char *buf;
+	size_t size, start, len;
 	void *mutexObject;
 
 	void enter(void);
@@ -1082,8 +1071,7 @@ protected:
 	void getWaveFormat(int size);
 	void mp3info(mpeg_audio *mp3);
 
-	union
-	{
+	union {
 		int fd;
 		void *handle;
 	} file;
@@ -1111,10 +1099,10 @@ protected:
 	 */
 	virtual int afRead(unsigned char *data, unsigned size);
 
-	/** 
+	/**
 	 * Write a number of bytes into the file at the current file
 	 * pointer.  May be overridden by derived classes.
-	 * 
+	 *
 	 * @param data A pointer to the buffer with the bytes to write.
 	 * @param size The number of bytes to write from the buffer.
 	 * @return The number of bytes written, or -1 if an error
@@ -1129,7 +1117,7 @@ protected:
 	 * file and set the file pointer.  This does not use 64-bit
 	 * clean seek functions, so seeking to positions greater than
 	 * (2^32)-1 will result in undefined behavior.
-	 * 
+	 *
 	 * @param pos The position to seek to.
 	 * @return true if successful, false otherwise.
 	 */
@@ -1142,7 +1130,7 @@ protected:
 
 	/**
 	 * This function is used to splice multiple audio files together
-	 * into a single stream of continues audio data.  The 
+	 * into a single stream of continues audio data.  The
 	 * continuation method returns the next audio file to open.
 	 *
 	 * @return next file to open or NULL when done.
@@ -1191,24 +1179,24 @@ protected:
 	 */
 	void setShort(unsigned char *data, unsigned short value);
 
-        /**
-         * Convert binary 4 byte data stored in the order specified
-         * in the source description into a long variable.  This is
-         * often used to manipulate header data.
-         *
-         * @return long value.
-         * @param data binary 4 byte data pointer.
-         */
+	/**
+	 * Convert binary 4 byte data stored in the order specified
+	 * in the source description into a long variable.  This is
+	 * often used to manipulate header data.
+	 *
+	 * @return long value.
+	 * @param data binary 4 byte data pointer.
+	 */
 	unsigned long getLong(unsigned char *data);
 
-        /**
-         * Save a long as four byte binary data stored in the endian
-         * order specified in the source description.  This is often
-         * used to manipulate header data.
-         *
-         * @param data binary 4 byte data pointer.
-         * @param value to convert.
-         */
+	/**
+	 * Save a long as four byte binary data stored in the endian
+	 * order specified in the source description.  This is often
+	 * used to manipulate header data.
+	 *
+	 * @param data binary 4 byte data pointer.
+	 * @param value to convert.
+	 */
 	void setLong(unsigned char *data, unsigned long value);
 
 public:
@@ -1329,15 +1317,15 @@ public:
 	 */
 	ssize_t putBuffer(Encoded buffer, size_t len = 0);
 
-        /**
-         * Convert and store content from linear encoded audio data
-         * to the format of the audio file.
-         *
-         * @param buffer to copy linear data from.
-         * @param request Number of linear samples to save or 0 for frame.
-         * @return number of samples saved, 0 if no codec or eof.
-         */
-        unsigned putLinear(Linear buffer, unsigned request = 0);
+	/**
+	 * Convert and store content from linear encoded audio data
+	 * to the format of the audio file.
+	 *
+	 * @param buffer to copy linear data from.
+	 * @param request Number of linear samples to save or 0 for frame.
+	 * @return number of samples saved, 0 if no codec or eof.
+	 */
+	unsigned putLinear(Linear buffer, unsigned request = 0);
 
 	/**
 	 * Retrieve samples from the file into a memory buffer.  This
@@ -1383,7 +1371,7 @@ public:
 	 * Seek a file position by sample count.  If no position
 	 * specified, then seeks to end of file.
 	 *
-         * @return errSuccess or error condition on failure.
+	 * @return errSuccess or error condition on failure.
 	 * @param samples position to seek in file.
 	 */
 	Error setPosition(unsigned long samples = ~0l);
@@ -1459,7 +1447,7 @@ public:
 
 	/**
 	 * Test if the file is opened.
-	 * 
+	 *
 	 * @return true if a file is open.
 	 */
 	virtual bool isOpen(void);
@@ -1548,7 +1536,7 @@ protected:
 	unsigned bufferChannels;
 	Linear encBuffer, decBuffer;
 	unsigned encSize, decSize;
-	
+
 	unsigned bufAudio(Linear samples, unsigned count, unsigned size);
 
 public:
@@ -1560,7 +1548,7 @@ public:
 	/**
 	 * Create an audio stream object and open an existing audio file.
 	 *
-	 * @param name of file to open.	
+	 * @param name of file to open.
 	 * @param mode of file access.
 	 * @param framing time in milliseconds.
 	 */
@@ -1641,7 +1629,7 @@ public:
 	unsigned getEncoded(AudioCodec *codec, Encoded address, unsigned frames = 1);
 
 	/**
-	 * Stream audio data in an alternate codec into the currently 
+	 * Stream audio data in an alternate codec into the currently
 	 * opened file.
 	 *
 	 * @param codec to convert incoming data from.
@@ -1689,55 +1677,55 @@ public:
 	unsigned getMono(Linear buffer, unsigned frames = 1);
 
 	/**
-         * Get and automatically convert audio file data into
-         * stereo (two channel) linear audio samples.
-         *
-         * @param buffer to save linear audio into.
-         * @param frames of audio to read.
-         * @return number of frames read from file.
+	 * Get and automatically convert audio file data into
+	 * stereo (two channel) linear audio samples.
+	 *
+	 * @param buffer to save linear audio into.
+	 * @param frames of audio to read.
+	 * @return number of frames read from file.
 	 */
 	unsigned getStereo(Linear buffer, unsigned frames = 1);
 
-        /**
-         * Automatically convert and put mono linear audio data into
-         * the audio file.  Convert to stereo as needed by file format.
-         * 
-         * @param buffer to save linear audio from.
-         * @param frames of audio to write.
-         * @return number of frames written to file.
-         */
+	/**
+	 * Automatically convert and put mono linear audio data into
+	 * the audio file.  Convert to stereo as needed by file format.
+	 *
+	 * @param buffer to save linear audio from.
+	 * @param frames of audio to write.
+	 * @return number of frames written to file.
+	 */
 	unsigned putMono(Linear buffer, unsigned frames = 1);
 
-        /**
-         * Automatically convert and put stereo linear audio data into
-         * the audio file.  Convert to mono as needed by file format.
-         * 
-         * @param buffer to save linear audio from.
-         * @param frames of audio to write.
-         * @return number of frames written to file.
-         */
+	/**
+	 * Automatically convert and put stereo linear audio data into
+	 * the audio file.  Convert to mono as needed by file format.
+	 *
+	 * @param buffer to save linear audio from.
+	 * @param frames of audio to write.
+	 * @return number of frames written to file.
+	 */
 	unsigned putStereo(Linear buffer, unsigned frames = 1);
 
-        /**
-         * Automatically convert and put arbitrary linear mono data 
+	/**
+	 * Automatically convert and put arbitrary linear mono data
 	 * into the audio file.  Convert to stereo and buffer incomplete
 	 * frames as needed by the streaming file.
-         * 
-         * @param buffer to save linear audio from.
-         * @param count of linear audio to write.
-         * @return number of linear audio samples written to file.
-         */
+	 *
+	 * @param buffer to save linear audio from.
+	 * @param count of linear audio to write.
+	 * @return number of linear audio samples written to file.
+	 */
 	unsigned bufMono(Linear buffer, unsigned count);
 
-        /**
-         * Automatically convert and put arbitrary linear stereo data 
-         * into the audio file.  Convert to mono and buffer incomplete
-         * frames as needed by the streaming file.
-         * 
-         * @param buffer to save linear audio from.
-         * @param count of linear audio to write.
-         * @return number of linear audio samples written to file.
-         */
+	/**
+	 * Automatically convert and put arbitrary linear stereo data
+	 * into the audio file.  Convert to mono and buffer incomplete
+	 * frames as needed by the streaming file.
+	 *
+	 * @param buffer to save linear audio from.
+	 * @param count of linear audio to write.
+	 * @return number of linear audio samples written to file.
+	 */
 	unsigned bufStereo(Linear buffer, unsigned count);
 
 	/**
@@ -1774,8 +1762,8 @@ protected:
 
 	/**
 	 * often used to create a "new" codec of a subtype based on
-         * encoding format, default returns the current codec entity.
-	 * 
+	 * encoding format, default returns the current codec entity.
+	 *
 	 * @return pointer to an active codec or NULL if not found.
 	 * @param format name from spd.
 	 */
@@ -1821,14 +1809,14 @@ public:
 	 */
 	static AudioCodec *getCodec(Encoding encoding, const char *format = NULL, bool loaded = false);
 
-        /**
-         * Get the codec base class for accessing a specific derived
-         * codec identified by audio source descriptor. 
-         *
+	/**
+	 * Get the codec base class for accessing a specific derived
+	 * codec identified by audio source descriptor.
+	 *
 	 * @return pointer to codec for processing.
-         * @param info source descriptor for codec being requested.
-         * @param loaded true to load codec if not already in memory.
-         */
+	 * @param info source descriptor for codec being requested.
+	 * @param loaded true to load codec if not already in memory.
+	 */
 	static AudioCodec *getCodec(Info &info, bool loaded = false);
 
 	/**
@@ -1971,33 +1959,33 @@ public:
 	 */
 	virtual unsigned putSamples(Linear buffer, unsigned count) = 0;
 
-        /** 
-         * Copy linear samples from an audio device through its virtual.
-         *
-         * @param buffer for recording.
-         * @param count of audio samples to record.
-         * @return number of audio samples recorded.
-         */
+	/**
+	 * Copy linear samples from an audio device through its virtual.
+	 *
+	 * @param buffer for recording.
+	 * @param count of audio samples to record.
+	 * @return number of audio samples recorded.
+	 */
 	virtual unsigned getSamples(Linear buffer, unsigned count) = 0;
 
 	/**
 	 * Copy audio encoded in the currently selected encoding for
 	 * the audio device.
 	 *
-	 * @param data pointer to encoded data to play.	
+	 * @param data pointer to encoded data to play.
 	 * @param count of encoded bytes to play.
 	 * @return number of encoded bytes played.
 	 */
 	virtual ssize_t putBuffer(Encoded data, size_t count);
 
-        /**  
-         * Record audio encoded in the currently selected encoding for
-         * the audio device. 
-         *
-         * @param data buffer for recording encoded audio.
-         * @param count of encoded bytes to record.
-         * @return number of encoded bytes recorded.
-         */
+	/**
+	 * Record audio encoded in the currently selected encoding for
+	 * the audio device.
+	 *
+	 * @param data buffer for recording encoded audio.
+	 * @param count of encoded bytes to record.
+	 * @return number of encoded bytes recorded.
+	 */
 	virtual ssize_t getBuffer(Encoded data, size_t count);
 
 	/**
@@ -2021,7 +2009,7 @@ public:
 	virtual bool setAudio(Rate rate = rate8khz, bool stereo = false, timeout_t framing = 20) = 0;
 
 	/**
-	 * Synchronize timing for audio device to next audio frame.  
+	 * Synchronize timing for audio device to next audio frame.
 	 * this is needed for audio devices which do not block i/o to
 	 * assure one does not push too much data before the device
 	 * can handle it.
@@ -2045,15 +2033,15 @@ public:
 	 */
 	unsigned bufMono(Linear buffer, unsigned count);
 
-        /**
-         * Process linear stereo audio and automatically convert to the
-         * encoding format the audio device is currently using.   
-         * If needed, automatically convert from stereo to mono.
-         *
-         * @return number of samples played.
-         * @param buffer to linear stereo audio data to play.
-         * @param count of linear stereo audio samples to play.
-         */
+	/**
+	 * Process linear stereo audio and automatically convert to the
+	 * encoding format the audio device is currently using.
+	 * If needed, automatically convert from stereo to mono.
+	 *
+	 * @return number of samples played.
+	 * @param buffer to linear stereo audio data to play.
+	 * @param count of linear stereo audio samples to play.
+	 */
 	unsigned bufStereo(Linear buffer, unsigned count);
 
 	/**
@@ -2071,7 +2059,7 @@ public:
 	 *
 	 * @return enable state.
 	 * @see #setAudio #setInfo
-	 */ 
+	 */
 	inline bool isEnabled(void)
 		{return enabled;};
 };
@@ -2087,21 +2075,19 @@ public:
 class __EXPORT TelTone : public AudioTone
 {
 public:
-	typedef struct _tonedef       
-        {
-                struct _tonedef *next;
-                timeout_t duration, silence;
-                unsigned count;
-                unsigned short f1, f2;
-        } tonedef_t;
+	typedef struct _tonedef {
+		struct _tonedef *next;
+		timeout_t duration, silence;
+		unsigned count;
+		unsigned short f1, f2;
+	} tonedef_t;
 
-        typedef struct _tonekey
-        {
-                struct _tonekey *next;
-                struct _tonedef *first;
-                struct _tonedef *last;
-                char id[1];
-        } tonekey_t;
+	typedef struct _tonekey {
+		struct _tonekey *next;
+		struct _tonedef *first;
+		struct _tonedef *last;
+		char id[1];
+	} tonekey_t;
 
 	/**
 	 * Create a tone sequencing object for a specific telephony tone
@@ -2127,7 +2113,7 @@ public:
 	 * Some telephony tones, such as dialtone, may be infinite...
 	 *
 	 * @return true if audio is complete.
-	 */ 
+	 */
 	bool isComplete(void);
 
 
@@ -2154,15 +2140,15 @@ protected:
 	tonedef_t *def;
 	unsigned remaining, silent, count;
 	timeout_t framing;
-	Level level;	
+	Level level;
 	bool complete;
 };
 
 /**
  * DTMFTones is used to generate a series of dtmf audio data from a
  * "telephone" number passed as an ASCII string.  Each time getFrame()
- * is called, the next audio frame of dtmf audio will be created 
- * and pulled.  
+ * is called, the next audio frame of dtmf audio will be created
+ * and pulled.
  *
  * @author David Sugar <dyfet@ostel.com>
  * @short Generate DTMF audio
@@ -2196,8 +2182,8 @@ public:
 /**
  * MFTones is used to generate a series of mf audio data from a
  * "telephone" number passed as an ASCII string.  Each time getFrame()
- * is called, the next audio frame of dtmf audio will be created 
- * and pulled.  
+ * is called, the next audio frame of dtmf audio will be created
+ * and pulled.
  *
  * @author David Sugar <dyfet@ostel.com>
  * @short Generate MF audio
@@ -2212,14 +2198,14 @@ protected:
 	bool complete, kflag;
 
 public:
-        /**
-         * Generate a mf dialer for a specified dialing string.
-         *
-         * @param digits to generate tone dialing for.
-         * @param level for mf.
-         * @param duration timing for generated audio.
-         * @param interdigit timing, should be multiple of frame.
-         */
+	/**
+	 * Generate a mf dialer for a specified dialing string.
+	 *
+	 * @param digits to generate tone dialing for.
+	 * @param level for mf.
+	 * @param duration timing for generated audio.
+	 * @param interdigit timing, should be multiple of frame.
+	 */
 	MFTones(const char *digits, Level level, timeout_t duration = 20, timeout_t interdigit = 60);
 
 	~MFTones();
@@ -2236,8 +2222,8 @@ public:
 class __EXPORT DTMFDetect : public Audio
 {
 public:
-        DTMFDetect();
-        ~DTMFDetect();
+	DTMFDetect();
+	~DTMFDetect();
 
 	/**
 	 * This routine is used to push linear audio data into the
@@ -2247,7 +2233,7 @@ public:
 	 * @param buffer of audio data in native machine endian to analysize.
 	 * @param count of samples to analysize from buffer.
 	 */
-        int putSamples(Linear buffer, int count);
+	int putSamples(Linear buffer, int count);
 
 	/**
 	 * Copy detected dtmf results into a data buffer.
@@ -2255,21 +2241,21 @@ public:
 	 * @param data buffer to copy into.
 	 * @param size of data buffer to copy into.
 	 */
-        int getResult(char *data, int size);
+	int getResult(char *data, int size);
 
 protected:
-        void goertzelInit(goertzel_state_t *s, tone_detection_descriptor_t *t);
-        void goertzelUpdate(goertzel_state_t *s, Sample x[], int samples);
-        float goertzelResult(goertzel_state_t *s);
+	void goertzelInit(goertzel_state_t *s, tone_detection_descriptor_t *t);
+	void goertzelUpdate(goertzel_state_t *s, Sample x[], int samples);
+	float goertzelResult(goertzel_state_t *s);
 
 private:
-        dtmf_detect_state_t *state;
-        tone_detection_descriptor_t dtmf_detect_row[4];
-        tone_detection_descriptor_t dtmf_detect_col[4];
-        tone_detection_descriptor_t dtmf_detect_row_2nd[4];
-        tone_detection_descriptor_t dtmf_detect_col_2nd[4];
-        tone_detection_descriptor_t fax_detect;
-        tone_detection_descriptor_t fax_detect_2nd;
+	dtmf_detect_state_t *state;
+	tone_detection_descriptor_t dtmf_detect_row[4];
+	tone_detection_descriptor_t dtmf_detect_col[4];
+	tone_detection_descriptor_t dtmf_detect_row_2nd[4];
+	tone_detection_descriptor_t dtmf_detect_col_2nd[4];
+	tone_detection_descriptor_t fax_detect;
+	tone_detection_descriptor_t fax_detect_2nd;
 };
 
 }

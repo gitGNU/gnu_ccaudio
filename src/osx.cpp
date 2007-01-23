@@ -1,5 +1,5 @@
 // Copyright (C) 1999-2005 Open Source Telecom Corporation.
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
@@ -58,45 +58,39 @@ static bool scanDevices(unsigned index)
 	AudioDeviceID *id;
 	unsigned i;
 
-	if(!devlist)
-	{
+	if(!devlist) {
 		if(AudioHardwareGetPropertyInfo(kAudioHardwarePropertyDevices, &size, NULL) != noErr)
 			return false;
 
-		devcount = size / sizeof(AudioDeviceID);	
+		devcount = size / sizeof(AudioDeviceID);
 		devlist = (AudioDeviceID *)malloc(size);
-		
-		if(AudioHardwareGetProperty(kAudioHardwarePropertyDevices, &size, (void *) devlist) != noErr)
-		{
+
+		if(AudioHardwareGetProperty(kAudioHardwarePropertyDevices, &size, (void *) devlist) != noErr) {
 			free(devlist);
 			return false;
 		}
 
 		size = sizeof(AudioDeviceID);
-		if(AudioHardwareGetProperty(kAudioHardwarePropertyDefaultInputDevice, &size, &id) == noErr)
-		{
+		if(AudioHardwareGetProperty(kAudioHardwarePropertyDefaultInputDevice, &size, &id) == noErr) {
 			for(i = 0; i < devcount; ++i)
 			{
-				if(!memcmp(&devlist[i], &id, sizeof(AudioDeviceID)))
-				{
+				if(!memcmp(&devlist[i], &id, sizeof(AudioDeviceID))) {
 					devinput = &devlist[i];
 					break;
 				}
 			}
 		}
 
-                size = sizeof(AudioDeviceID);
-                if(AudioHardwareGetProperty(kAudioHardwarePropertyDefaultOutputDevice, &size, &id) == noErr)
-                {
-                        for(i = 0; i < devcount; ++i)
-                        {
-				if(!memcmp(&devlist[i], &id, sizeof(AudioDeviceID)))
-                                {
-                                        devoutput = &devlist[i];
-                                        break;
-                                }
-                        }
-                }
+		size = sizeof(AudioDeviceID);
+		if(AudioHardwareGetProperty(kAudioHardwarePropertyDefaultOutputDevice, &size, &id) == noErr) {
+			for(i = 0; i < devcount; ++i)
+			{
+				if(!memcmp(&devlist[i], &id, sizeof(AudioDeviceID))) {
+					devoutput = &devlist[i];
+					break;
+				}
+			}
+		}
 	}
 	if(!devcount)
 		return false;
@@ -104,7 +98,7 @@ static bool scanDevices(unsigned index)
 	if(index > devcount)
 		return false;
 
-	return true;	
+	return true;
 }
 
 using namespace ost;

@@ -1,17 +1,17 @@
 // Copyright (C) 1999-2001 Open Source Telecom Corporation.
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with this program; if not, write to the Free Software 
+// along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 #include "audiotool.h"
@@ -25,18 +25,16 @@ void Tool::notation(char **argv)
 	char target[PATH_MAX];
 	unsigned char buffer[4096];
 	int rtn;
-	
-	if(!fn)
-	{
+
+	if(!fn) {
 		cerr << "audiotool: --notation: no file specified" << endl;
 		exit(-1);
 	}
 
 	ann = *argv;
-	
+
 	file.open(fn, modeRead);
-	if(!file.isOpen())
-	{
+	if(!file.isOpen()) {
 		cerr << "*** " << fn << ": cannot access or invalid" << endl;
 		exit(-1);
 	}
@@ -50,8 +48,7 @@ void Tool::notation(char **argv)
 	setDelete(target);
 	remove(target);
 	tmp.create(target, &info);
-	if(!tmp.isOpen())
-	{
+	if(!tmp.isOpen()) {
 		cerr << "*** " << target << ": unable to create" << endl;
 		exit(-1);
 	}
@@ -60,15 +57,13 @@ void Tool::notation(char **argv)
 		rtn = file.getBuffer(buffer, sizeof(buffer));
 		if(!rtn)
 			break;
-		if(rtn < 0)
-		{
+		if(rtn < 0) {
 			cerr << "*** " << fn << ": read failed" << endl;
 			remove(target);
 			exit(-1);
 		}
 		rtn = tmp.putBuffer(buffer, rtn);
-		if(rtn < 1)
-		{
+		if(rtn < 1) {
 			cerr << "*** " << target << ": write failed" << endl;
 			remove(target);
 			exit(-1);
@@ -77,10 +72,9 @@ void Tool::notation(char **argv)
 	file.close();
 	tmp.close();
 	rtn = rename(target, fn);
-	remove(target);	
+	remove(target);
 	setDelete(NULL);
-	if(rtn)
-	{
+	if(rtn) {
 		cerr << "*** " << fn << ": could not be replaced" << endl;
 		exit(-1);
 	}

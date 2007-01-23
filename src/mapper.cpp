@@ -70,13 +70,12 @@ static void *map(unsigned len)
 {
 	unsigned char *pos;
 	unsigned fix = len % MAP_PAGE_FIX;
-	
+
 
 	if(fix)
 		len += MAP_PAGE_FIX - fix;
 
-	if(used + len > MAP_PAGE_SIZE)
-	{
+	if(used + len > MAP_PAGE_SIZE) {
 		page = (unsigned char *)(new void *[MAP_PAGE_COUNT]);
 		used = 0;
 	}
@@ -94,8 +93,7 @@ TelTone::tonekey_t *TelTone::find(const char *id, const char *locale)
 	char env[32];
 	char *cp, *ep;
 
-	if(locale == NULL)
-	{
+	if(locale == NULL) {
 		locale = getenv("LANG");
 		if(!locale)
 			locale="us";
@@ -112,18 +110,17 @@ TelTone::tonekey_t *TelTone::find(const char *id, const char *locale)
 	}
 
 	snprintf(namebuf, sizeof(namebuf), "%s.%s", locale, id);
-	k = key(namebuf);	
+	k = key(namebuf);
 	tk = hash[k];
 
-	while(tk)
-	{
+	while(tk) {
 		if(!stricmp(namebuf, tk->id))
 			break;
 		tk = tk->next;
 	}
 	return tk;
 }
-	
+
 
 bool TelTone::load(const char *path, const char *l)
 {
@@ -154,16 +151,14 @@ bool TelTone::load(const char *path, const char *l)
 		while(isspace(*cp))
 			++cp;
 
-		if(*cp == '[')
-		{
+		if(*cp == '[') {
 			if(loaded)
 				break;
 			strcpy(locale, buffer);
 			cp = locale;
 			lcount = 0;
 			cp = strtok(cp, "[]|\r\n");
-			while(cp)
-			{
+			while(cp) {
 				if(*cp && !l)
 					loclist[lcount++] = cp;
 				else if(*cp && !stricmp(cp, l))
@@ -192,21 +187,19 @@ bool TelTone::load(const char *path, const char *l)
 			*cp = 0;
 		cp = strtok(ep, ",");
 		count = 0;
-		while(cp)
-		{
+		while(cp) {
 			while(isspace(*cp))
 				++cp;
-						
+
 			lists[count++] = cp;
 			cp = strtok(NULL, ",");
-		}	
+		}
 		if(!count)
 			continue;
 
 		field = &lists[0];
 		first = last = again = NULL;
-		while(count--)
-		{
+		while(count--) {
 			freq = strtok(*field, " \t\r\n");
 			fdur = strtok(NULL, " \t\r\n");
 			fcount = strtok(NULL, " \t\r\n");
@@ -216,15 +209,12 @@ bool TelTone::load(const char *path, const char *l)
 
 			freq = strtok(freq, " \r\r\n");
 
-			if(isalpha(*freq))
-			{
+			if(isalpha(*freq)) {
 				tk = find(freq, loclist[0]);
-				if(tk)
-				{
+				if(tk) {
 					if(!first)
 						first = tk->first;
-					else
-					{
+					else {
 						final = tk->last;
 						again = tk->first;
 					}
@@ -243,13 +233,12 @@ bool TelTone::load(const char *path, const char *l)
 
 			def->next = NULL;
 
-			if(!fdur || !atol(fdur))
-			{
+			if(!fdur || !atol(fdur)) {
 				again = def;
 				count = 0;
 			}
 			else if((!fcount || !atoi(fcount)) && !count)
-				again = first;	
+				again = first;
 
 			cp = strtok(freq, " \t\r\n");
 			ep = cp;
@@ -280,7 +269,7 @@ bool TelTone::load(const char *path, const char *l)
 				def->silence = atol(++ep);
 			else
 				def->silence = 0;
-			
+
 skip:
 			++field;
 		}
@@ -288,8 +277,7 @@ skip:
 			last->next = again;
 		field = &loclist[0];
 		i = lcount;
-		while(i--)
-		{
+		while(i--) {
 			snprintf(namebuf, sizeof(namebuf), "%s.%s",
 				*(field++), name);
 			tk = (tonekey_t *)map((unsigned)sizeof(tonekey_t) + strlen(namebuf));

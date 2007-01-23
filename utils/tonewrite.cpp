@@ -1,17 +1,17 @@
 // Copyright (C) 2005 David Sugar, Tycho Softworks
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with this program; if not, write to the Free Software 
+// along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 #include "tonetool.h"
@@ -24,12 +24,12 @@ using namespace ost;
 
 static const char *fname(const char *cp)
 {
-        const char *fn = strrchr(cp, '/');
-        if(!fn)
-                fn = strrchr(cp, '\\');
-        if(fn)
-                return ++fn;
-        return cp;
+	const char *fn = strrchr(cp, '/');
+	if(!fn)
+		fn = strrchr(cp, '\\');
+	if(fn)
+		return ++fn;
+	return cp;
 }
 
 void Tool::write(char **argv, bool append)
@@ -37,9 +37,9 @@ void Tool::write(char **argv, bool append)
 	AudioTone *tone;
 	AudioStream output;
 	Info info, make;
-        const char *target;
-        char *option;
-        char *offset = NULL;
+	const char *target;
+	char *option;
+	char *offset = NULL;
 	char *encoding = "pcmu";
 	Level level = 30000;
 	timeout_t framing = 20, interdigit = 60;
@@ -49,29 +49,25 @@ void Tool::write(char **argv, bool append)
 	char *filename = "tones.conf";
 
 retry:
-        option = *argv;
+	option = *argv;
 
-        if(!strcmp("--", option))
-        {
-                ++argv;
-                goto skip;
-        }
-
-        if(!strnicmp("--", option, 2))
-                ++option;
-
-        if(!strnicmp(option, "-encoding=", 10) && !append)
-        {
-                encoding = option + 10;
-                ++argv;
-                goto retry;
-        }
-
-	if(!stricmp(option, "-interdigit"))
-	{
+	if(!strcmp("--", option)) {
 		++argv;
-		if(*argv)
-		{
+		goto skip;
+	}
+
+	if(!strnicmp("--", option, 2))
+		++option;
+
+	if(!strnicmp(option, "-encoding=", 10) && !append) {
+		encoding = option + 10;
+		++argv;
+		goto retry;
+	}
+
+	if(!stricmp(option, "-interdigit")) {
+		++argv;
+		if(*argv) {
 			cerr << "tonetool: -interdigit: missing argument" << endl;
 			exit(-1);
 		}
@@ -79,18 +75,15 @@ retry:
 		goto retry;
 	}
 
-	if(!strnicmp(option, "-interdigit=", 12))
-	{
-		interdigit = atoi(option + 12);		
+	if(!strnicmp(option, "-interdigit=", 12)) {
+		interdigit = atoi(option + 12);
 		++argv;
 		goto retry;
 	}
 
-	if(!stricmp(option, "-framing"))
-	{
+	if(!stricmp(option, "-framing")) {
 		++argv;
-		if(*argv)
-		{
+		if(*argv) {
 			cerr << "tonetool: -framing: missing argument" << endl;
 			exit(-1);
 		}
@@ -98,74 +91,64 @@ retry:
 		goto retry;
 	}
 
-	if(!strnicmp(option, "-framing=", 9))
-	{
-		framing = atoi(option + 9);		
+	if(!strnicmp(option, "-framing=", 9)) {
+		framing = atoi(option + 9);
 		++argv;
 		goto retry;
 	}
 
-        if(!stricmp(option, "-encoding"))
-        {
-                ++argv;
-                if(!*argv)
-                {      
+	if(!stricmp(option, "-encoding")) {
+		++argv;
+		if(!*argv) {
 			cerr << "tonetool: -encoding: missing argument" << endl;
-                        exit(-1);
-                }
-                encoding = *(argv++);
-                goto retry;
-        }
+			exit(-1);
+		}
+		encoding = *(argv++);
+		goto retry;
+	}
 
-        if(!strnicmp(option, "-offset=", 8) && append)
-        {
-                offset = option + 8;
-                ++argv;
-                goto retry;
-        }
+	if(!strnicmp(option, "-offset=", 8) && append) {
+		offset = option + 8;
+		++argv;
+		goto retry;
+	}
 
-        if(!stricmp(option, "-offset") && append)
-        {
-                ++argv;
-                if(!*argv)
-                {
-        		cerr << "tonetool: -offset: argument missing" << endl;
-                        exit(-1);
-                }
-                offset = *(argv++);
-                goto retry;
-        }
+	if(!stricmp(option, "-offset") && append) {
+		++argv;
+		if(!*argv) {
+				cerr << "tonetool: -offset: argument missing" << endl;
+			exit(-1);
+		}
+		offset = *(argv++);
+		goto retry;
+	}
 
 skip:
-        if(*argv && **argv == '-')
-        {
+	if(*argv && **argv == '-') {
 	        cerr << "tonetool: " << *argv << ": unknown option" << endl;
-                exit(-1);
-        }
+		exit(-1);
+	}
 
 	TelTone::load(filename);
 
-        if(*argv)
-                target = *(argv++);
+	if(*argv)
+		target = *(argv++);
 
-        if(!*argv)
-        {
-                cerr << "teltones: no tone spec to use" << endl;
-                exit(-1);
-        }
+	if(!*argv) {
+		cerr << "teltones: no tone spec to use" << endl;
+		exit(-1);
+	}
 
 	if(!append && encoding)
 		make.encoding = getEncoding(encoding);
 
 	make.rate = rate8khz;
-	
-	if(!append)
-	{
+
+	if(!append) {
 		remove(target);
 		output.create(target, &make, false, framing);
 	}
-	else
-	{
+	else {
 		output.open(target, modeWrite, framing);
 		if(offset)
 			output.setPosition(atol(offset));
@@ -173,14 +156,12 @@ skip:
 			output.setPosition();
 	}
 
-	if(!output.isOpen())
-	{
+	if(!output.isOpen()) {
 		cerr << "teltones: " << target << ": cannot access" << endl;
 		exit(-1);
 	}
 
-	if(!output.isStreamable())
-	{
+	if(!output.isStreamable()) {
 		cerr << "teltones: " << target << ": unable to load codec" << endl;
 		exit(-1);
 	}
@@ -189,20 +170,17 @@ skip:
 
 	tone = getTone(argv, level, info.framing, interdigit);
 
-	if(!tone)
-	{
+	if(!tone) {
 		cerr << "teltones: unrecognized spec used" << endl;
 		exit(-1);
-	}	
-	
+	}
+
 	cout << fname(target) << ": ";
 	maxframes = maxtime / info.framing;
 
-	while(maxframes--)
-	{
+	while(maxframes--) {
 		buffer = tone->getFrame();
-		if(!buffer)
-		{
+		if(!buffer) {
 			if(tone->isComplete())
 				break;
 			cout << '!';

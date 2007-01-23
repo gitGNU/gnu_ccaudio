@@ -1,19 +1,19 @@
 // Copyright (C) 1999-2005 Open Source Telecom Corporation.
-//  
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with this program; if not, write to the Free Software 
+// along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-// 
+//
 // As a special exception, you may use this file as part of a free software
 // library without restriction.  Specifically, if other files instantiate
 // templates or use macros or inline functions from this file, or you compile
@@ -48,7 +48,7 @@
 #endif
 
 #ifdef  HAVE_SHL_LOAD
-#include <dl.h>     
+#include <dl.h>
 #endif
 
 #ifdef  HAVE_MACH_DYLD
@@ -58,10 +58,10 @@
 #if defined(HAVE_DLFCN_H)
 
 extern "C" {
-#include <dlfcn.h>    
+#include <dlfcn.h>
 }
 
-#ifndef RTLD_GLOBAL    
+#ifndef RTLD_GLOBAL
 #define RTLD_GLOBAL     0
 #endif
 
@@ -73,7 +73,7 @@ extern "C" {
 
 using namespace ost;
 
-class AudioRegistry 
+class AudioRegistry
 {
 public:
 	AudioRegistry();
@@ -111,10 +111,8 @@ AudioRegistry::AudioRegistry()
 #define	PLUGINS "Codecs"
 #endif
 
-	if(RegOpenKey(HKEY_LOCAL_MACHINE, REGISTRY_AUDIO_SETTINGS, &key) == ERROR_SUCCESS)
-	{
-		if(RegQueryValue(key, PLUGINS, regpath, &value) == ERROR_SUCCESS)
-		{
+	if(RegOpenKey(HKEY_LOCAL_MACHINE, REGISTRY_AUDIO_SETTINGS, &key) == ERROR_SUCCESS) {
+		if(RegQueryValue(key, PLUGINS, regpath, &value) == ERROR_SUCCESS) {
 			codecdir = regpath;
 			env = regpath;
 			while(NULL != (env = strchr(env, '\\')))
@@ -127,7 +125,7 @@ AudioRegistry::AudioRegistry()
 
 #else
 	codecdir = CODEC_LIBPATH;
-#endif	
+#endif
 }
 
 const unsigned Audio::ndata = (unsigned)(-1);
@@ -150,8 +148,7 @@ float Audio::todbm(Level l)
 
 const char *Audio::getExtension(Encoding encoding)
 {
-	switch(encoding)
-	{
+	switch(encoding) {
 	case cdaStereo:
 	case pcm16Stereo:
 	case pcm32Stereo:
@@ -195,11 +192,10 @@ const char *Audio::getExtension(Encoding encoding)
 		return ".au";
 	}
 }
-	
+
 Audio::Encoding Audio::getMono(Encoding encoding)
 {
-	switch(encoding)
-	{
+	switch(encoding) {
 	case cdaStereo:
 		return cdaMono;
 	case pcm8Stereo:
@@ -215,8 +211,7 @@ Audio::Encoding Audio::getMono(Encoding encoding)
 
 Audio::Encoding Audio::getStereo(Encoding encoding)
 {
-	switch(encoding)
-	{
+	switch(encoding) {
 	case cdaStereo:
 	case pcm8Stereo:
 	case pcm16Stereo:
@@ -338,10 +333,8 @@ const char *Audio::getMIME(Info &info)
 	if(info.format == wave)
 		return "audio/x-wav";
 
-	if(info.format == snd)
-	{
-		switch(info.encoding)
-		{
+	if(info.format == snd) {
+		switch(info.encoding) {
 		case g721ADPCM:
 			return "audio/x-adpcm";
 		default:
@@ -352,8 +345,7 @@ const char *Audio::getMIME(Info &info)
 	if(info.format == riff)
 		return "audio/x-riff";
 
-	switch(info.encoding)
-	{
+	switch(info.encoding) {
 	case speexVoice:
 	case speexAudio:
 		return "application/x-spx";
@@ -378,8 +370,7 @@ const char *Audio::getMIME(Info &info)
 
 const char *Audio::getName(Encoding encoding)
 {
-	switch(encoding)
-	{
+	switch(encoding) {
 	case pcm8Stereo:
 	case pcm8Mono:
 		return "pcm8";
@@ -437,8 +428,7 @@ const char *Audio::getName(Encoding encoding)
 
 bool Audio::isBuffered(Encoding encoding)
 {
-	switch(encoding)
-	{
+	switch(encoding) {
 	case mp1Audio:
 	case mp2Audio:
 	case mp3Audio:
@@ -446,12 +436,11 @@ bool Audio::isBuffered(Encoding encoding)
 	default:
 		return false;
 	}
-} 
+}
 
 bool Audio::isLinear(Encoding encoding)
 {
-	switch(encoding)
-	{
+	switch(encoding) {
 	case cdaStereo:
 	case cdaMono:
 	case pcm16Stereo:
@@ -473,31 +462,27 @@ Audio::Level Audio::getImpulse(Encoding encoding, void *buffer, unsigned samples
 	if(!samples)
 		samples = getCount(encoding);
 
-	switch(encoding)
-	{
+	switch(encoding) {
 	case cdaStereo:
 	case pcm16Stereo:
 		samples *= 2;
 	case pcm16Mono:
 	case cdaMono:
 		count = samples;
-		if(__BYTE_ORDER == __LITTLE_ENDIAN)
-		{
+		if(__BYTE_ORDER == __LITTLE_ENDIAN) {
 			sp = (Linear)buffer;
-			while(samples--)
-			{
+			while(samples--) {
 				if(*sp < 0)
 					sum -= *(sp++);
 				else
-					sum += *(sp++);	
-			}	
-			return (Level)(sum/count);		
+					sum += *(sp++);
+			}
+			return (Level)(sum/count);
 		}
-	
+
 		s1 = (unsigned char *)buffer;
 		s2 = s1 + 1;
-		while(samples--)
-		{
+		while(samples--) {
 			sv[0] = *s2;
 			sv[1] = *s1;
 			s1 += 2;
@@ -528,29 +513,25 @@ Audio::Level Audio::getImpulse(Info &info, void *buffer, unsigned samples)
 	if(!samples)
 		samples = getCount(info.encoding);
 
-	switch(info.encoding)
-	{
+	switch(info.encoding) {
 	case cdaStereo:
 	case pcm16Stereo:
 		samples *= 2;
 	case pcm16Mono:
 	case cdaMono:
 		count = samples;
-		if(info.format == snd && (info.order == __BYTE_ORDER || !info.order))
-		{
+		if(info.format == snd && (info.order == __BYTE_ORDER || !info.order)) {
 			count *= 2;
 			up = (snd16_t *)buffer;
 			while(samples--)
 				sum += *(up++);
 			return (Level)(sum / count);
 		}
-		if(info.format == snd)
-		{
+		if(info.format == snd) {
 			count *= 2;
 			s1 = (unsigned char *)buffer;
 			s2 = s1 + 1;
-			while(samples--)
-			{
+			while(samples--) {
 				uv[0] = *s2;
 				uv[1] = *s1;
 				s2 += 2;
@@ -559,23 +540,20 @@ Audio::Level Audio::getImpulse(Info &info, void *buffer, unsigned samples)
 			}
 			return (Level)(sum / count);
 		}
-		if(__BYTE_ORDER == info.order || !info.order)
-		{
+		if(__BYTE_ORDER == info.order || !info.order) {
 			sp = (Linear)buffer;
-			while(samples--)
-			{
+			while(samples--) {
 				if(*sp < 0)
 					sum -= *(sp++);
 				else
-					sum += *(sp++);	
-			}	
-			return (Level)(sum/count);		
+					sum += *(sp++);
+			}
+			return (Level)(sum/count);
 		}
-	
+
 		s1 = (unsigned char *)buffer;
 		s2 = s1 + 1;
-		while(samples--)
-		{
+		while(samples--) {
 			sv[0] = *s2;
 			sv[1] = *s1;
 			s1 += 2;
@@ -601,32 +579,28 @@ Audio::Level Audio::getPeak(Encoding encoding, void *buffer, unsigned samples)
 	if(!samples)
 		samples = getCount(encoding);
 
-	switch(encoding)
-	{
+	switch(encoding) {
 	case cdaStereo:
 	case pcm16Stereo:
 		samples *= 2;
 	case pcm16Mono:
 	case cdaMono:
 		count = samples;
-		if(__BYTE_ORDER == __LITTLE_ENDIAN)
-		{
+		if(__BYTE_ORDER == __LITTLE_ENDIAN) {
 			sp = (Linear)buffer;
-			while(samples--)
-			{
+			while(samples--) {
 				value = *(sp++);
 				if(value < 0)
 					value = -value;
 				if(value > max)
 					max = value;
-			}	
+			}
 			return max;
 		}
-	
+
 		s1 = (unsigned char *)buffer;
 		s2 = s1 + 1;
-		while(samples--)
-		{
+		while(samples--) {
 			sv[0] = *s2;
 			sv[1] = *s1;
 			s1 += 2;
@@ -657,33 +631,28 @@ Audio::Level Audio::getPeak(Info &info, void *buffer, unsigned samples)
 	if(!samples)
 		samples = getCount(info.encoding);
 
-	switch(info.encoding)
-	{
+	switch(info.encoding) {
 	case cdaStereo:
 	case pcm16Stereo:
 		samples *= 2;
 	case pcm16Mono:
 	case cdaMono:
 		count = samples;
-		if(info.format == snd && (info.order == __BYTE_ORDER || !info.order))
-		{
+		if(info.format == snd && (info.order == __BYTE_ORDER || !info.order)) {
 			count *= 2;
 			up = (snd16_t *)buffer;
-			while(samples--)
-			{
+			while(samples--) {
 				value = (Level)(*(up++) / 2);
 				if(value > max)
 					max = value;
 			}
 			return max;
 		}
-		if(info.format == snd)
-		{
+		if(info.format == snd) {
 			count *= 2;
 			s1 = (unsigned char *)buffer;
 			s2 = s1 + 1;
-			while(samples--)
-			{
+			while(samples--) {
 				uv[0] = *s2;
 				uv[1] = *s1;
 				s2 += 2;
@@ -694,24 +663,21 @@ Audio::Level Audio::getPeak(Info &info, void *buffer, unsigned samples)
 			}
 			return max;
 		}
-		if(__BYTE_ORDER == info.order || !info.order)
-		{
+		if(__BYTE_ORDER == info.order || !info.order) {
 			sp = (Linear)buffer;
-			while(samples--)
-			{
+			while(samples--) {
 				value = *(sp++);
 				if(value < 0)
 					value = -value;
 				if(value > max)
 					max = value;
-			}	
+			}
 			return max;
 		}
-	
+
 		s1 = (unsigned char *)buffer;
 		s2 = s1 + 1;
-		while(samples--)
-		{
+		while(samples--) {
 			sv[0] = *s2;
 			sv[1] = *s1;
 			s1 += 2;
@@ -740,12 +706,11 @@ void Audio::swapEncoded(Info &info, Encoded buffer, size_t bytes)
 	// options for machine optimized should be inserted here
 
 	bytes /= 2;
-	while(bytes--)
-	{
+	while(bytes--) {
 		buf = buffer[1];
 		buffer[1] = *buffer;
 		*buffer = buf;
-		buffer += 2;		
+		buffer += 2;
 	}
 }
 
@@ -756,8 +721,7 @@ bool Audio::swapEndian(Encoding encoding, void *buffer, unsigned samples)
 	if(isStereo(encoding))
 		samples *= 2;
 
-	switch(encoding)
-	{
+	switch(encoding) {
 	case pcm16Mono:
 	case pcm16Stereo:
 	case cdaMono:
@@ -767,8 +731,7 @@ bool Audio::swapEndian(Encoding encoding, void *buffer, unsigned samples)
 
 		s1 = (unsigned char *)buffer;
 		s2 = s1 + 1;
-		while(samples--)
-		{
+		while(samples--) {
 			buf = *s1;
 			*s1 = *s2;
 			*s2 = buf;
@@ -785,8 +748,7 @@ bool Audio::swapEndian(Encoding encoding, void *buffer, unsigned samples)
 		s2 = s1 + 1;
 		s3 = s2 + 1;
 		s4 = s3 + 1;
-		while(samples--)
-		{
+		while(samples--) {
 			buf = *s1;
 			*s1 = *s4;
 			*s4 = buf;
@@ -811,8 +773,7 @@ bool Audio::swapEndian(Info &info, void *buffer, unsigned samples)
 	if(isStereo(info.encoding))
 		samples *= 2;
 
-	switch(info.encoding)
-	{
+	switch(info.encoding) {
 	case pcm16Mono:
 	case pcm16Stereo:
 	case cdaMono:
@@ -822,8 +783,7 @@ bool Audio::swapEndian(Info &info, void *buffer, unsigned samples)
 
 		s1 = (unsigned char *)buffer;
 		s2 = s1 + 1;
-		while(samples--)
-		{
+		while(samples--) {
 			buf = *s1;
 			*s1 = *s2;
 			*s2 = buf;
@@ -840,8 +800,7 @@ bool Audio::swapEndian(Info &info, void *buffer, unsigned samples)
 		s2 = s1 + 1;
 		s3 = s2 + 1;
 		s4 = s3 + 1;
-		while(samples--)
-		{
+		while(samples--) {
 			buf = *s1;
 			*s1 = *s4;
 			*s4 = buf;
@@ -862,8 +821,7 @@ bool Audio::swapEndian(Info &info, void *buffer, unsigned samples)
 
 bool Audio::isEndian(Encoding encoding)
 {
-	switch(encoding)
-	{
+	switch(encoding) {
 	case cdaMono:
 	case cdaStereo:
 	case pcm32Mono:
@@ -879,8 +837,7 @@ bool Audio::isEndian(Encoding encoding)
 
 bool Audio::isEndian(Info &info)
 {
-	switch(info.encoding)
-	{
+	switch(info.encoding) {
 	case cdaStereo:
 	case cdaMono:
 	case pcm16Stereo:
@@ -913,9 +870,8 @@ Audio::timeout_t Audio::getFraming(Encoding encoding, timeout_t timeout)
 {
 	timeout_t fa = 0;
 	unsigned long frames;
-	
-	switch(encoding)
-	{
+
+	switch(encoding) {
 	case mp1Audio:
 		fa = 8;
 		break;
@@ -952,17 +908,16 @@ Audio::timeout_t Audio::getFraming(Encoding encoding, timeout_t timeout)
 
 	frames = timeout / fa;
 	return frames * fa;
-}	
+}
 
 int Audio::getCount(Encoding encoding)
 {
-	switch(encoding)
-	{
+	switch(encoding) {
 	case mp1Audio:
 		return 384;
 	case mp2Audio:
 	case mp3Audio:
-		return 1152;	
+		return 1152;
 	case msgsmVoice:
 		return 320;
 	case gsmVoice:
@@ -999,8 +954,7 @@ int Audio::getCount(Encoding encoding)
 int Audio::getFrame(Encoding encoding, int samples)
 {
 	int framing = 0;
-	switch(encoding)
-	{
+	switch(encoding) {
 	case sx73Voice:
 		framing = 14;
 		break;
@@ -1065,10 +1019,8 @@ void Audio::fill(unsigned char *addr, int samples, Encoding encoding)
 	if(!frame || !count)
 		return;
 
-	while(samples >= count)
-	{
-		switch(encoding)
-		{
+	while(samples >= count) {
+		switch(encoding) {
 		case mulawAudio:
 			*addr = 0xff;
 			break;
@@ -1089,8 +1041,7 @@ Audio::Rate Audio::getRate(Encoding encoding, Rate request)
 	if((long)request == (long)0)
 		request = getRate(encoding);
 
-	switch(encoding)
-	{
+	switch(encoding) {
 	case pcm8Stereo:
 	case pcm8Mono:
 	case pcm16Stereo:
@@ -1112,8 +1063,7 @@ Audio::Rate Audio::getRate(Encoding encoding, Rate request)
 
 Audio::Rate Audio::getRate(Encoding encoding)
 {
-	switch(encoding)
-	{
+	switch(encoding) {
 	case pcm8Stereo:
 	case pcm8Mono:
 	case pcm16Stereo:
@@ -1165,8 +1115,7 @@ size_t Audio::toBytes(Encoding encoding, unsigned long samples)
 
 size_t Audio::maxFramesize(Info &info)
 {
-	switch(info.encoding)
-	{
+	switch(info.encoding) {
 	case mp1Audio:
 		return 682;
 	case mp2Audio:
@@ -1187,8 +1136,7 @@ size_t Audio::toBytes(Info &info, unsigned long samples)
 
 bool Audio::isMono(Encoding encoding)
 {
-	switch(encoding)
-	{
+	switch(encoding) {
 	case pcm8Stereo:
 	case pcm16Stereo:
 	case pcm32Stereo:
@@ -1225,16 +1173,14 @@ Audio::timeout_t Audio::toTimeout(const char *buf)
 	timeout_t sec = 0;
 
 	cp = strchr(buf, '.');
-	if(cp)
-	{
+	if(cp) {
 		msec = atol(cp + 1);
 		sp = --cp;
 	}
 	else
 		sp = strrchr(buf, ':');
-	
-	if(!sp)
-	{
+
+	if(!sp) {
 		sp = buf;
 		while(*sp && isdigit(*sp))
 			++sp;
@@ -1251,25 +1197,25 @@ Audio::timeout_t Audio::toTimeout(const char *buf)
 
 	if(sp == buf)
 		return atol(buf) * 1000 + msec;
-	
+
 	sec = atol(sp + 1) * 1000;
 	--sp;
 	while(*sp != ':' && sp > buf)
 		--sp;
-	
+
 	if(sp == buf)
 		return atol(buf) * 60000 + sec + msec;
-	
+
 	return atol(buf) * 3600000 + atol(++sp) * 60000 + sec + msec;
-}	
+}
 
 bool Audio::loadPlugin(const char *filename)
 {
 #if defined(HAVE_MACH_DYLD)
 	NSModule oModule;
-        NSObjectFileImage oImage;
-        NSSymbol sym = NULL;
-        void (*init)(void);
+	NSObjectFileImage oImage;
+	NSSymbol sym = NULL;
+	void (*init)(void);
 #elif defined(HAVE_SHL_LOAD)
 	shl_t image;
 #elif defined(W32)
@@ -1294,25 +1240,23 @@ bool Audio::loadPlugin(const char *filename)
 #endif
 
 #elif defined(HAVE_MACH_DYLD)
-        oModule = NULL;
+	oModule = NULL;
 
-        switch(NSCreateObjectFileImageFromFile(filename, &oImage))
-        {
-        case NSObjectFileImageSuccess:
-                break;
-        default:
+	switch(NSCreateObjectFileImageFromFile(filename, &oImage)) {
+		case NSObjectFileImageSuccess:
+		break;
+		default:
 		return false;
-        }
+	}
 
-        oModule = NSLinkModule(oImage, filename, NSLINKMODULE_OPTION_BINDNOW | NSLINKMODULE_OPTION_RETURN_ON_ERROR);
-        NSDestroyObjectFileImage(oImage);
-        if(oModule != NULL)
-                sym = NSLookupSymbolInModule(oModule, "__init");
-        if(sym)
-        {
-                init = (void (*)(void))NSAddressOfSymbol(sym);
-                init();
-        }
+	oModule = NSLinkModule(oImage, filename, NSLINKMODULE_OPTION_BINDNOW | NSLINKMODULE_OPTION_RETURN_ON_ERROR);
+	NSDestroyObjectFileImage(oImage);
+	if(oModule != NULL)
+		sym = NSLookupSymbolInModule(oModule, "__init");
+	if(sym) {
+		init = (void (*)(void))NSAddressOfSymbol(sym);
+		init();
+	}
 
 	if(oModule)
 		return true;
