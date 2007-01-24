@@ -55,6 +55,7 @@ public:
 	static void play(char **argv);
 	static void strip(char **argv);
 	static void trim(char **argv);
+	static void size(char **argv);
 	static void packetdump(char **argv);
 };
 

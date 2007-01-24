@@ -55,14 +55,13 @@ static int steps[49] = {
 class okiCodec : public AudioCodec
 {
 private:
-	typedef struct state
-	{
+	typedef struct state {
 		short last;
 		short ssindex;
 	}	state_t;
 
 	state_t encode_state, decode_state;
-		
+
 public:
 	AudioCodec *getByInfo(Info &info);
 	AudioCodec *getByFormat(const char *format);
@@ -83,44 +82,40 @@ okiCodec::okiCodec(Encoding e) : AudioCodec()
 	info.framecount = 2;
 	info.encoding = e;
 
-	if(encoding == voxADPCM)
-	{
+	if(encoding == voxADPCM) {
 		info.rate = 6000;
 		info.bitrate = 24000;
 		info.annotation = "vox";
 	}
-	else
-	{
+	else {
 		info.rate = 8000;
 		info.bitrate = 24000;
 		info.annotation = "oki";
 	}
 
 	memset(&encode_state, 0, sizeof(encode_state));
-        memset(&decode_state, 0, sizeof(decode_state));
+	memset(&decode_state, 0, sizeof(decode_state));
 	info.set();
 }
 
 okiCodec::okiCodec(const char *id, Encoding e) : AudioCodec(id, e)
 {
-        info.framesize = 1;
-        info.framecount = 2;
+	info.framesize = 1;
+	info.framecount = 2;
 
-        if(encoding == voxADPCM)
-        {
-                info.rate = 6000;
-                info.bitrate = 24000;
-                info.annotation = "vox";
-        }
-        else
-        {
-                info.rate = 8000;
-                info.bitrate = 24000;
-                info.annotation = "oki";
-        }
-        memset(&encode_state, 0, sizeof(encode_state));
-        memset(&decode_state, 0, sizeof(decode_state));
-        info.set();
+	if(encoding == voxADPCM) {
+		info.rate = 6000;
+		info.bitrate = 24000;
+		info.annotation = "vox";
+	}
+	else {
+		info.rate = 8000;
+		info.bitrate = 24000;
+		info.annotation = "oki";
+	}
+	memset(&encode_state, 0, sizeof(encode_state));
+	memset(&decode_state, 0, sizeof(decode_state));
+	info.set();
 }
 
 okiCodec::~okiCodec()
@@ -133,24 +128,21 @@ unsigned char okiCodec::encode_sample(state_t *state, short sample)
 
 	step = steps[state->ssindex];
 	diff = sample - state->last;
-	if(diff < 0)
-	{
+	if(diff < 0) {
 		diff = -diff;
 		code = 0x08;
 	}
 
-	if(diff >= step)
-	{
+	if(diff >= step) {
 		code |= 0x04;
 		diff -= step;
 	}
-	if(diff >= step/2)
-	{
+	if(diff >= step/2) {
 		code |= 0x02;
 		diff -= step/2;
 	}
 	if(diff >= step/4)
-		code |= 0x01; 
+		code |= 0x01;
 
 	decode_sample(state, code);
 	return code;
@@ -191,15 +183,13 @@ unsigned okiCodec::encode(Linear buffer, void *coded, unsigned lsamples)
 	unsigned char byte = 0;
 	Encoded dest = (Encoded)coded;
 
-	while(count--)
-	{
-		if(hi)
-		{
+	while(count--) {
+		if(hi) {
 			byte |= encode_sample(&encode_state, *(buffer++) / 16 );
-			*(dest++) = byte;			
-		}	
+			*(dest++) = byte;
+		}
 		else
-			byte = encode_sample(&encode_state, *(buffer++) / 16 ) << 4 ;				
+			byte = encode_sample(&encode_state, *(buffer++) / 16 ) << 4 ;
 	}
 	return (lsamples / 2) * 2;
 }
@@ -210,8 +200,7 @@ unsigned okiCodec::decode(Linear buffer, void *from, unsigned lsamples)
 	unsigned count = lsamples / 2;
 	unsigned char byte;
 
-	while(count--)
-	{
+	while(count--) {
 		byte = ((*src >> 4) & 0x0f);
 		*(buffer++) = (decode_sample(&decode_state, byte) * 16);
 		byte = (*src & 0x0f);
@@ -219,18 +208,18 @@ unsigned okiCodec::decode(Linear buffer, void *from, unsigned lsamples)
 		++src;
 	}
 	return (lsamples / 2) * 2;
-}		
+}
 
 AudioCodec *okiCodec::getByInfo(Info &info)
 {
-        return (AudioCodec *)new okiCodec(info.encoding);
+	return (AudioCodec *)new okiCodec(info.encoding);
 }
 
 AudioCodec *okiCodec::getByFormat(const char *format)
 {
-        return (AudioCodec *)new okiCodec(info.encoding);
+	return (AudioCodec *)new okiCodec(info.encoding);
 }
-				
+
 static okiCodec voxcodec("vox", Audio::voxADPCM);
 static okiCodec okicodec("oki", Audio::okiADPCM);
 

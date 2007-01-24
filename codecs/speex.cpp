@@ -62,8 +62,8 @@ public:
 	unsigned encode(Linear buffer, void *dest, unsigned lsamples);
 	unsigned decode(Linear buffer, void *source, unsigned lsamples);
 
-        AudioCodec *getByInfo(Info &info);
-        AudioCodec *getByFormat(const char *format);
+	AudioCodec *getByInfo(Info &info);
+	AudioCodec *getByFormat(const char *format);
 };
 
 class SpeexAudio: public SpeexCommon
@@ -78,21 +78,20 @@ public:
 	SpeexVoice();
 };
 
-SpeexCommon::SpeexCommon(Encoding enc, const char *id) : 
+SpeexCommon::SpeexCommon(Encoding enc, const char *id) :
 AudioCodec("speex", enc)
 {
-        info.framesize = 20;
-        info.framecount = 160;
-        info.rate = 8000;
-        info.bitrate = 24000;
-        info.annotation = "speex/8000";
+	info.framesize = 20;
+	info.framecount = 160;
+	info.rate = 8000;
+	info.bitrate = 24000;
+	info.annotation = "speex/8000";
 
 	spx_channel = 1;
 
-	switch(enc)
-	{
+	switch(enc) {
 	case speexVoice:
-		spx_clock = 8000;		
+		spx_clock = 8000;
 		spx_mode = &speex_nb_mode;
 		break;
 	case speexAudio:
@@ -115,13 +114,11 @@ AudioCodec()
 
 SpeexCommon::~SpeexCommon()
 {
-	if(decoder)
-	{
+	if(decoder) {
 		speex_bits_destroy(&dec_bits);
 		speex_decoder_destroy(decoder);
 	}
-	if(encoder)
-	{
+	if(encoder) {
 		speex_bits_destroy(&enc_bits);
 		speex_encoder_destroy(encoder);
 	}
@@ -131,14 +128,13 @@ SpeexCommon::~SpeexCommon()
 AudioCodec *SpeexCommon::getByFormat(const char *format)
 {
 	if(!strnicmp(format, "speex/16", 8))
-		return (AudioCodec *)new SpeexAudio(); 
-        return (AudioCodec *)new SpeexVoice();
+		return (AudioCodec *)new SpeexAudio();
+	return (AudioCodec *)new SpeexVoice();
 }
 
 AudioCodec *SpeexCommon::getByInfo(Info &info)
 {
-	switch(info.encoding)
-	{
+	switch(info.encoding) {
 	case speexAudio:
 	        return (AudioCodec *)new SpeexAudio();
 	default:
@@ -155,8 +151,7 @@ unsigned SpeexCommon::decode(Linear buffer, void *src, unsigned lsamples)
 	if(!count)
 		return 0;
 
-	while(count--)
-	{
+	while(count--) {
 		speex_bits_read_from(&dec_bits, encoded, info.framesize);
 		if(speex_decode_int(decoder, &dec_bits, buffer))
 			break;
@@ -170,12 +165,11 @@ unsigned SpeexCommon::encode(Linear buffer, void *dest, unsigned lsamples)
 	unsigned count = lsamples / info.framecount;
 	unsigned result = 0;
 	char *encoded = (char *)dest;
-	
+
 	if(!count)
 		return 0;
-	
-	while(count--)
-	{
+
+	while(count--) {
 		speex_bits_reset(&enc_bits);
 		speex_encoder_ctl(encoder, SPEEX_SET_SAMPLING_RATE, &spx_clock);
 		speex_encode_int(encoder, buffer, &enc_bits);
@@ -185,9 +179,9 @@ unsigned SpeexCommon::encode(Linear buffer, void *dest, unsigned lsamples)
 		result += nb;
 	}
 	return result;
-}	
+}
 
-SpeexAudio::SpeexAudio() : 
+SpeexAudio::SpeexAudio() :
 SpeexCommon()
 {
 	info.encoding = speexVoice;
@@ -199,13 +193,13 @@ SpeexCommon()
 	spx_clock = 16000;
 	spx_channel = 1;
 	spx_mode = &speex_wb_mode;
-        speex_bits_init(&dec_bits);
-        decoder = speex_decoder_init(spx_mode);
-        speex_bits_init(&enc_bits);
-        encoder = speex_encoder_init(spx_mode);
-        speex_decoder_ctl(decoder, SPEEX_GET_FRAME_SIZE, &spx_frame);
-        info.framecount = spx_frame;
-        info.set();
+	speex_bits_init(&dec_bits);
+	decoder = speex_decoder_init(spx_mode);
+	speex_bits_init(&enc_bits);
+	encoder = speex_encoder_init(spx_mode);
+	speex_decoder_ctl(decoder, SPEEX_GET_FRAME_SIZE, &spx_frame);
+	info.framecount = spx_frame;
+	info.set();
 }
 
 SpeexVoice::SpeexVoice() :
@@ -220,13 +214,13 @@ SpeexCommon()
 	spx_clock = 8000;
 	spx_channel = 1;
 	spx_mode = &speex_nb_mode;
-        speex_bits_init(&dec_bits);
-        decoder = speex_decoder_init(spx_mode);
-        speex_bits_init(&enc_bits);
-        encoder = speex_encoder_init(spx_mode);
-        speex_decoder_ctl(decoder, SPEEX_GET_FRAME_SIZE, &spx_frame);
-        info.framecount = spx_frame;
-        info.set();
+	speex_bits_init(&dec_bits);
+	decoder = speex_decoder_init(spx_mode);
+	speex_bits_init(&enc_bits);
+	encoder = speex_encoder_init(spx_mode);
+	speex_decoder_ctl(decoder, SPEEX_GET_FRAME_SIZE, &spx_frame);
+	info.framecount = spx_frame;
+	info.set();
 
 }
 

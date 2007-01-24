@@ -47,10 +47,9 @@ namespace ccAudioCodec {
 using namespace ost;
 
 static short power2[15] = {1, 2, 4, 8, 0x10, 0x20, 0x40, 0x80,
-                        0x100, 0x200, 0x400, 0x800, 0x1000, 0x2000, 0x4000};
+			0x100, 0x200, 0x400, 0x800, 0x1000, 0x2000, 0x4000};
 
-typedef struct state
-{
+typedef struct state {
 	long yl;
 	short yu;
 	short dms;
@@ -426,7 +425,7 @@ private:
 	static short qtab_723_24[3];
 
 	state_t encode_state, decode_state;
-		
+
 public:
 	AudioCodec *getByInfo(Info &info);
 	AudioCodec *getByFormat(const char *format);
@@ -450,7 +449,7 @@ private:
 	static short qtab_723_40[15];
 
 	state_t encode_state, decode_state;
-		
+
 public:
 	AudioCodec *getByInfo(Info &info);
 	AudioCodec *getByFormat(const char *format);
@@ -474,7 +473,7 @@ private:
 	static short qtab_723_16[1];
 
 	state_t encode_state, decode_state;
-		
+
 public:
 	AudioCodec *getByInfo(Info &info);
 	AudioCodec *getByFormat(const char *format);
@@ -500,30 +499,30 @@ short g723_3Codec::_fitab[8] = {0, 0x200, 0x400, 0xE00, 0xE00, 0x400, 0x200, 0};
 short g723_3Codec::qtab_723_24[3] = {8, 218, 331};
 
 short g723_5Codec::_dqlntab[32] = {-2048, -66, 28, 104, 169, 224, 274, 318,
-                                358, 395, 429, 459, 488, 514, 539, 566,
-                                566, 539, 514, 488, 459, 429, 395, 358,
-                                318, 274, 224, 169, 104, 28, -66, -2048};
+				358, 395, 429, 459, 488, 514, 539, 566,
+				566, 539, 514, 488, 459, 429, 395, 358,
+				318, 274, 224, 169, 104, 28, -66, -2048};
 
 short g723_5Codec::_witab[32] = {448, 448, 768, 1248, 1280, 1312, 1856, 3200,
-                        4512, 5728, 7008, 8960, 11456, 14080, 16928, 22272,
-                        22272, 16928, 14080, 11456, 8960, 7008, 5728, 4512,
-                        3200, 1856, 1312, 1280, 1248, 768, 448, 448};
+			4512, 5728, 7008, 8960, 11456, 14080, 16928, 22272,
+			22272, 16928, 14080, 11456, 8960, 7008, 5728, 4512,
+			3200, 1856, 1312, 1280, 1248, 768, 448, 448};
 
 short g723_5Codec::_fitab[32] = {0, 0, 0, 0, 0, 0x200, 0x200, 0x200,
-                        0x200, 0x200, 0x400, 0x600, 0x800, 0xA00, 0xC00, 0xC00,
-                        0xC00, 0xC00, 0xA00, 0x800, 0x600, 0x400, 0x200, 0x200,
-                        0x200, 0x200, 0x200, 0, 0, 0, 0, 0};
+			0x200, 0x200, 0x400, 0x600, 0x800, 0xA00, 0xC00, 0xC00,
+			0xC00, 0xC00, 0xA00, 0x800, 0x600, 0x400, 0x200, 0x200,
+			0x200, 0x200, 0x200, 0, 0, 0, 0, 0};
 
 short g723_5Codec::qtab_723_40[15] = {-122, -16, 68, 139, 198, 250, 298, 339,
-                                378, 413, 445, 475, 502, 528, 553};
+				378, 413, 445, 475, 502, 528, 553};
 
 
 short g721Codec::_dqlntab[16] = {-2048, 4, 135, 213, 273, 323, 373, 425,
-                                425, 373, 323, 273, 213, 135, 4, -2048};
+				425, 373, 323, 273, 213, 135, 4, -2048};
 short g721Codec::_witab[16] = {-12, 18, 41, 64, 112, 198, 355, 1122,
-                                1122, 355, 198, 112, 64, 41, 18, -12};
+				1122, 355, 198, 112, 64, 41, 18, -12};
 short g721Codec::_fitab[16] = {0, 0, 0, 0x200, 0x200, 0x200, 0x600, 0xE00,
-                                0xE00, 0x600, 0x200, 0x200, 0x200, 0, 0, 0};
+				0xE00, 0x600, 0x200, 0x200, 0x200, 0, 0, 0};
 short g721Codec::qtab_721[7] = {-124, 80, 178, 246, 300, 349, 400};
 
 g723_3Codec::g723_3Codec() : AudioCodec()
@@ -537,7 +536,7 @@ g723_3Codec::g723_3Codec() : AudioCodec()
 	info.annotation = "g.723";
 	info.rate = 8000;
 	memset(&encode_state, 0, sizeof(encode_state));
-        memset(&decode_state, 0, sizeof(decode_state));
+	memset(&decode_state, 0, sizeof(decode_state));
 	encode_state.yl = decode_state.yl = 34816;
 	encode_state.yu = decode_state.yu = 544;
 	encode_state.sr[0] = encode_state.sr[1] = decode_state.sr[0] = decode_state.sr[1] = 32;
@@ -566,23 +565,23 @@ unsigned char g723_3Codec::encoder(short sl, state_t *state_ptr)
 
 	sl >>= 2;
 
-        sezi = predictor_zero(state_ptr);
-        sez = sezi >> 1;
-        sei = sezi + predictor_pole(state_ptr);
-        se = sei >> 1;                  /* se = estimated signal */
+	sezi = predictor_zero(state_ptr);
+	sez = sezi >> 1;
+	sei = sezi + predictor_pole(state_ptr);
+	se = sei >> 1;                  /* se = estimated signal */
 
-        d = sl - se;                    /* d = estimation diff. */
+	d = sl - se;                    /* d = estimation diff. */
 
-        /* quantize prediction difference d */
-        y = step_size(state_ptr);       /* quantizer step size */
-        i = quantize(d, y, qtab_723_24, 3);     /* i = ADPCM code */
-        dq = reconstruct(i & 4, _dqlntab[i], y); /* quantized diff. */
+	/* quantize prediction difference d */
+	y = step_size(state_ptr);       /* quantizer step size */
+	i = quantize(d, y, qtab_723_24, 3);     /* i = ADPCM code */
+	dq = reconstruct(i & 4, _dqlntab[i], y); /* quantized diff. */
 
-        sr = (dq < 0) ? se - (dq & 0x3FFF) : se + dq; /* reconstructed signal */
-        dqsez = sr + sez - se;          /* pole prediction diff. */
+	sr = (dq < 0) ? se - (dq & 0x3FFF) : se + dq; /* reconstructed signal */
+	dqsez = sr + sez - se;          /* pole prediction diff. */
 
-        update(3, y, _witab[i], _fitab[i], dq, sr, dqsez, state_ptr);
-        return (unsigned char)(i);
+	update(3, y, _witab[i], _fitab[i], dq, sr, dqsez, state_ptr);
+	return (unsigned char)(i);
 }
 
 short g723_3Codec::coder(state_t *state_ptr, int i)
@@ -590,20 +589,20 @@ short g723_3Codec::coder(state_t *state_ptr, int i)
 	short sezi, sei, sez, se;
 	short y, sr, dq, dqsez;
 
-        i &= 0x07;                      /* mask to get proper bits */
-        sezi = predictor_zero(state_ptr);
-        sez = sezi >> 1;
-        sei = sezi + predictor_pole(state_ptr);
-        se = sei >> 1;                  /* se = estimated signal */
+	i &= 0x07;                      /* mask to get proper bits */
+	sezi = predictor_zero(state_ptr);
+	sez = sezi >> 1;
+	sei = sezi + predictor_pole(state_ptr);
+	se = sei >> 1;                  /* se = estimated signal */
 
-        y = step_size(state_ptr);       /* adaptive quantizer step size */
-        dq = reconstruct(i & 0x04, _dqlntab[i], y); /* unquantize pred diff */
+	y = step_size(state_ptr);       /* adaptive quantizer step size */
+	dq = reconstruct(i & 0x04, _dqlntab[i], y); /* unquantize pred diff */
 
-        sr = (dq < 0) ? (se - (dq & 0x3FFF)) : (se + dq); /* reconst. signal */
+	sr = (dq < 0) ? (se - (dq & 0x3FFF)) : (se + dq); /* reconst. signal */
 
-        dqsez = sr - se + sez;                  /* pole prediction diff. */
+	dqsez = sr - se + sez;                  /* pole prediction diff. */
 
-        update(3, y, _witab[i], _fitab[i], dq, sr, dqsez, state_ptr);
+	update(3, y, _witab[i], _fitab[i], dq, sr, dqsez, state_ptr);
 
 	return sr << 2;
 }
@@ -614,8 +613,7 @@ unsigned g723_3Codec::encode(Linear buffer, void *coded, unsigned lsamples)
 	Encoded dest = (Encoded)coded;
 	unsigned i, data, byte, bits;
 
-	while(count--)
-	{
+	while(count--) {
 		bits = 0;
 		data = 0;
 		for(i = 0; i < 8; ++i)
@@ -623,8 +621,7 @@ unsigned g723_3Codec::encode(Linear buffer, void *coded, unsigned lsamples)
 			byte = encoder(*(buffer++), &encode_state);
 			data |= (byte << bits);
 			bits += 3;
-			if(bits >= 8)
-			{
+			if(bits >= 8) {
 				*(dest++) = (data & 0xff);
 				bits -= 8;
 				data >>= 8;
@@ -639,12 +636,10 @@ unsigned g723_3Codec::decode(Linear buffer, void *from, unsigned lsamples)
 	Encoded src = (Encoded)from;
 	unsigned count = (lsamples / 8) * 8;
 	unsigned char byte, nib;
-	unsigned bits = 0, data = 0; 
+	unsigned bits = 0, data = 0;
 
-	while(count--)
-	{
-		if(bits < 3)
-		{
+	while(count--) {
+		if(bits < 3) {
 			byte = *(src++);
 			data |= (byte << bits);
 			bits += 8;
@@ -655,16 +650,16 @@ unsigned g723_3Codec::decode(Linear buffer, void *from, unsigned lsamples)
 		*(buffer++) = coder(&decode_state, nib);
 	}
 	return (lsamples / 8) * 8;
-}		
+}
 
 AudioCodec *g723_3Codec::getByInfo(Info &info)
 {
-        return (AudioCodec *)new g723_3Codec();
+	return (AudioCodec *)new g723_3Codec();
 }
 
 AudioCodec *g723_3Codec::getByFormat(const char *format)
 {
-        return (AudioCodec *)new g723_3Codec();
+	return (AudioCodec *)new g723_3Codec();
 }
 
 
@@ -680,7 +675,7 @@ g723_2Codec::g723_2Codec() : AudioCodec()
 	info.annotation = "g.723";
 	info.rate = 8000;
 	memset(&encode_state, 0, sizeof(encode_state));
-        memset(&decode_state, 0, sizeof(decode_state));
+	memset(&decode_state, 0, sizeof(decode_state));
 	encode_state.yl = decode_state.yl = 34816;
 	encode_state.yu = decode_state.yu = 544;
 	encode_state.sr[0] = encode_state.sr[1] = decode_state.sr[0] = decode_state.sr[1] = 32;
@@ -708,33 +703,33 @@ unsigned char g723_2Codec::encoder(short sl, state_t *state_ptr)
 
 	sl >>= 2;
 
-        sezi = predictor_zero(state_ptr);
-        sez = sezi >> 1;
-        sei = sezi + predictor_pole(state_ptr);
-        se = sei >> 1;                  /* se = estimated signal */
+	sezi = predictor_zero(state_ptr);
+	sez = sezi >> 1;
+	sei = sezi + predictor_pole(state_ptr);
+	se = sei >> 1;                  /* se = estimated signal */
 
-        d = sl - se;   
+	d = sl - se;
 
-        /* quantize prediction difference d */
-        y = step_size(state_ptr);       /* quantizer step size */
-        i = quantize(d, y, qtab_723_16, 1);  /* i = ADPCM code */
+	/* quantize prediction difference d */
+	y = step_size(state_ptr);       /* quantizer step size */
+	i = quantize(d, y, qtab_723_16, 1);  /* i = ADPCM code */
 
-              /* Since quantize() only produces a three level output
-               * (1, 2, or 3), we must create the fourth one on our own
-               */
-        if (i == 3)                          /* i code for the zero region */
-          if ((d & 0x8000) == 0)             /* If d > 0, i=3 isn't right... */
-            i = 0;
+	  /* Since quantize() only produces a three level output
+	   * (1, 2, or 3), we must create the fourth one on our own
+	   */
+	if (i == 3)                          /* i code for the zero region */
+	  if ((d & 0x8000) == 0)             /* If d > 0, i=3 isn't right... */
+	i = 0;
 
-        dq = reconstruct(i & 2, _dqlntab[i], y); /* quantized diff. */
+	dq = reconstruct(i & 2, _dqlntab[i], y); /* quantized diff. */
 
-        sr = (dq < 0) ? se - (dq & 0x3FFF) : se + dq; /* reconstructed signal */
-        dqsez = sr + sez - se;          /* pole prediction diff. */
+	sr = (dq < 0) ? se - (dq & 0x3FFF) : se + dq; /* reconstructed signal */
+	dqsez = sr + sez - se;          /* pole prediction diff. */
 
-        update(2, y, _witab[i], _fitab[i], dq, sr, dqsez, state_ptr);
+	update(2, y, _witab[i], _fitab[i], dq, sr, dqsez, state_ptr);
 
 
-        return (unsigned char)(i);
+	return (unsigned char)(i);
 }
 
 short g723_2Codec::coder(state_t *state_ptr, int i)
@@ -742,21 +737,21 @@ short g723_2Codec::coder(state_t *state_ptr, int i)
 	short sezi, sei, sez, se;
 	short y, sr, dq, dqsez;
 
-        i &= 0x03;                      /* mask to get proper bits */
+	i &= 0x03;                      /* mask to get proper bits */
 
-        sezi = predictor_zero(state_ptr);
-        sez = sezi >> 1;
-        sei = sezi + predictor_pole(state_ptr);
-        se = sei >> 1;                  /* se = estimated signal */
+	sezi = predictor_zero(state_ptr);
+	sez = sezi >> 1;
+	sei = sezi + predictor_pole(state_ptr);
+	se = sei >> 1;                  /* se = estimated signal */
 
-        y = step_size(state_ptr);       /* adaptive quantizer step size */
-        dq = reconstruct(i & 0x02, _dqlntab[i], y); /* unquantize pred diff */
+	y = step_size(state_ptr);       /* adaptive quantizer step size */
+	dq = reconstruct(i & 0x02, _dqlntab[i], y); /* unquantize pred diff */
 
-        sr = (dq < 0) ? (se - (dq & 0x3FFF)) : (se + dq); /* reconst. signal */
+	sr = (dq < 0) ? (se - (dq & 0x3FFF)) : (se + dq); /* reconst. signal */
 
-        dqsez = sr - se + sez;                  /* pole prediction diff. */
+	dqsez = sr - se + sez;                  /* pole prediction diff. */
 
-        update(2, y, _witab[i], _fitab[i], dq, sr, dqsez, state_ptr);
+	update(2, y, _witab[i], _fitab[i], dq, sr, dqsez, state_ptr);
 
 
 	return sr << 2;
@@ -768,8 +763,7 @@ unsigned g723_2Codec::encode(Linear buffer, void *coded, unsigned lsamples)
 	Encoded dest = (Encoded)coded;
 	unsigned i, data, byte, bits;
 
-	while(count--)
-	{
+	while(count--) {
 		bits = 0;
 		data = 0;
 		for(i = 0; i < 4; ++i)
@@ -777,8 +771,7 @@ unsigned g723_2Codec::encode(Linear buffer, void *coded, unsigned lsamples)
 			byte = encoder(*(buffer++), &encode_state);
 			data |= (byte << bits);
 			bits += 2;
-			if(bits >= 8)
-			{
+			if(bits >= 8) {
 				*(dest++) = (data & 0xff);
 				bits -= 8;
 				data >>= 8;
@@ -793,12 +786,10 @@ unsigned g723_2Codec::decode(Linear buffer, void *from, unsigned lsamples)
 	Encoded src = (Encoded)from;
 	unsigned count = (lsamples / 4) * 4;
 	unsigned char byte, nib;
-	unsigned bits = 0, data = 0; 
+	unsigned bits = 0, data = 0;
 
-	while(count--)
-	{
-		if(bits < 2)
-		{
+	while(count--) {
+		if(bits < 2) {
 			byte = *(src++);
 			data |= (byte << bits);
 			bits += 8;
@@ -809,16 +800,16 @@ unsigned g723_2Codec::decode(Linear buffer, void *from, unsigned lsamples)
 		*(buffer++) = coder(&decode_state, nib);
 	}
 	return (lsamples / 4) * 4;
-}		
+}
 
 AudioCodec *g723_2Codec::getByInfo(Info &info)
 {
-        return (AudioCodec *)new g723_2Codec();
+	return (AudioCodec *)new g723_2Codec();
 }
 
 AudioCodec *g723_2Codec::getByFormat(const char *format)
 {
-        return (AudioCodec *)new g723_2Codec();
+	return (AudioCodec *)new g723_2Codec();
 }
 
 g723_5Codec::g723_5Codec() : AudioCodec()
@@ -832,7 +823,7 @@ g723_5Codec::g723_5Codec() : AudioCodec()
 	info.annotation = "g.723";
 	info.rate = 8000;
 	memset(&encode_state, 0, sizeof(encode_state));
-        memset(&decode_state, 0, sizeof(decode_state));
+	memset(&decode_state, 0, sizeof(decode_state));
 	encode_state.yl = decode_state.yl = 34816;
 	encode_state.yu = decode_state.yu = 544;
 	encode_state.sr[0] = encode_state.sr[1] = decode_state.sr[0] = decode_state.sr[1] = 32;
@@ -855,60 +846,60 @@ g723_5Codec::~g723_5Codec()
 
 unsigned char g723_5Codec::encoder(short sl, state_t *state_ptr)
 {
-        short           sei, sezi, se, sez;     /* ACCUM */
-        short           d;                      /* SUBTA */
-        short           y;                      /* MIX */
-        short           sr;                     /* ADDB */
-        short           dqsez;                  /* ADDC */
-        short           dq, i;
+	short           sei, sezi, se, sez;     /* ACCUM */
+	short           d;                      /* SUBTA */
+	short           y;                      /* MIX */
+	short           sr;                     /* ADDB */
+	short           dqsez;                  /* ADDC */
+	short           dq, i;
 
 	sl >>= 2;
 
-        sezi = predictor_zero(state_ptr);
-        sez = sezi >> 1;
-        sei = sezi + predictor_pole(state_ptr);
-        se = sei >> 1;                  /* se = estimated signal */
+	sezi = predictor_zero(state_ptr);
+	sez = sezi >> 1;
+	sei = sezi + predictor_pole(state_ptr);
+	se = sei >> 1;                  /* se = estimated signal */
 
-        d = sl - se;                    /* d = estimation difference */
+	d = sl - se;                    /* d = estimation difference */
 
-        /* quantize prediction difference */
-        y = step_size(state_ptr);       /* adaptive quantizer step size */
-        i = quantize(d, y, qtab_723_40, 15);    /* i = ADPCM code */
+	/* quantize prediction difference */
+	y = step_size(state_ptr);       /* adaptive quantizer step size */
+	i = quantize(d, y, qtab_723_40, 15);    /* i = ADPCM code */
 
-        dq = reconstruct(i & 0x10, _dqlntab[i], y);     /* quantized diff */
+	dq = reconstruct(i & 0x10, _dqlntab[i], y);     /* quantized diff */
 
-        sr = (dq < 0) ? se - (dq & 0x7FFF) : se + dq; /* reconstructed signal */
-        dqsez = sr + sez - se;          /* dqsez = pole prediction diff. */
+	sr = (dq < 0) ? se - (dq & 0x7FFF) : se + dq; /* reconstructed signal */
+	dqsez = sr + sez - se;          /* dqsez = pole prediction diff. */
 
-        update(5, y, _witab[i], _fitab[i], dq, sr, dqsez, state_ptr);
+	update(5, y, _witab[i], _fitab[i], dq, sr, dqsez, state_ptr);
 
-        return (unsigned char)(i);
+	return (unsigned char)(i);
 }
 
 short g723_5Codec::coder(state_t *state_ptr, int i)
 {
-        short           sezi, sei, sez, se;     /* ACCUM */
-        short           y;                 /* MIX */
-        short           sr;                     /* ADDB */
-        short           dq;
-        short           dqsez;
+	short           sezi, sei, sez, se;     /* ACCUM */
+	short           y;                 /* MIX */
+	short           sr;                     /* ADDB */
+	short           dq;
+	short           dqsez;
 
-        i &= 0x1f;                      /* mask to get proper bits */
-        sezi = predictor_zero(state_ptr);
-        sez = sezi >> 1;
-        sei = sezi + predictor_pole(state_ptr);
-        se = sei >> 1;                  /* se = estimated signal */
+	i &= 0x1f;                      /* mask to get proper bits */
+	sezi = predictor_zero(state_ptr);
+	sez = sezi >> 1;
+	sei = sezi + predictor_pole(state_ptr);
+	se = sei >> 1;                  /* se = estimated signal */
 
-        y = step_size(state_ptr);       /* adaptive quantizer step size */
-        dq = reconstruct(i & 0x10, _dqlntab[i], y);     /* estimation diff. */
+	y = step_size(state_ptr);       /* adaptive quantizer step size */
+	dq = reconstruct(i & 0x10, _dqlntab[i], y);     /* estimation diff. */
 
-        sr = (dq < 0) ? (se - (dq & 0x7FFF)) : (se + dq); /* reconst. signal */
+	sr = (dq < 0) ? (se - (dq & 0x7FFF)) : (se + dq); /* reconst. signal */
 
-        dqsez = sr - se + sez;          /* pole prediction diff. */
+	dqsez = sr - se + sez;          /* pole prediction diff. */
 
-        update(5, y, _witab[i], _fitab[i], dq, sr, dqsez, state_ptr);
+	update(5, y, _witab[i], _fitab[i], dq, sr, dqsez, state_ptr);
 	return sr << 2;
-}	
+}
 
 unsigned g723_5Codec::encode(Linear buffer, void *coded, unsigned lsamples)
 {
@@ -916,8 +907,7 @@ unsigned g723_5Codec::encode(Linear buffer, void *coded, unsigned lsamples)
 	Encoded dest = (Encoded)coded;
 	unsigned i, data, byte, bits;
 
-	while(count--)
-	{
+	while(count--) {
 		bits = 0;
 		data = 0;
 		for(i = 0; i < 8; ++i)
@@ -925,8 +915,7 @@ unsigned g723_5Codec::encode(Linear buffer, void *coded, unsigned lsamples)
 			byte = encoder(*(buffer++), &encode_state);
 			data |= (byte << bits);
 			bits += 5;
-			if(bits >= 8)
-			{
+			if(bits >= 8) {
 				*(dest++) = (data & 0xff);
 				bits -= 8;
 				data >>= 8;
@@ -941,12 +930,10 @@ unsigned g723_5Codec::decode(Linear buffer, void *from, unsigned lsamples)
 	Encoded src = (Encoded)from;
 	unsigned count = (lsamples / 8) * 8;
 	unsigned char byte, nib;
-	unsigned bits = 0, data = 0; 
+	unsigned bits = 0, data = 0;
 
-	while(count--)
-	{
-		if(bits < 5)
-		{
+	while(count--) {
+		if(bits < 5) {
 			byte = *(src++);
 			data |= (byte << bits);
 			bits += 8;
@@ -957,16 +944,16 @@ unsigned g723_5Codec::decode(Linear buffer, void *from, unsigned lsamples)
 		*(buffer++) = coder(&decode_state, nib);
 	}
 	return (lsamples / 8) * 8;
-}		
+}
 
 AudioCodec *g723_5Codec::getByInfo(Info &info)
 {
-        return (AudioCodec *)new g723_5Codec();
+	return (AudioCodec *)new g723_5Codec();
 }
 
 AudioCodec *g723_5Codec::getByFormat(const char *format)
 {
-        return (AudioCodec *)new g723_5Codec();
+	return (AudioCodec *)new g723_5Codec();
 }
 
 g721Codec::g721Codec() : AudioCodec()
@@ -981,7 +968,7 @@ g721Codec::g721Codec() : AudioCodec()
 	info.encoding = g721ADPCM;
 
 	memset(&encode_state, 0, sizeof(encode_state));
-        memset(&decode_state, 0, sizeof(decode_state));
+	memset(&decode_state, 0, sizeof(decode_state));
 	encode_state.yl = decode_state.yl = 34816;
 	encode_state.yu = decode_state.yu = 544;
 	encode_state.sr[0] = encode_state.sr[1] = decode_state.sr[0] = decode_state.sr[1] = 32;
@@ -1009,22 +996,22 @@ unsigned char g721Codec::encoder(short sl, state_t *state)
 
 	sl >>= 2;
 
-        sezi = predictor_zero(state);
-        sez = sezi >> 1;
-        se = (sezi + predictor_pole(state)) >> 1; 
+	sezi = predictor_zero(state);
+	sez = sezi >> 1;
+	se = (sezi + predictor_pole(state)) >> 1;
 
-        d = sl - se;
+	d = sl - se;
 
-        y = step_size(state);
-        i = quantize(d, y, qtab_721, 7);
-        dq = reconstruct(i & 8, _dqlntab[i], y);
-        sr = (dq < 0) ? se - (dq & 0x3FFF) : se + dq;
+	y = step_size(state);
+	i = quantize(d, y, qtab_721, 7);
+	dq = reconstruct(i & 8, _dqlntab[i], y);
+	sr = (dq < 0) ? se - (dq & 0x3FFF) : se + dq;
 
-        dqsez = sr + sez - se; 
+	dqsez = sr + sez - se;
 
-        update(4, y, _witab[i] << 5, _fitab[i], dq, sr, dqsez, state);
+	update(4, y, _witab[i] << 5, _fitab[i], dq, sr, dqsez, state);
 
-        return (unsigned char)(i);
+	return (unsigned char)(i);
 }
 
 short g721Codec::coder(state_t *state, int i)
@@ -1051,8 +1038,7 @@ unsigned g721Codec::encode(Linear buffer, void *coded, unsigned lsamples)
 	Encoded dest = (Encoded)coded;
 	unsigned data, bits, i;
 
-	while(count--)
-	{
+	while(count--) {
 		bits = 0;
 		data = 0;
 		for(i = 0; i < 2; ++i)
@@ -1073,24 +1059,23 @@ unsigned g721Codec::decode(Linear buffer, void *from, unsigned lsamples)
 	unsigned count = lsamples / 2;
 	unsigned data;
 
-	while(count--)
-	{
+	while(count--) {
 		data = *(src++);
-                *(buffer++) = coder(&decode_state, (data & 0x0f));
+		*(buffer++) = coder(&decode_state, (data & 0x0f));
 		data >>= 4;
 		*(buffer++) = coder(&decode_state, (data & 0x0f));
 	}
 	return (lsamples / 2) * 2;
-}		
-				
+}
+
 AudioCodec *g721Codec::getByInfo(Info &info)
 {
-        return (AudioCodec *)new g721Codec();
+	return (AudioCodec *)new g721Codec();
 }
 
 AudioCodec *g721Codec::getByFormat(const char *format)
 {
-        return (AudioCodec *)new g721Codec();
+	return (AudioCodec *)new g721Codec();
 }
 
 static g721Codec g723_4("adpcm", Audio::g721ADPCM);

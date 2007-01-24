@@ -43,8 +43,7 @@
 namespace ccAudioCodec {
 using namespace ost;
 
-static class g711u : public AudioCodec
-{
+static class g711u : public AudioCodec {
 public:
 	g711u();
 
@@ -55,8 +54,7 @@ public:
 
 } g711u;
 
-static class g711a : public AudioCodec
-{
+static class g711a : public AudioCodec {
 public:
 	g711a();
 
@@ -93,7 +91,7 @@ g711a::g711a() : AudioCodec("g.711", alawAudio)
 
 static unsigned ullevels[128] =
 {
-			32124,   31100,   30076,   29052,   28028, 
+			32124,   31100,   30076,   29052,   28028,
 	27004,   25980,   24956,   23932,   22908,   21884,   20860,
 	19836,   18812,   17788,   16764,   15996,   15484,   14972,
 	14460,   13948,   13436,   12924,   12412,   11900,   11388,
@@ -141,8 +139,7 @@ Audio::Level g711u::getPeak(void *data, unsigned samples)
 
 	unsigned char *dp = (unsigned char *)data;
 
-	while(samples--)
-	{
+	while(samples--) {
 		value = ullevels[*(dp++) & 0x7f];
 		if(value > max)
 			max = value;
@@ -153,22 +150,22 @@ Audio::Level g711u::getPeak(void *data, unsigned samples)
 unsigned g711u::encode(Linear buffer, void *dest, unsigned lsamples)
 {
 	static int ulaw[256] = {
-        0,0,1,1,2,2,2,2,3,3,3,3,3,3,3,3,
-        4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,
-        5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,
-        5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,
-        6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,
-        6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,
-        6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,
-        6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,
-        7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,
-        7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,
-        7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,
-        7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,
-        7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,
-        7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,
-        7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,
-        7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7};
+		0,0,1,1,2,2,2,2,3,3,3,3,3,3,3,3,
+		4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,
+		5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,
+		5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,
+		6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,
+		6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,
+		6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,
+		6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,
+		7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,
+		7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,
+		7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,
+		7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,
+		7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,
+		7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,
+		7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,
+		7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7};
 
 	register Sample sample;
 	int sign, exponent, mantissa, retval;
@@ -177,17 +174,16 @@ unsigned g711u::encode(Linear buffer, void *dest, unsigned lsamples)
 
 	count = lsamples;
 
-	while(lsamples--)
-	{
+	while(lsamples--) {
 		sample = *(buffer++);
 		        sign = (sample >> 8) & 0x80;
 	        if(sign != 0) sample = -sample;
-        	sample += 0x84;
-        	exponent = ulaw[(sample >> 7) & 0xff];
-        	mantissa = (sample >> (exponent + 3)) & 0x0f;
-        	retval = ~(sign | (exponent << 4) | mantissa);
-        	if(!retval)
-                	retval = 0x02;
+			sample += 0x84;
+			exponent = ulaw[(sample >> 7) & 0xff];
+			mantissa = (sample >> (exponent + 3)) & 0x0f;
+			retval = ~(sign | (exponent << 4) | mantissa);
+			if(!retval)
+			retval = 0x02;
 		*(d++) = (unsigned char)retval;
 	}
 	return count;
@@ -255,13 +251,11 @@ unsigned g711a::encode(Linear buffer, void *dest, unsigned lsamples)
 
 	count = lsamples;
 
-	while(lsamples--)
-	{
+	while(lsamples--) {
 		pcm_val = *(buffer++);
 		if(pcm_val >= 0)
 			mask = AMI_MASK | 0x80;
-		else
-		{
+		else {
 			mask = AMI_MASK;
 			pcm_val = -pcm_val;
 		}
@@ -305,12 +299,12 @@ Audio::Level g711a::getImpulse(void *data, unsigned samples)
 
 
 
-        unsigned char *dp = (unsigned char *)data;
+	unsigned char *dp = (unsigned char *)data;
 
-        while(samples--)
-                sum += (allevels[*(dp++) & 0x7f]);
+	while(samples--)
+		sum += (allevels[*(dp++) & 0x7f]);
 
-        return (Level)(sum / count);
+	return (Level)(sum / count);
 }
 
 Audio::Level g711a::getPeak(void *data, unsigned samples)
@@ -323,8 +317,7 @@ Audio::Level g711a::getPeak(void *data, unsigned samples)
 
 	unsigned char *dp = (unsigned char *)data;
 
-	while(samples--)
-	{
+	while(samples--) {
 		value = allevels[*(dp++) & 0x7f];
 		if(value > max)
 			max = value;

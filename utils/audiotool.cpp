@@ -157,6 +157,8 @@ int main(int argc, char **argv)
 #endif
 	else if(!stricmp(cp, "-info"))
 		Tool::info(++argv);
+	else if(!stricmp(cp, "-size"))
+		Tool::size(++argv);
 	else if(!stricmp(cp, "-notation") || !stricmp(cp, "-annotation"))
 		Tool::notation(++argv);
 	else if(!stricmp(cp, "-chart"))

@@ -32,6 +32,7 @@
 #include <cctype>
 #include <cmath>
 #include <ctime>
+#include <cstdlib>
 
 #ifdef  HAVE_STDINT_H
 #include <stdint.h>

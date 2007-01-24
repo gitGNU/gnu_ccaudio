@@ -40,6 +40,7 @@
 #include <cmath>
 #include <cstdio>
 #include <ctime>
+#include <cstdlib>
 
 extern int _osx_ccaudio_dummy;
 int _osx_ccaudio_dummy = 0;

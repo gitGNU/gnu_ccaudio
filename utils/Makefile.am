@@ -21,6 +21,6 @@ man1_MANS = audiotool.1 tonetool.1
 man_MANS = audiotool.1 tonetool.1
 
 audiotool_SOURCES = audiotool.cpp info.cpp notation.cpp rewrite.cpp \
-	chart.cpp build.cpp play.cpp strip.cpp trim.cpp packetdump.cpp
+	chart.cpp build.cpp play.cpp strip.cpp trim.cpp packetdump.cpp size.cpp
 
 tonetool_SOURCES = tonetool.cpp tonedetect.cpp tonelist.cpp tonewrite.cpp

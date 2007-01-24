@@ -60,32 +60,32 @@ protected:
 
 public:
 	AudioCodec *getByInfo(Info &info);
-	AudioCodec *getByFormat(const char *format);	
-	
+	AudioCodec *getByFormat(const char *format);
+
 	unsigned encode(Linear data, void *dest, unsigned samples);
 	unsigned decode(Linear data, void *source, unsigned samples);
 
 	GSMCodec(const char *id, Encoding e);
 	GSMCodec();
 	~GSMCodec();
- 
+
 };
 
 GSMCodec::GSMCodec()
 {
-        encoder = gsm_create();
-        decoder = gsm_create();
-        info.framesize = 33;
-        info.framecount = 160;
-        info.rate = 8000;
-        info.bitrate = 13200;
-        info.annotation = "gsm";
+	encoder = gsm_create();
+	decoder = gsm_create();
+	info.framesize = 33;
+	info.framecount = 160;
+	info.rate = 8000;
+	info.bitrate = 13200;
+	info.annotation = "gsm";
 	info.encoding = gsmVoice;
 }
 
 GSMCodec::GSMCodec(const char *id, Encoding e) : AudioCodec(id, e)
 {
-	encoder = gsm_create();	
+	encoder = gsm_create();
 	decoder = gsm_create();
 	info.framesize = 33;
 	info.framecount = 160;
@@ -119,8 +119,7 @@ unsigned GSMCodec::encode(Linear from, void *dest, unsigned samples)
 	if(!count)
 		return 0;
 
-	while(count--)
-	{
+	while(count--) {
 		gsm_encode(encoder, from, encoded);
 		from += 160;
 		encoded += 33;
@@ -136,8 +135,7 @@ unsigned GSMCodec::decode(Linear dest, void *from, unsigned samples)
 	if(!count)
 		return 0;
 
-	while(count--)
-	{
+	while(count--) {
 		gsm_decode(decoder, encoded, dest);
 		encoded += 160;
 		dest += 160;

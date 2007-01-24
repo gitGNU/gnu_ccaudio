@@ -51,7 +51,7 @@ class ilbcCodec : public AudioCodec
 private:
 	iLBC_Dec_Inst_t ilbc_decoder;
 	iLBC_Enc_Inst_t ilbc_encoder;
-		
+
 public:
 	AudioCodec *getByInfo(Info &info);
 	AudioCodec *getByFormat(const char *format);
@@ -74,7 +74,7 @@ ilbcCodec::ilbcCodec() : AudioCodec()
 	info.bitrate = 13333;
 
 	memset(&ilbc_encoder, 0, sizeof(ilbc_encoder));
-        memset(&ilbc_decoder, 0, sizeof(ilbc_decoder));
+	memset(&ilbc_decoder, 0, sizeof(ilbc_decoder));
 	initEncode(&ilbc_encoder, 30);
 	initDecode(&ilbc_decoder, 30, USE_ILBC_ENHANCER);
 }
@@ -89,9 +89,9 @@ ilbcCodec::ilbcCodec(const char *id, Encoding e) : AudioCodec(id, e)
 	info.bitrate = 13333;
 
 	memset(&ilbc_encoder, 0, sizeof(ilbc_encoder));
-        memset(&ilbc_decoder, 0, sizeof(ilbc_decoder));
-        initEncode(&ilbc_encoder, 30);
-        initDecode(&ilbc_decoder, 30, USE_ILBC_ENHANCER);
+	memset(&ilbc_decoder, 0, sizeof(ilbc_decoder));
+	initEncode(&ilbc_encoder, 30);
+	initDecode(&ilbc_decoder, 30, USE_ILBC_ENHANCER);
 }
 
 ilbcCodec::~ilbcCodec()
@@ -106,38 +106,33 @@ unsigned ilbcCodec::encode(Linear buffer, void *coded, unsigned lsamples)
 	unsigned char byte = 0;
 	Encoded dest = (Encoded)coded;
 
-	while(count--)
-	{
+	while(count--) {
 		data = (*(buffer++)) >> 4;
 		step = steps[encode_state.ssindex];
 		diff = data - encode_state.signal;
 
-		if(diff < 0)
-		{
+		if(diff < 0) {
 			nib = (-diff << 2) / step;
 			if(nib > 7)
 				nib = 7;
 			nib |= 0x08;
 		}
-		else
-		{
+		else {
 			nib = (diff << 2) / step;
 			if(nib > 7)
 				nib = 7;
 		}
 		coder(&encode_state, nib);
-		if(hi)
-		{
+		if(hi) {
 			byte |= nib;
 			*(dest++) = byte;
 			hi = false;
 		}
-		else
-		{
+		else {
 			byte = (unsigned char)(nib << 4);
 			hi = true;
 		}
-				
+
 	}
 	return (lsamples / 2) * 2;
 }
@@ -148,8 +143,7 @@ unsigned g721Codec::decode(Linear buffer, void *from, unsigned lsamples)
 	unsigned count = lsamples / 2;
 	int nib;
 
-	while(count--)
-	{
+	while(count--) {
 		nib = (*src >> 4) & 0x0f;
 		*(buffer++) = coder(&decode_state, nib);
 		nib = *src & 0x0f;
@@ -157,18 +151,18 @@ unsigned g721Codec::decode(Linear buffer, void *from, unsigned lsamples)
 		++src;
 	}
 	return (lsamples / 2) * 2;
-}		
+}
 
 AudioCodec *g721Codec::getByInfo(Info &info)
 {
-        return (AudioCodec *)new g721Codec();
+	return (AudioCodec *)new g721Codec();
 }
 
 AudioCodec *g721Codec::getByFormat(const char *format)
 {
-        return (AudioCodec *)new g721Codec();
+	return (AudioCodec *)new g721Codec();
 }
-				
+
 static g721Codec codec("adpcm", Audio::g721ADPCM);
 
 } // namespace
