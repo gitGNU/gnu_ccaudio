@@ -10,7 +10,7 @@
 
 AUTOMAKE_OPTIONS = no-dependencies dist-shar dist-zip
 ACLOCAL_AMFLAGS = -I m4
-EXTRA_DIST = reconfig ccaudio2.spec ccaudio2.spec.in autoconf/* TODO \
+EXTRA_DIST = autogen.sh ccaudio2.spec ccaudio2.spec.in autoconf/* TODO \
 	libccaudio2.pc libccaudio2.pc.in ccaudio2.list ccaudio2.list.in
 
 SUBDIRS = src codecs utils doc
