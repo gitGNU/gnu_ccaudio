@@ -10,27 +10,6 @@
 
 AC_INIT(reconfig)
 
-cfg_options=""
-if test -z "$*" ; then
-        if test -f ~/.configure ; then
-                cfg_options=`grep ^ccaudio2: ~/.configure | sed -e s/^ccaudio2://`
-        elif test -f /etc/configure.conf ; then
-		cfg_options=`grep ^ccaudio2: /etc/configure.conf | sed -e s/^ccaudio2://`
-        fi
-fi
-
-if test ! -z "$cfg_options" ; then
-        echo "using ~/.configure defaults...$cfg_options"
-	case "$SHELL" in
-	*/bash*)
-		exec $SHELL $0 $cfg_options
-		exit -1
-		;;
-	esac
-	exec $0 $cfg_options
-	exit -1
-fi
-
 AUDIO_LIBS=""
 
 VERSION="0.9.12"
