@@ -171,20 +171,19 @@ bool OSSAudioDevice::setAudio(Rate rate, bool stereo, timeout_t framing)
 
 	enabled = false;
 
-	ioctl(dsp, SOUND_PCM_RESET, NULL);
-	ioctl(dsp, SOUND_PCM_SYNC, NULL);
-	ioctl(dsp, SOUND_PCM_SUBDIVIDE, &div);
-	if(ioctl(dsp, SOUND_PCM_SETFMT, &codec))
+	ioctl(dsp, SNDCTL_DSP_RESET, NULL);
+	ioctl(dsp, SNDCTL_DSP_SYNC, NULL);
+	ioctl(dsp, SNDCTL_DSP_SUBDIVIDE, &div);
+
+	if(ioctl(dsp, SNDCTL_DSP_SETFMT, &codec))
 		return false;
 
-	if(ioctl(dsp, SOUND_PCM_WRITE_RATE, &srate))
+	if(ioctl(dsp, SNDCTL_DSP_SPEED, &srate))
 		return false;
 
-	if(ioctl(dsp, SOUND_PCM_WRITE_CHANNELS, &channels))
+	if(ioctl(dsp, SNDCTL_DSP_CHANNELS, &channels))
 		return false;
 
-	ioctl(dsp, SOUND_PCM_READ_RATE, &srate);
-	ioctl(dsp, SOUND_PCM_READ_CHANNELS, &channels);
 	ioctl(dsp, SNDCTL_DSP_GETBLKSIZE, &blksize);
 	info.framesize = blksize;
 	info.framecount = toSamples(info.encoding, blksize);
