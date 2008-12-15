@@ -15,7 +15,7 @@ pkglibdir = $(codec_libdir)
 noinst_HEADERS = codecs.h
 
 if MODULES
-pkglib_LTLIBRARIES = g.711.la adpcm.la oki.la
+pkglib_LTLIBRARIES = g711.la adpcm.la oki.la
 
 if GSM_CODEC
 pkglib_LTLIBRARIES += gsm.la
@@ -33,8 +33,8 @@ oki_la_LDFLAGS = -module -avoid-version @MODULE_FLAGS@ -lm
 adpcm_la_SOURCES = adpcm.cpp
 adpcm_la_LDFLAGS = -module -avoid-version @MODULE_FLAGS@ -lm
 
-g_711_la_SOURCES = g711.cpp
-g_711_la_LDFLAGS = -module -avoid-version @MODULE_FLAGS@ 
+g711_la_SOURCES = g711.cpp
+g711_la_LDFLAGS = -module -avoid-version @MODULE_FLAGS@ 
 
 if GSM_CODEC
 gsm_la_SOURCES = gsm.cpp
