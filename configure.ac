@@ -26,6 +26,10 @@ AM_CONFIG_HEADER(private.h)
 AC_CHECK_HEADERS(stdint.h sys/soundcard.h)
 AC_CHECK_LIB(ossaudio, _oss_ioctl, 
 	[AUDIO_LIBS="$AUDIO_LIBS -lossaudio"])
+
+AC_C_RESTRICT
+AC_C_VOLATILE
+AC_C_INLINE
 		
 ac_gsm_codec=false
 ac_spx_codec=false
