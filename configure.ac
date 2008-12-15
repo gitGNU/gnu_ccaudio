@@ -214,6 +214,12 @@ AM_CONDITIONAL(MODULES, test "$ost_cv_dynloader" = yes)
 AM_CONDITIONAL(GSM_CODEC, test "$ac_gsm_codec" = true)
 AM_CONDITIONAL(SPEEX_CODEC, test "$ac_spx_codec" = true)
 
+LIB_VERSION=`echo $LT_RELEASE | sed -e 's/[\.]/_/'` 
+LIB_MAJOR=`echo $LT_VERSION | sed -e 's/[:].*$//'`
+
+AC_SUBST(LIB_VERSION)
+AC_SUBST(LIB_MAJOR)
+
 AC_OUTPUT(src/Makefile m4/Makefile doc/Makefile w32/Makefile codecs/Makefile 
 utils/Makefile Makefile libccaudio2.pc ccaudio2.spec ccaudio2.list 
 w32/ccaudio2.rc doc/Doxyfile)

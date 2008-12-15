@@ -1,7 +1,8 @@
 Changes from 0.9.14 to 1.0.0
 - reworking of plugin naming and build conventions.
 - code cleanup.
-- Now licensed using GNU Lesser General Public License 3.0 or Later.
+- now licensed using GNU Lesser General Public License 3.0 or Later.
+- more modern rpm spec file.
 
 Changes from 0.9.13 to 0.9.14
 - oss ioctl changes as suggested by Yair.
