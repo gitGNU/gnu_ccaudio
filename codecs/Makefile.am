@@ -28,22 +28,22 @@ endif
 AM_CPPFLAGS = -I../src -I$(top_srcdir)/src -fPIC -DPIC
 
 oki_la_SOURCES = oki.cpp
-oki_la_LDFLAGS = -module -avoid-version @MODULE_FLAGS@ -lm
+oki_la_LDFLAGS = -module -avoid-version @MODULE_FLAGS@ $(LDADD) -lm
 
 adpcm_la_SOURCES = adpcm.cpp
-adpcm_la_LDFLAGS = -module -avoid-version @MODULE_FLAGS@ -lm
+adpcm_la_LDFLAGS = -module -avoid-version @MODULE_FLAGS@ $(LDADD) -lm
 
 g711_la_SOURCES = g711.cpp
-g711_la_LDFLAGS = -module -avoid-version @MODULE_FLAGS@ 
+g711_la_LDFLAGS = -module -avoid-version @MODULE_FLAGS@ $(LDADD)
 
 if GSM_CODEC
 gsm_la_SOURCES = gsm.cpp
-gsm_la_LDFLAGS = -module -avoid-version @MODULE_FLAGS@ -lgsm -lm
+gsm_la_LDFLAGS = -module -avoid-version @MODULE_FLAGS@ $(LDADD) -lgsm -lm
 endif
 
 if SPEEX_CODEC
 speex_la_SOURCES = speex.cpp
-speex_la_LDFLAGS = -module -avoid-version @MODULE_FLAGS@ -lspeex -lm
+speex_la_LDFLAGS = -module -avoid-version @MODULE_FLAGS@ $(LDADD) -lspeex -lm
 endif
 
 endif

@@ -6,7 +6,7 @@ Group: Development/Libraries
 URL: http://www.gnu.org/software/ccaudio
 Source: ftp://ftp.gnu.org/gnu/ccaudio/ccaudio2-%{PACKAGE_VERSION}.tar.gz
 Prefix: %{_prefix}
-Copyright: GPL
+Copyright: LGPLv3+
 BuildRoot: %{_tmppath}/ccaudio2-root
 Packager: David Sugar <dyfet@ostel.com>
 BuildRequires: libstdc++-devel
