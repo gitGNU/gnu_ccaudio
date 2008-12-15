@@ -337,6 +337,12 @@ LATEX_HEADER         =
 
 PDF_HYPERLINKS       = NO
 
+# If the USE_PDFLATEX tag is set to YES, pdflatex will be used instead of 
+# plain latex in the generated Makefile. Set this option to YES to get a 
+# higher quality PDF documentation.
+
+USE_PDFLATEX           = NO
+
 #---------------------------------------------------------------------------
 # configuration options related to the man page output
 #---------------------------------------------------------------------------
