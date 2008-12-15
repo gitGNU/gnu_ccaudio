@@ -62,6 +62,10 @@
 #define	RLL_SUFFIX ".rll"
 #endif
 
+#ifndef	RLL_SUFFIX
+#define	RLL_SUFFIX ".so"
+#endif
+
 static ccAudio_Mutex_ lock;
 
 #if defined(HAVE_PTHREAD_H)
@@ -184,7 +188,6 @@ bool AudioCodec::load(const char *name)
 {
 	char path[256];
 
-#ifdef	RLL_SUFFIX
 	char fn[16];
 	char *p = fn;
 	char *q = fn;
@@ -197,18 +200,8 @@ bool AudioCodec::load(const char *name)
 		++p;
 	}
 	*q = 0;
-	len = (unsigned)strlen(fn);
-	snprintf(fn + len, sizeof(fn) - len, RLL_SUFFIX);
-	name = fn;
 
-	snprintf(path, sizeof(path), "%s/%s", Audio::getCodecPath(), name);
-#else
-#ifdef	W32
-	snprintf(path, sizeof(path), "%s/%s", Audio::getCodecPath(), name);
-#else
-	snprintf(path, sizeof(path), "%s/%s.codec", CODEC_LIBPATH, name);
-#endif
-#endif
+	snprintf(path, sizeof(path), "%s/%s%s", Audio::getCodecPath(), fn, RLL_SUFFIX);
 	return loadPlugin(path);
 }
 

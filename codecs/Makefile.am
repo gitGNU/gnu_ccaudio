@@ -15,35 +15,35 @@ pkglibdir = $(codec_libdir)
 noinst_HEADERS = codecs.h
 
 if MODULES
-pkglib_PROGRAMS = g.711.codec adpcm.codec oki.codec
+pkglib_LTLIBRARIES = g.711.la adpcm.la oki.la
 
 if GSM_CODEC
-pkglib_PROGRAMS += gsm.codec
+pkglib_LTLIBRARIES += gsm.la
 endif
 
 if SPEEX_CODEC
-pkglib_PROGRAMS += speex.codec
+pkglib_LTLIBRARIES += speex.la
 endif
 
 AM_CPPFLAGS = -I../src -I$(top_srcdir)/src -fPIC -DPIC
 
-oki_codec_SOURCES = oki.cpp
-oki_codec_LDFLAGS = @MODULE_FLAGS@ -lm
+oki_la_SOURCES = oki.cpp
+oki_la_LDFLAGS = -module -avoid-version @MODULE_FLAGS@ -lm
 
-adpcm_codec_SOURCES = adpcm.cpp
-adpcm_codec_LDFLAGS = @MODULE_FLAGS@ -lm
+adpcm_la_SOURCES = adpcm.cpp
+adpcm_la_LDFLAGS = -module -avoid-version @MODULE_FLAGS@ -lm
 
-g_711_codec_SOURCES = g711.cpp
-g_711_codec_LDFLAGS = @MODULE_FLAGS@ 
+g_711_la_SOURCES = g711.cpp
+g_711_la_LDFLAGS = -module -avoid-version @MODULE_FLAGS@ 
 
 if GSM_CODEC
-gsm_codec_SOURCES = gsm.cpp
-gsm_codec_LDFLAGS = @MODULE_FLAGS@ -lgsm -lm
+gsm_la_SOURCES = gsm.cpp
+gsm_la_LDFLAGS = -module -avoid-version @MODULE_FLAGS@ -lgsm -lm
 endif
 
 if SPEEX_CODEC
-speex_codec_SOURCES = speex.cpp
-speex_codec_LDFLAGS = @MODULE_FLAGS@ -lspeex -lm
+speex_la_SOURCES = speex.cpp
+speex_la_LDFLAGS = -module -avoid-version @MODULE_FLAGS@ -lspeex -lm
 endif
 
 endif

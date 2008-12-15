@@ -12,9 +12,9 @@ AC_INIT(autogen.sh)
 
 AUDIO_LIBS=""
 
-VERSION="0.9.14"
-LT_RELEASE="0.9"
-LT_VERSION="0:14"
+VERSION="1.0.0"
+LT_RELEASE="1.0"
+LT_VERSION="0:0"
 AC_CONFIG_AUX_DIR(autoconf)
 AC_CANONICAL_SYSTEM
 AC_PROG_CPP
@@ -165,12 +165,12 @@ AC_CHECK_HEADERS(CoreAudio/CoreAudio.h, [
 ])
 
 SHARED_FLAGS=""
-MODULE_FLAGS="-module -shared"
+MODULE_FLAGS="-module -shared -avoid-version"
 STAGE2=""      
 case "$target_os" in
 cygwin*)
         SHARED_FLAGS="-no-undefined"
-        MODULE_FLAGS="-module -shared -no-undefined"
+        MODULE_FLAGS="-module -shared -no-undefined -avoid-version"
 	AUDIO_LIBS="-lwinmm"
 	;;
 darwin6*)

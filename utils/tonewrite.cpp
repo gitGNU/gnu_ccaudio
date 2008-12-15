@@ -40,13 +40,13 @@ void Tool::write(char **argv, bool append)
 	const char *target;
 	char *option;
 	char *offset = NULL;
-	char *encoding = "pcmu";
+	char *encoding = (char *)"pcmu";
 	Level level = 30000;
 	timeout_t framing = 20, interdigit = 60;
 	timeout_t maxtime = 60000;
 	unsigned maxframes;
 	Linear buffer;
-	char *filename = "tones.conf";
+	char *filename = (char *)"tones.conf";
 
 retry:
 	option = *argv;
