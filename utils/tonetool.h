@@ -56,5 +56,5 @@ public:
 extern class Tool tool;
 
 inline void setDelete(const char *delname)
-	{delfile = delname;};
+	{delfile = delname;}
 

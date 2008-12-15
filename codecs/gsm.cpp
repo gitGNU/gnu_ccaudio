@@ -79,7 +79,7 @@ GSMCodec::GSMCodec()
 	info.framecount = 160;
 	info.rate = 8000;
 	info.bitrate = 13200;
-	info.annotation = "gsm";
+	info.annotation = (char *)"gsm";
 	info.encoding = gsmVoice;
 }
 
@@ -91,7 +91,7 @@ GSMCodec::GSMCodec(const char *id, Encoding e) : AudioCodec(id, e)
 	info.framecount = 160;
 	info.rate = 8000;
 	info.bitrate = 13200;
-	info.annotation = "gsm";
+	info.annotation = (char *)"gsm";
 }
 
 GSMCodec::~GSMCodec()

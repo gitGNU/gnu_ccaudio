@@ -1052,7 +1052,7 @@ void Audio::Info::setFraming(timeout_t timeout)
 	framing = timeout;
 	framecount = (rate * framing) / 1000l;
 	framesize = (unsigned)toBytes(encoding, framecount);
-};
+}
 
 void Audio::Info::set(void)
 {

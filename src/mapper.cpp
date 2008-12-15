@@ -251,7 +251,7 @@ bool TelTone::load(const char *path, const char *l)
 				def->f2 = 0;
 
 			if(!fcount)
-				fcount = "1";
+				fcount = (char *)"1";
 
 			def->count = atoi(fcount);
 			if(!def->count)

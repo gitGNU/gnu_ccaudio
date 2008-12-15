@@ -84,7 +84,7 @@ AudioResample::AudioResample(Rate div, Rate mul)
 AudioResample::~AudioResample()
 {
 	delete[] buffer;
-};
+}
 
 size_t AudioResample::estimate(size_t count)
 {

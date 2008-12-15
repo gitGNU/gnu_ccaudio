@@ -85,12 +85,12 @@ okiCodec::okiCodec(Encoding e) : AudioCodec()
 	if(encoding == voxADPCM) {
 		info.rate = 6000;
 		info.bitrate = 24000;
-		info.annotation = "vox";
+		info.annotation = (char *)"vox";
 	}
 	else {
 		info.rate = 8000;
 		info.bitrate = 24000;
-		info.annotation = "oki";
+		info.annotation = (char *)"oki";
 	}
 
 	memset(&encode_state, 0, sizeof(encode_state));
@@ -106,12 +106,12 @@ okiCodec::okiCodec(const char *id, Encoding e) : AudioCodec(id, e)
 	if(encoding == voxADPCM) {
 		info.rate = 6000;
 		info.bitrate = 24000;
-		info.annotation = "vox";
+		info.annotation = (char *)"vox";
 	}
 	else {
 		info.rate = 8000;
 		info.bitrate = 24000;
-		info.annotation = "oki";
+		info.annotation = (char *)"oki";
 	}
 	memset(&encode_state, 0, sizeof(encode_state));
 	memset(&decode_state, 0, sizeof(decode_state));

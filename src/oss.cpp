@@ -159,7 +159,7 @@ bool OSSAudioDevice::setAudio(Rate rate, bool stereo, timeout_t framing)
 	info.bitrate = srate * 16 * channels;
 	info.order = __BYTE_ORDER;
 	info.format = raw;
-	info.annotation = "OSS Soundcard";
+	info.annotation = (char *)"OSS Soundcard";
 
 	flush();
 

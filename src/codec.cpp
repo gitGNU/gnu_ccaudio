@@ -191,7 +191,6 @@ bool AudioCodec::load(const char *name)
 	char fn[16];
 	char *p = fn;
 	char *q = fn;
-	unsigned len;
 
 	snprintf(fn, sizeof(fn) - 3, "%s", name);
 	while(*p) {

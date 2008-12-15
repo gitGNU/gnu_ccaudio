@@ -21,7 +21,6 @@ void Tool::size(char **argv)
 	char *fn = *(argv++);
 	AudioFile file;
 	Info info;
-	char target[PATH_MAX];
 	unsigned long pos;
 
 	if(!fn) {

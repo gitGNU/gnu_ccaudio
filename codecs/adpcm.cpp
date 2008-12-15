@@ -266,11 +266,12 @@ static void update(
 		/* UPA1 */
 		/* update predictor pole a[0] */
 		state_ptr->a[0] -= state_ptr->a[0] >> 8;
-		if (dqsez != 0)
+		if (dqsez != 0) {
 			if (pks1 == 0)
 				state_ptr->a[0] += 192;
 			else
 				state_ptr->a[0] -= 192;
+		}
 
 		/* LIMD */
 		a1ul = 15360 - a2p;
@@ -533,7 +534,7 @@ g723_3Codec::g723_3Codec() : AudioCodec()
 	info.framecount = 8;
 	info.bitrate = 24000;
 	info.encoding = g723_3bit;
-	info.annotation = "g.723";
+	info.annotation = (char *)"g.723";
 	info.rate = 8000;
 	memset(&encode_state, 0, sizeof(encode_state));
 	memset(&decode_state, 0, sizeof(decode_state));
@@ -551,7 +552,7 @@ g723_3Codec::g723_3Codec(const char *id, Encoding e) : AudioCodec(id, e)
 	info.framecount = 8;
 	info.bitrate = 24000;
 	info.rate = 8000;
-	info.annotation = "g.723";
+	info.annotation = (char *)"g.723";
 }
 
 g723_3Codec::~g723_3Codec()
@@ -672,7 +673,7 @@ g723_2Codec::g723_2Codec() : AudioCodec()
 	info.framecount = 4;
 	info.bitrate = 16000;
 	info.encoding = g723_3bit;
-	info.annotation = "g.723";
+	info.annotation = (char *)"g.723";
 	info.rate = 8000;
 	memset(&encode_state, 0, sizeof(encode_state));
 	memset(&decode_state, 0, sizeof(decode_state));
@@ -690,7 +691,7 @@ g723_2Codec::g723_2Codec(const char *id, Encoding e) : AudioCodec(id, e)
 	info.framecount = 4;
 	info.bitrate = 16000;
 	info.rate = 8000;
-	info.annotation = "g.723";
+	info.annotation = (char *)"g.723";
 }
 
 g723_2Codec::~g723_2Codec()
@@ -820,7 +821,7 @@ g723_5Codec::g723_5Codec() : AudioCodec()
 	info.framecount = 8;
 	info.bitrate = 40000;
 	info.encoding = g723_5bit;
-	info.annotation = "g.723";
+	info.annotation = (char *)"g.723";
 	info.rate = 8000;
 	memset(&encode_state, 0, sizeof(encode_state));
 	memset(&decode_state, 0, sizeof(decode_state));
@@ -838,7 +839,7 @@ g723_5Codec::g723_5Codec(const char *id, Encoding e) : AudioCodec(id, e)
 	info.framecount = 8;
 	info.bitrate = 40000;
 	info.rate = 8000;
-	info.annotation = "g.723";
+	info.annotation = (char *)"g.723";
 }
 
 g723_5Codec::~g723_5Codec()
@@ -964,7 +965,7 @@ g721Codec::g721Codec() : AudioCodec()
 	info.framecount = 2;
 	info.rate = 8000;
 	info.bitrate = 32000;
-	info.annotation = "g.721";
+	info.annotation = (char *)"g.721";
 	info.encoding = g721ADPCM;
 
 	memset(&encode_state, 0, sizeof(encode_state));
@@ -983,7 +984,7 @@ g721Codec::g721Codec(const char *id, Encoding e) : AudioCodec(id, e)
 	info.framecount = 2;
 	info.rate = 8000;
 	info.bitrate = 32000;
-	info.annotation = "g.721";
+	info.annotation = (char *)"g.721";
 }
 
 g721Codec::~g721Codec()

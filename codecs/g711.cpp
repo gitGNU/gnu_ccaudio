@@ -77,7 +77,7 @@ g711u::g711u() : AudioCodec("g.711", mulawAudio)
 	info.framecount = 1;
 	info.rate = 8000;
 	info.bitrate = 64000;
-	info.annotation = "mu-law";
+	info.annotation = (char *)"mu-law";
 }
 
 g711a::g711a() : AudioCodec("g.711", alawAudio)
@@ -86,7 +86,7 @@ g711a::g711a() : AudioCodec("g.711", alawAudio)
 	info.framecount = 1;
 	info.bitrate = 64000;
 	info.rate = 8000;
-	info.annotation = "a-law";
+	info.annotation = (char *)"a-law";
 }
 
 static unsigned ullevels[128] =
