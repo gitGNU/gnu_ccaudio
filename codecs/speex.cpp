@@ -1,4 +1,3 @@
-// Copyright (C) 2006 David Sugar, Tycho Softworks
 // Copyright (C) 2006-2008 David Sugar, Tycho Softworks.
 //
 // This file is part of GNU ccAudio2.
@@ -8,7 +7,7 @@
 // by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// GNU ccAuydio2 is distributed in the hope that it will be useful,
+// GNU ccAudio2 is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
