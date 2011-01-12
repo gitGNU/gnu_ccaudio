@@ -126,8 +126,4 @@ set_target_properties(ccaudio-audiotool PROPERTIES OUTPUT_NAME audiotool)
 target_link_libraries(ccaudio-audiotool ccaudio ${USES_UCOMMON_LIBRARIES})
 install(TARGETS ccaudio-audiotool DESTINATION bin)
 
-add_executable(audiotool utils/audiotool.cpp)
-add_dependencies(audiotool ccaudio ucommon)
-target_link_libraries(audiotool ccaudio ${USES_UCOMMON_LIBRARIES})
-
 
