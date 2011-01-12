@@ -76,12 +76,12 @@ if(OSSAUDIO_LIB)
     set(AUDIO_LIBS ossaudio)
 endif()
 
-check_include_files(CoreAudio/CoreAudio.h OSX_AUDIO)
+check_include_files(CoreAudio/CoreAudio.h "" OSX_AUDIO)
 if(OSX_AUDIO)
     set(AUDIO_LIBS -framework CoreAudio)
 endif()
 
-check_include_files(mmsystem.h MS_AUDIO)
+check_include_files(mmsystem.h "" MS_AUDIO)
 if(MS_AUDIO)
     set(AUDIO_LIBS winmm msacm32)
 endif()
@@ -98,7 +98,7 @@ if(NOT HAVE_SPEEX_SPEEX_H AND EXISTS ${CMAKE_BINARY_DIR}/Frameworks/Speex)
 endif()
 
 if(HAVE_SPEEX_SPEEX_H)
-    set(AUDIO_LIBS ${AUDIO_LIBS speex)
+    set(AUDIO_LIBS ${AUDIO_LIBS} speex)
 endif()
 
 if(HAVE_GSM_H OR HAVE_GSM_GSM_H)
