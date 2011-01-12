@@ -1179,7 +1179,7 @@ void Audio::init(void)
     fsys::open(dir, dp, fsys::ACCESS_DIRECTORY);
 
     while(is(dir) && fsys::read(dir, filename, sizeof(filename)) > 0) {
-        if(filename[0] = '.')
+        if(filename[0] == '.')
             continue;
 
         snprintf(path, sizeof(path), "%s/%s", dp, filename);

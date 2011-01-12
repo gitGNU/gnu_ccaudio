@@ -505,7 +505,6 @@ static void info(char **argv)
     timeout_t framing = 0;
     unsigned long size, end;
     unsigned long minutes, seconds, subsec, scale;
-    char duration[32];
 
     fn = *argv;
     if(eq(fn, "--", 2))
