@@ -1,5 +1,4 @@
-# Copyright (C) 1999-2005 Open Source Telecom Corporation.
-# Copyright (C) 2006-2008 David Sugar, Tycho Softworks.
+# Copyright (C) 2009 David Sugar, Tycho Softworks.
 #
 # This file is free software; as a special exception the author gives
 # unlimited permission to copy and/or distribute it, with or without
@@ -10,18 +9,14 @@
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 MAINTAINERCLEANFILES = Makefile.in Makefile
-EXTRA_DIST = tones.conf audiotool.1 tonetool.1
+AM_CXXFLAGS = -I$(top_srcdir)/inc @CCAUDIO_FLAGS@ $(CHECKFLAGS)
+INCLUDES = -I$(top_srcdir)/inc
+LDADD = ../src/libccaudio.la @CCAUDIO_LIBS@
+EXTRA_DIST = audiotool.1 tonetool.1 tones.conf
 
-INCLUDES = -I$(top_srcdir)/src
-LDADD = ../src/libccaudio2.la $(DYN_LOADER) $(AUDIO_LIBS) -lm
-
-bin_PROGRAMS = audiotool tonetool
-
-noinst_HEADERS = audiotool.h tonetool.h
-man1_MANS = audiotool.1 tonetool.1
 man_MANS = audiotool.1 tonetool.1
+bin_PROGRAMS = tonetool audiotool
 
-audiotool_SOURCES = audiotool.cpp info.cpp notation.cpp rewrite.cpp \
-	chart.cpp build.cpp play.cpp strip.cpp trim.cpp packetdump.cpp size.cpp
+tonetool_SOURCES = tonetool.cpp
+audiotool_SOURCES = audiotool.cpp
 
-tonetool_SOURCES = tonetool.cpp tonedetect.cpp tonelist.cpp tonewrite.cpp

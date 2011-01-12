@@ -1,10 +1,7 @@
-* more codecs, including sx, mpeg, speex, and bit codecs
+* pulseaudio or alsa support
 
-* improved soundcard support, full duplex operations, osx 
+* full duplex soundcard operation
 
-* ogg container files
-
-* sampling rate scaling
-
+* ogg containers
 
 

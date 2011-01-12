@@ -35,12 +35,8 @@
 // If you do not wish that, delete this exception notice.
 //
 
-#include "private.h"
-#include "audio2.h"
-#include <cmath>
-#include <cstdio>
-#include <ctime>
-#include <cstdlib>
+#include <ucommon/ucommon.h>
+#include <config.h>
 
 extern int _osx_ccaudio_dummy;
 int _osx_ccaudio_dummy = 0;
@@ -48,73 +44,75 @@ int _osx_ccaudio_dummy = 0;
 #if defined(OSX_AUDIO)
 
 #include <CoreAudio/AudioHardware.h>
+#include <ucommon/export.h>
+#include <ccaudio2.h>
 
 static unsigned devcount = 0;
 static AudioDeviceID *devlist = NULL, *devinput = NULL, *devoutput = NULL;
 
 static bool scanDevices(unsigned index)
 {
-	OSStatus err = noErr;
-	UInt32 size;
-	AudioDeviceID *id;
-	unsigned i;
+    OSStatus err = noErr;
+    UInt32 size;
+    AudioDeviceID *id;
+    unsigned i;
 
-	if(!devlist) {
-		if(AudioHardwareGetPropertyInfo(kAudioHardwarePropertyDevices, &size, NULL) != noErr)
-			return false;
+    if(!devlist) {
+        if(AudioHardwareGetPropertyInfo(kAudioHardwarePropertyDevices, &size, NULL) != noErr)
+            return false;
 
-		devcount = size / sizeof(AudioDeviceID);
-		devlist = (AudioDeviceID *)malloc(size);
+        devcount = size / sizeof(AudioDeviceID);
+        devlist = (AudioDeviceID *)malloc(size);
 
-		if(AudioHardwareGetProperty(kAudioHardwarePropertyDevices, &size, (void *) devlist) != noErr) {
-			free(devlist);
-			return false;
-		}
+        if(AudioHardwareGetProperty(kAudioHardwarePropertyDevices, &size, (void *) devlist) != noErr) {
+            free(devlist);
+            return false;
+        }
 
-		size = sizeof(AudioDeviceID);
-		if(AudioHardwareGetProperty(kAudioHardwarePropertyDefaultInputDevice, &size, &id) == noErr) {
-			for(i = 0; i < devcount; ++i)
-			{
-				if(!memcmp(&devlist[i], &id, sizeof(AudioDeviceID))) {
-					devinput = &devlist[i];
-					break;
-				}
-			}
-		}
+        size = sizeof(AudioDeviceID);
+        if(AudioHardwareGetProperty(kAudioHardwarePropertyDefaultInputDevice, &size, &id) == noErr) {
+            for(i = 0; i < devcount; ++i)
+            {
+                if(!memcmp(&devlist[i], &id, sizeof(AudioDeviceID))) {
+                    devinput = &devlist[i];
+                    break;
+                }
+            }
+        }
 
-		size = sizeof(AudioDeviceID);
-		if(AudioHardwareGetProperty(kAudioHardwarePropertyDefaultOutputDevice, &size, &id) == noErr) {
-			for(i = 0; i < devcount; ++i)
-			{
-				if(!memcmp(&devlist[i], &id, sizeof(AudioDeviceID))) {
-					devoutput = &devlist[i];
-					break;
-				}
-			}
-		}
-	}
-	if(!devcount)
-		return false;
+        size = sizeof(AudioDeviceID);
+        if(AudioHardwareGetProperty(kAudioHardwarePropertyDefaultOutputDevice, &size, &id) == noErr) {
+            for(i = 0; i < devcount; ++i)
+            {
+                if(!memcmp(&devlist[i], &id, sizeof(AudioDeviceID))) {
+                    devoutput = &devlist[i];
+                    break;
+                }
+            }
+        }
+    }
+    if(!devcount)
+        return false;
 
-	if(index > devcount)
-		return false;
+    if(index > devcount)
+        return false;
 
-	return true;
+    return true;
 }
 
-using namespace ost;
+using namespace UCOMMON_NAMESPACE;
 
-bool Audio::hasDevice(unsigned index)
+bool Audio::is_available(unsigned index)
 {
-	return scanDevices(index);
+    return scanDevices(index);
 }
 
 AudioDevice *Audio::getDevice(unsigned index, DeviceMode mode)
 {
-	if(!scanDevices(index))
-		return NULL;
+    if(!scanDevices(index))
+        return NULL;
 
-	return NULL;
+    return NULL;
 }
 
 

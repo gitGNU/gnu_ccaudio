@@ -1,15 +1,17 @@
-Copyright (c) 2008 by David Sugar and Tycho Softworks.
+Copyright (c) 2008,2010 by David Sugar and Tycho Softworks.
 Verbatim copying and distribution of this entire article is permitted
 in any medium, provided this notice is preserved.
 
-Later versions of GNU ccAudio are completely stand-alone.  Starting with
-release 1.0.0, GNU ccAudio is now licensed using the GNU Lesser General
-Public License 3.0 or later.
+The current release of GNU ccAudio2 is used in conjunction with the GNU uCommon
+C++ library.  1.x versions of GNU ccAudio2 were completely stand-alone.
+Starting with release 1.0.0, GNU ccAudio2 is now licensed using the GNU Lesser
+General Public License 3.0 or later.
 
-Starting with 0.5.1, GNU ccAudio now depends on GNU Common C++ for common 
-configuration.  This allows us to use GNU Common C++ macros for exporting
+Starting with 0.5.1, GNU ccAudio2 dependended on GNU Common C++ for common 
+configuration.  This allowed us to use GNU Common C++ macros for exporting
 win32 dll headers, and enables the use of GNU Common C++ services such as
-DSO loading and threads in GNU ccAudio.
+DSO loading and threads in GNU ccAudio.  This is continued in GNU ccAudio2
+2.0, which uses the newer GNU uCommon C++ library base.
 
 The GNU ccAudio library is a portable C++ class framework that I believe
 to be useful for developing applications that must process audio.  This

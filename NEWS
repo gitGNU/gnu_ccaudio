@@ -1,4 +1,11 @@
-ccaudio Library NEWS -- history of visible user changes. 2000-04-25
+ccaudio Library NEWS -- history of visible user changes. 2011-01-01
+
+Release 2.0.0
+
+This release migrates support of ccaudio2 to use the GNU uCommon core library.
+This means ccaudio2 can be compiled for embedded use.  Support for static
+linking and direct embedding of default codecs into the library was also
+added.  Finally, 
 
 Release 0.4.1
 

@@ -1,0 +1,7 @@
+Name: ccaudio2
+Description: GNU Telephonic audio library for use with ucommon
+Version: @VERSION@
+Requires: ucommon >= @UCOMMON_REQUIRES@
+Libs:  -lccaudio2 @EXPORT_LIBS@
+Cflags: @EXPORT_FLAGS@
+

@@ -4,7 +4,7 @@
 // This file is part of GNU ccAudio2.
 //
 // GNU ccAudio2 is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published 
+// it under the terms of the GNU Lesser General Public License as published
 // by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
@@ -16,19 +16,22 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with GNU ccAudio2.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "private.h"
-#include "audio2.h"
+#include <ucommon/ucommon.h>
+#include <config.h>
+#include <ucommon/export.h>
+#include <ccaudio2.h>
 
-using namespace ost;
+using namespace UCOMMON_NAMESPACE;
+
 
 AudioBase::AudioBase()
 {
-	memset(&info, 0, sizeof(info));
+    memset(&info, 0, sizeof(info));
 }
 
 AudioBase::AudioBase(Info *i)
 {
-	memcpy(&info, i, sizeof(info));
+    memcpy(&info, i, sizeof(info));
 }
 
 AudioBase::~AudioBase()
@@ -37,19 +40,19 @@ AudioBase::~AudioBase()
 
 ssize_t AudioBase::putNative(Encoded data, size_t bytes)
 {
-	swapEncoded(info, data, bytes);
-	return putBuffer(data, bytes);
+    swapEncoded(info, data, bytes);
+    return putBuffer(data, bytes);
 }
 
 ssize_t AudioBase::getNative(Encoded data, size_t bytes)
 {
-	ssize_t result = getBuffer(data, bytes);
+    ssize_t result = getBuffer(data, bytes);
 
-	if(result < 1)
-		return result;
+    if(result < 1)
+        return result;
 
-	swapEncoded(info, data, result);
-	return result;
+    swapEncoded(info, data, result);
+    return result;
 }
 
 
