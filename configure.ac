@@ -122,7 +122,7 @@ for flag in $CXXFLAGS ; do
 done
 export CXXFLAGS="$COMPILER_FLAGS"
 
-AC_CHECK_HEADERS(regex.h)
+AC_CHECK_HEADERS(endian.h)
 AC_CHECK_HEADERS(sys/soundcard.h)
 AC_CHECK_HEADERS(CoreAudio/CoreAudio.h, [
     AC_DEFINE(OSX_AUDIO, [1], [OSX Core Audio])

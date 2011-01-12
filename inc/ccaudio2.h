@@ -33,25 +33,12 @@
 
 NAMESPACE_UCOMMON
 
-#if defined(__GNUC__)
-#define _PACKED
-#elif !defined(__hpux) && !defined(_AIX)
-#define _PACKED
-#endif
-
 #define AUDIO_SIGNED_LINEAR_RAW 1
 #define AUDIO_LINEAR_CONVERSION 1
 #define AUDIO_CODEC_MODULES 1
 #define AUDIO_LINEAR_FRAMING    1
 #define AUDIO_NATIVE_METHODS    1
 #define AUDIO_RATE_RESAMPLER    1
-
-#if defined(_MSWINDOWS_) && !defined(__BIG_ENDIAN)
-#define __LITTLE_ENDIAN 1234
-#define __BIG_ENDIAN    4321
-#define __PDP_ENDIAN    3412
-#define __BYTE_ORDER    __LITTLE_ENDIAN
-#endif
 
 class __EXPORT AudioCodec;
 class __EXPORT AudioDevice;
@@ -247,65 +234,6 @@ public:
         errNoCodec
     };
     typedef enum Error Error;
-
-
-#ifdef  _PACKED
-#pragma pack(1)
-#endif
-
-    typedef struct {
-#if __BYTE_ORDER == __LITTLE_ENDIAN
-        unsigned char mp_sync1 : 8;
-        unsigned char mp_crc   : 1;
-        unsigned char mp_layer : 2;
-        unsigned char mp_ver   : 2;
-        unsigned char mp_sync2 : 3;
-
-        unsigned char mp_priv  : 1;
-        unsigned char mp_pad   : 1;
-        unsigned char mp_srate : 2;
-        unsigned char mp_brate : 4;
-
-        unsigned char mp_emp   : 2;
-        unsigned char mp_original : 1;
-        unsigned char mp_copyright: 1;
-        unsigned char mp_extend   : 2;
-        unsigned char mp_channels : 2;
-
-#else
-        unsigned char mp_sync1 : 8;
-
-        unsigned char mp_sync2 : 3;
-        unsigned char mp_ver   : 2;
-        unsigned char mp_layer : 2;
-        unsigned char mp_crc   : 1;
-
-        unsigned char mp_brate : 4;
-        unsigned char mp_srate : 2;
-        unsigned char mp_pad   : 1;
-        unsigned char mp_priv  : 1;
-
-        unsigned char mp_channels : 2;
-        unsigned char mp_extend   : 2;
-        unsigned char mp_copyright : 1;
-        unsigned char mp_original : 1;
-        unsigned char mp_emp : 2;
-#endif
-    }   mpeg_audio;
-
-    typedef struct {
-        char tag_id[3];
-        char tag_title[30];
-        char tag_artist[30];
-        char tag_album[30];
-        char tag_year[4];
-        char tag_note[30];
-        unsigned char genre;
-    }   mpeg_tagv1;
-
-#ifdef  _PACKED
-#pragma pack()
-#endif
 
     /**
      * Audio source description.
@@ -1014,7 +942,6 @@ protected:
 
     void initialize(void);
     void getWaveFormat(int size);
-    void mp3info(mpeg_audio *mp3);
 
     union {
         int fd;

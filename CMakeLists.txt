@@ -70,6 +70,7 @@ check_include_files(sys/soundcard.h HAVE_SYS_SOUNDCARD_H)
 check_include_files(speex/speex.h HAVE_SPEEX_SPEEX_H)
 check_include_files(gsm.h HAVE_GSM_H)
 check_include_files(gsm/gsm.h HAVE_GSM_GSM_H)
+check_include_files(endian.h HAVE_ENDIAN_H)
 
 check_library_exists(ossaudio _oss_ioctl "" OSSAUDIO_LIB)
 if(OSSAUDIO_LIB)

@@ -18,10 +18,84 @@
 
 #include <ucommon/ucommon.h>
 #include <config.h>
+#ifdef  HAVE_ENDIAN_H
+#include <endian.h>
+#endif
 #include <ucommon/export.h>
 #include <ccaudio2.h>
 
+#if defined(__GNUC__)
+#define _PACKED
+#elif !defined(__hpux) && !defined(_AIX)
+#define _PACKED
+#endif
+
+#if defined(_MSWINDOWS_) && !defined(__BIG_ENDIAN)
+#define __LITTLE_ENDIAN 1234
+#define __BIG_ENDIAN    4321
+#define __PDP_ENDIAN    3412
+#define __BYTE_ORDER    __LITTLE_ENDIAN
+#endif
+
 using namespace UCOMMON_NAMESPACE;
+
+#ifdef  _PACKED
+#pragma pack(1)
+#endif
+
+typedef struct {
+#if __BYTE_ORDER == __LITTLE_ENDIAN
+    unsigned char mp_sync1 : 8;
+    unsigned char mp_crc   : 1;
+    unsigned char mp_layer : 2;
+    unsigned char mp_ver   : 2;
+    unsigned char mp_sync2 : 3;
+
+    unsigned char mp_priv  : 1;
+    unsigned char mp_pad   : 1;
+    unsigned char mp_srate : 2;
+    unsigned char mp_brate : 4;
+
+    unsigned char mp_emp   : 2;
+    unsigned char mp_original : 1;
+    unsigned char mp_copyright: 1;
+    unsigned char mp_extend   : 2;
+    unsigned char mp_channels : 2;
+
+#else
+    unsigned char mp_sync1 : 8;
+
+    unsigned char mp_sync2 : 3;
+    unsigned char mp_ver   : 2;
+    unsigned char mp_layer : 2;
+    unsigned char mp_crc   : 1;
+
+    unsigned char mp_brate : 4;
+    unsigned char mp_srate : 2;
+    unsigned char mp_pad   : 1;
+    unsigned char mp_priv  : 1;
+
+    unsigned char mp_channels : 2;
+    unsigned char mp_extend   : 2;
+    unsigned char mp_copyright : 1;
+    unsigned char mp_original : 1;
+    unsigned char mp_emp : 2;
+#endif
+}   mpeg_audio;
+
+typedef struct {
+    char tag_id[3];
+    char tag_title[30];
+    char tag_artist[30];
+    char tag_album[30];
+    char tag_year[4];
+    char tag_note[30];
+    unsigned char genre;
+}   mpeg_tagv1;
+
+#ifdef  _PACKED
+#pragma pack()
+#endif
 
 static const char * const ErrorStrs[] = {
     "errSuccess",
@@ -44,6 +118,148 @@ static const char * const ErrorStrs[] = {
     "errPlaybackFailed",
     "errNotPlaying"
 };
+
+static void mp3info(Audio::Info& info, mpeg_audio *mp3)
+{
+    info.headersize = 4;
+    info.padding = 0;
+
+    if(mp3->mp_pad)
+        info.padding = 1;
+
+    switch(mp3->mp_layer) {
+    case 0x03:
+        if(mp3->mp_pad)
+            info.padding = 4;
+        info.encoding = Audio::mp1Audio;
+        break;
+    case 0x02:
+        info.encoding = Audio::mp2Audio;
+        break;
+    case 0x01:
+        info.encoding = Audio::mp3Audio;
+        break;
+    }
+
+    switch(mp3->mp_ver) {
+    case 0x03:
+        info.bitrate = 32000;
+        switch(mp3->mp_srate) {
+        case 00:
+            info.rate = 44100;
+            break;
+        case 01:
+            info.rate = 48000;
+            break;
+        case 02:
+            info.rate = 32000;
+        }
+        switch(mp3->mp_layer) {
+        case 0x03:
+            info.bitrate = 32000 * mp3->mp_brate;
+            break;
+        case 0x02:
+            if(mp3->mp_brate < 8)
+                info.bitrate = 16000 * (mp3->mp_brate + 1);
+            else
+                info.bitrate = 32000 * (mp3->mp_brate - 4);
+            break;
+        case 0x01:
+            switch(mp3->mp_brate) {
+            case 0x02:
+                info.bitrate = 40000;
+                break;
+            case 0x03:
+                info.bitrate = 48000;
+                break;
+            case 0x04:
+                info.bitrate = 56000;
+                break;
+            case 0x05:
+                info.bitrate = 64000;
+                break;
+            case 0x06:
+                info.bitrate = 80000;
+                break;
+            case 0x07:
+                info.bitrate = 96000;
+                break;
+            case 0x08:
+                info.bitrate = 112000;
+                break;
+            case 0x09:
+                info.bitrate = 128000;
+                break;
+            case 0x0a:
+                info.bitrate = 160000;
+                break;
+            case 0x0b:
+                info.bitrate = 192000;
+                break;
+            case 0x0c:
+                info.bitrate = 224000;
+                break;
+            case 0x0d:
+                info.bitrate = 256000;
+                break;
+            case 0x0e:
+                info.bitrate = 320000;
+                break;
+            }
+            break;
+        }
+        break;
+    case 0x00:
+        switch(mp3->mp_srate) {
+        case 00:
+            info.rate = 11025;
+            break;
+        case 01:
+            info.rate = 12000;
+            break;
+        case 02:
+            info.rate = 8000;
+            break;
+        }
+    case 0x02:
+        if(mp3->mp_ver == 0x02) {
+            switch(mp3->mp_srate) {
+            case 00:
+                info.rate = 22050;
+                break;
+            case 01:
+                info.rate = 24000;
+                break;
+            case 02:
+                info.rate = 16000;
+                break;
+            }
+        }
+        switch(mp3->mp_layer) {
+        case 0x03:
+            if(mp3->mp_brate < 0x0d)
+                info.bitrate = 16000 * (mp3->mp_brate + 1);
+            else if(mp3->mp_brate == 0x0d)
+                info.bitrate = 224000;
+            else
+                info.bitrate = 256000;
+            break;
+        case 0x02:
+        case 0x01:
+            if(mp3->mp_brate < 9)
+                info.bitrate = 8000 * mp3->mp_brate;
+            else
+                info.bitrate = 16000 * (mp3->mp_brate - 4);
+        }
+    }
+
+    if(mp3->mp_crc)
+        info.headersize = 6;
+
+    info.set();
+}
+
+
 
 AudioCodec *AudioFile::getCodec(void)
 {
@@ -826,7 +1042,7 @@ mp3:
 
     info.order = __BIG_ENDIAN;
     info.format = mpeg;
-    mp3info(mp3);
+    mp3info(info, mp3);
     return;
 
 done:
@@ -841,146 +1057,6 @@ done:
         iolimit = (unsigned long)toBytes(info, getPosition());
         setPosition(0);
     }
-}
-
-void AudioFile::mp3info(mpeg_audio *mp3)
-{
-    info.headersize = 4;
-    info.padding = 0;
-
-    if(mp3->mp_pad)
-        info.padding = 1;
-
-    switch(mp3->mp_layer) {
-    case 0x03:
-        if(mp3->mp_pad)
-            info.padding = 4;
-        info.encoding = mp1Audio;
-        break;
-    case 0x02:
-        info.encoding = mp2Audio;
-        break;
-    case 0x01:
-        info.encoding = mp3Audio;
-        break;
-    }
-
-    switch(mp3->mp_ver) {
-    case 0x03:
-        info.bitrate = 32000;
-        switch(mp3->mp_srate) {
-        case 00:
-            info.rate = 44100;
-            break;
-        case 01:
-            info.rate = 48000;
-            break;
-        case 02:
-            info.rate = 32000;
-        }
-        switch(mp3->mp_layer) {
-        case 0x03:
-            info.bitrate = 32000 * mp3->mp_brate;
-            break;
-        case 0x02:
-            if(mp3->mp_brate < 8)
-                info.bitrate = 16000 * (mp3->mp_brate + 1);
-            else
-                info.bitrate = 32000 * (mp3->mp_brate - 4);
-            break;
-        case 0x01:
-            switch(mp3->mp_brate) {
-            case 0x02:
-                info.bitrate = 40000;
-                break;
-            case 0x03:
-                info.bitrate = 48000;
-                break;
-            case 0x04:
-                info.bitrate = 56000;
-                break;
-            case 0x05:
-                info.bitrate = 64000;
-                break;
-            case 0x06:
-                info.bitrate = 80000;
-                break;
-            case 0x07:
-                info.bitrate = 96000;
-                break;
-            case 0x08:
-                info.bitrate = 112000;
-                break;
-            case 0x09:
-                info.bitrate = 128000;
-                break;
-            case 0x0a:
-                info.bitrate = 160000;
-                break;
-            case 0x0b:
-                info.bitrate = 192000;
-                break;
-            case 0x0c:
-                info.bitrate = 224000;
-                break;
-            case 0x0d:
-                info.bitrate = 256000;
-                break;
-            case 0x0e:
-                info.bitrate = 320000;
-                break;
-            }
-            break;
-        }
-        break;
-    case 0x00:
-        switch(mp3->mp_srate) {
-        case 00:
-            info.rate = 11025;
-            break;
-        case 01:
-            info.rate = 12000;
-            break;
-        case 02:
-            info.rate = 8000;
-            break;
-        }
-    case 0x02:
-        if(mp3->mp_ver == 0x02) {
-            switch(mp3->mp_srate) {
-            case 00:
-                info.rate = 22050;
-                break;
-            case 01:
-                info.rate = 24000;
-                break;
-            case 02:
-                info.rate = 16000;
-                break;
-            }
-        }
-        switch(mp3->mp_layer) {
-        case 0x03:
-            if(mp3->mp_brate < 0x0d)
-                info.bitrate = 16000 * (mp3->mp_brate + 1);
-            else if(mp3->mp_brate == 0x0d)
-                info.bitrate = 224000;
-            else
-                info.bitrate = 256000;
-            break;
-        case 0x02:
-        case 0x01:
-            if(mp3->mp_brate < 9)
-                info.bitrate = 8000 * mp3->mp_brate;
-            else
-                info.bitrate = 16000 * (mp3->mp_brate - 4);
-        }
-    }
-
-    if(mp3->mp_crc)
-        info.headersize = 6;
-
-    info.set();
 }
 
 Audio::Info::Info()
@@ -1277,7 +1353,7 @@ rescan:
             afSeek(getAbsolutePosition() - 3);
             goto rescan;
         }
-        mp3info(mp3);
+        mp3info(info, mp3);
         count = afRead(addr + 4, info.framesize - 4);
         if(count > 0)
             count += 4;
@@ -1406,7 +1482,7 @@ ssize_t AudioFile::putBuffer(Encoded addr, size_t len)
     mpeg_audio *mp3 = (mpeg_audio *)addr;
 
     if(!len && info.format == mpeg) {
-        mp3info(mp3);
+        mp3info(info, mp3);
         len = info.framesize;
     }
 

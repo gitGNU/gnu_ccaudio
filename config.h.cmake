@@ -16,6 +16,7 @@
 #cmakedefine HAVE_SPEEX_SPEEX_H 1
 #cmakedefine HAVE_GSM_H 1
 #cmakedefine HAVE_GSM_GSM_H 1
+#cmakedefine HAVE_ENDIAN_H 1
 #cmakedefine OSX_AUDIO 1
 #cmakedefine BUILD_STATIC 1
 #define DEFAULT_LIBPATH "${DEFAULT_LIBPATH}"
