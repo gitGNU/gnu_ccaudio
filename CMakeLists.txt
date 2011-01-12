@@ -76,14 +76,12 @@ if(OSSAUDIO_LIB)
     set(AUDIO_LIBS ossaudio)
 endif()
 
-check_include_files(CoreAudio/CoreAudio.h HAVE_OSX_AUDIO)
-if(HAVE_OSX_AUDIO)
-    set(OSX_AUDIO)
+check_include_files(CoreAudio/CoreAudio.h OSX_AUDIO)
+if(OSX_AUDIO)
     set(AUDIO_LIBS -framework CoreAudio)
 endif()
 
-check_include_files(mmsystem.h HAVE_MMSYSTEM_H)
-if(HAVE_MMSYSTEM_H)
+if(WIN32)
     set(AUDIO_LIBS winmm msacm32)
 endif()
 
