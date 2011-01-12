@@ -28,38 +28,40 @@ int _w32_ccaudio_dummy = 0;
 #ifdef  _MSWINDOWS_
 
 #include "mmsystem.h"
+#include <ucommon/export.h>
+#include <ccaudio2.h>
 
 extern  LONG buffer_framing;
 extern  LONG buffer_count;
 
-class Semaphore
+class W32Semaphore
 {
 private:
     HANDLE sem;
 
 public:
-    Semaphore(unsigned count);
-    ~Semaphore();
+    W32Semaphore(unsigned count);
+    ~W32Semaphore();
     void wait(void);
     void post(void);
 };
 
-Semaphore::Semaphore(unsigned count)
+W32Semaphore::W32Semaphore(unsigned count)
 {
     sem = CreateSemaphore((LPSECURITY_ATTRIBUTES)NULL, (LONG)count - 2, (LONG)count - 1, (LPCSTR)NULL);
 }
 
-Semaphore::~Semaphore()
+W32Semaphore::~W32Semaphore()
 {
     CloseHandle(sem);
 }
 
-void Semaphore::wait(void)
+void W32Semaphore::wait(void)
 {
     WaitForSingleObject(sem, INFINITE);
 }
 
-void Semaphore::post(void)
+void W32Semaphore::post(void)
 {
     ReleaseSemaphore(sem, 1, (LPLONG)NULL);
 }
@@ -73,7 +75,7 @@ private:
     WAVEFORMATEX wfx;
     WAVEHDR *headers;
     char *buffers;
-    Semaphore *sem;
+    W32Semaphore *sem;
     unsigned bufsize, bufcount;
 
     volatile DWORD index, counter;
@@ -232,7 +234,7 @@ bool W32AudioDevice::setAudio(Rate rate, bool stereo, timeout_t framing)
     if(sem)
         delete sem;
 
-    sem = new Semaphore(bufcount);
+    sem = new W32Semaphore(bufcount);
 
 #if !defined(_MSC_VER) || _MSC_VER < 1300
 #define DWORD_PTR DWORD

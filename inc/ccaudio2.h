@@ -74,7 +74,7 @@ public:
     typedef int16_t *Linear;
 
 #if _MSC_VER > 1400        // windows broken dll linkage issue...
-    const static unsigned data = (-1);
+    const static unsigned ndata = (-1);
 #else
     const static unsigned ndata;
 #endif
