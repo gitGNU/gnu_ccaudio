@@ -98,7 +98,7 @@ endif()
 
 if(HAVE_GSM_H OR HAVE_GSM_GSM_H)
     set(AUDIO_LIBS ${AUDIO_LIBS} gsm)
-endif
+endif()
 
 if(LIB_SUFFIX)
     if (NOT LIB_SUFFIX EQUAL 64)
