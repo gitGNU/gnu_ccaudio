@@ -81,6 +81,11 @@ if(OSX_AUDIO)
     set(AUDIO_LIBS -framework CoreAudio)
 endif()
 
+check_include_files(mmsystem.h MS_AUDIO)
+if(MS_AUDIO)
+    set(AUDIO_LIBS winmm msacm32)
+endif()
+
 check_library_exists(m sqrt "" MATH_LIB)
 if(MATH_LIB)
     set(MATH_LIB m)
