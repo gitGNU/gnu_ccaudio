@@ -20,11 +20,21 @@
 #include <config.h>
 #include <math.h>
 #include <ctype.h>
+#ifdef  HAVE_ENDIAN_H
+#include <endian.h>
+#endif
 #include <ucommon/export.h>
 #include <ccaudio2.h>
 
 #ifndef M_PI
 #define M_PI    3.14159265358979323846
+#endif
+
+#if defined(_MSWINDOWS_) && !defined(__BIG_ENDIAN)
+#define __LITTLE_ENDIAN 1234
+#define __BIG_ENDIAN    4321
+#define __PDP_ENDIAN    3412
+#define __BYTE_ORDER    __LITTLE_ENDIAN
 #endif
 
 using namespace UCOMMON_NAMESPACE;

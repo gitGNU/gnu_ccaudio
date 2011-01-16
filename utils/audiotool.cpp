@@ -18,6 +18,16 @@
 
 #include <ccaudio2.h>
 #include <config.h>
+#ifdef  HAVE_ENDIAN_H
+#include <endian.h>
+#endif
+
+#if defined(_MSWINDOWS_) && !defined(__BIG_ENDIAN)
+#define __LITTLE_ENDIAN 1234
+#define __BIG_ENDIAN    4321
+#define __PDP_ENDIAN    3412
+#define __BYTE_ORDER    __LITTLE_ENDIAN
+#endif
 
 using namespace UCOMMON_NAMESPACE;
 
@@ -1453,4 +1463,5 @@ int main(int argc, char **argv)
 
     shell::errexit(2, "*** audiotool: %s: %s\n",
         *argv, _TEXT("unknown option"));
+	return 0;
 }

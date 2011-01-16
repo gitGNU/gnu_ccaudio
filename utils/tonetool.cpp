@@ -444,5 +444,7 @@ int main(int argc, char **argv)
 
     shell::errexit(1, "*** tonetool: %s: %s\n",
         *argv, _TEXT("unknown option"));
+
+	return 0;
 }
 

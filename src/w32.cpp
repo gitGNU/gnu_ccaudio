@@ -19,8 +19,17 @@
 #include <ucommon/ucommon.h>
 #include <config.h>
 #include <math.h>
-
+#ifdef  HAVE_ENDIAN_H
+#include <endian.h>
+#endif
 #define MAX_DEVICES 1
+
+#if defined(_MSWINDOWS_) && !defined(__BIG_ENDIAN)
+#define __LITTLE_ENDIAN 1234
+#define __BIG_ENDIAN    4321
+#define __PDP_ENDIAN    3412
+#define __BYTE_ORDER    __LITTLE_ENDIAN
+#endif
 
 extern int _w32_ccaudio_dummy;
 int _w32_ccaudio_dummy = 0;
