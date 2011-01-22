@@ -15,9 +15,9 @@ Release: 0%{?dist}
 License: LGPLv3+
 URL: http://www.gnu.org/software/ccaudio
 Group: System Environment/Libraries
-Source0: http://www.gnutelephony.org/dist/tarballs/ccaudio-%{version}.tar.gz
+Source0: http://www.gnutelephony.org/dist/tarballs/ccaudio2-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
-BuildRequires: ucommon-devel >= 4.0.0
+BuildRequires: ucommon-devel >= 4.1.0
 
 %description
 The GNU telephonic audio library covers a range of functionality including
@@ -27,7 +27,7 @@ utilities.
 
 %package devel
 Requires: %{name} = %{version}-%{release}
-Requires: ucommon-devel >= 4.0.0
+Requires: ucommon-devel >= 4.1.0
 Group: Development/Libraries
 Summary: Headers for building ccaudio applications
 
@@ -70,6 +70,6 @@ that use GNU ccAudio.
 %postun -p /sbin/ldconfig
 
 %changelog
-* Sat Jul 1 2011 - David Sugar <dyfet@gnutelephony.org> - 2.0.0-0
+* Sat Jan 1 2011 - David Sugar <dyfet@gnutelephony.org> - 2.0.0-0
 - initial packaging for redhat/fedora submission policies.
 
