@@ -1410,7 +1410,7 @@ skip:
     exit(0);
 }
 
-int main(int argc, char **argv)
+PROGRAM_MAIN(argc, argv)
 {
     char *cp;
 
@@ -1463,5 +1463,5 @@ int main(int argc, char **argv)
 
     shell::errexit(2, "*** audiotool: %s: %s\n",
         *argv, _TEXT("unknown option"));
-	return 0;
+    PROGRAM_EXIT(0);
 }

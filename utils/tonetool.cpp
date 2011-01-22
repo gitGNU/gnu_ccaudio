@@ -415,7 +415,7 @@ static void stop(void)
     }
 }
 
-int main(int argc, char **argv)
+PROGRAM_MAIN(argc, argv)
 {
     shell::bind("tonetool");
 
@@ -445,6 +445,6 @@ int main(int argc, char **argv)
     shell::errexit(1, "*** tonetool: %s: %s\n",
         *argv, _TEXT("unknown option"));
 
-	return 0;
+    PROGRAM_EXIT(0);
 }
 
