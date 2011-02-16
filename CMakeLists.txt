@@ -21,6 +21,7 @@ if (WIN32)
 else()
     option(BUILD_STATIC "Set to ON to build static libraries" OFF)
 endif()
+option(BUILD_PACKAGE "Set to OFF to disable packaging and install" ON)
 
 MESSAGE( STATUS "Configuring GNU ccaudio ${VERSION}...")
 
@@ -118,19 +119,21 @@ add_library(ccaudio ${BUILD_LIBRARY_TYPE} ${ccaudio_src})
 set_target_properties(ccaudio PROPERTIES VERSION ${VERSION} SOVERSION ${SOVERSION})
 add_dependencies(ccaudio ucommon)
 target_link_libraries(ccaudio ${USES_UCOMMON_LIBRARIES} ${AUDIO_LIBS} ${WITH_MATH_LIB} ${MATH_LIB})
-install(FILES inc/ccaudio2.h DESTINATION include)
-install(TARGETS ccaudio DESTINATION lib${LIB_SUFFIX})
 
 add_executable(ccaudio-tonetool utils/tonetool.cpp)
 add_dependencies(ccaudio-tonetool ccaudio ucommon)
 set_target_properties(ccaudio-tonetool PROPERTIES OUTPUT_NAME tonetool)
 target_link_libraries(ccaudio-tonetool ccaudio ${USES_UCOMMON_LIBRARIES})
-install(TARGETS ccaudio-tonetool DESTINATION bin)
 
 add_executable(ccaudio-audiotool utils/audiotool.cpp)
 add_dependencies(ccaudio-audiotool ccaudio ucommon)
 set_target_properties(ccaudio-audiotool PROPERTIES OUTPUT_NAME audiotool)
 target_link_libraries(ccaudio-audiotool ccaudio ${USES_UCOMMON_LIBRARIES})
-install(TARGETS ccaudio-audiotool DESTINATION bin)
 
+if(BUILD_PACKAGE)
+    install(FILES inc/ccaudio2.h DESTINATION include)
+    install(TARGETS ccaudio DESTINATION lib${LIB_SUFFIX})
+    install(TARGETS ccaudio-tonetool DESTINATION bin)
+    install(TARGETS ccaudio-audiotool DESTINATION bin)
+endif()
 
