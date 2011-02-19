@@ -1,5 +1,5 @@
 From ccaudio2 2.0.0 to ccaudio2 2.0.1
-- fixed stand-alone cmake build
+- fixed stand-alone cmake build, cmake build for unix
 
 From ccaudio2 1.0.0 to ccaudio2 2.0.0
 - new linkage and member naming conventions
