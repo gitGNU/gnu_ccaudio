@@ -1,3 +1,6 @@
+From ccaudio2 2.0.1 to ccaudio2 2.0.2
+- more cmake issues resolved
+
 From ccaudio2 2.0.0 to ccaudio2 2.0.1
 - fixed stand-alone cmake build, cmake build for unix
 
