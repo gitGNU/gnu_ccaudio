@@ -13,7 +13,7 @@ cmake_minimum_required(VERSION 2.6)
 PROJECT(ccaudio2)
 INCLUDE(CheckIncludeFiles)
 INCLUDE(CheckLibraryExists)
-set (VERSION 2.0.1)
+set (VERSION 2.0.2)
 set (SOVERSION 2)
 
 if(MSVC60)
