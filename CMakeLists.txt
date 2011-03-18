@@ -24,9 +24,53 @@ elseif(WIN32)
 else()
     option(BUILD_STATIC "Set to ON to build static libraries" OFF)
 endif()
-option(BUILD_PACKAGE "Set to OFF to disable packaging and install" ON)
 
 MESSAGE( STATUS "Configuring GNU ccaudio ${VERSION}...")
+
+SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "${PROJECT_NAME} library")
+SET(CPACK_PACKAGE_VENDOR              "David Sugar")
+SET(CPACK_PACKAGE_DESCRIPTION_FILE    "${CMAKE_CURRENT_SOURCE_DIR}/README")
+SET(CPACK_RESOURCE_FILE_LICENSE       "${CMAKE_CURRENT_SOURCE_DIR}/COPYING")
+set(PACKAGE_FILE_NAME                 ${PROJECT_NAME})
+set(PACKAGE_FILE_VERSION              ${VERSION})
+
+IF (WIN32)
+    SET(CPACK_PACKAGE_FILE_NAME "${PACKAGE_FILE_NAME}-${PACKAGE_FILE_VERSION}")
+ELSE (WIN32)
+    SET(CPACK_PACKAGE_FILE_NAME "${PACKAGE_FILE_NAME}-bin-${PACKAGE_FILE_VERSION}")
+    if (NOT CPACK_GENERATOR)
+        SET(CPACK_GENERATOR "TBZ2")
+    endif()
+ENDIF (WIN32)
+
+IF(WIN32 AND NOT UNIX)
+    SET(CPACK_PACKAGE_INSTALL_DIRECTORY "${CPACK_PACKAGE_FILE_NAME}")
+
+    # There is a bug in NSI that does not handle full unix paths properly. Make
+    # sure there is at least one set of four (4) backlasshes.
+    # SET(CPACK_PACKAGE_ICON "${CMake_SOURCE_DIR}/Utilities/Release\\\\InstallIcon.bmp")
+    # SET(CPACK_NSIS_INSTALLED_ICON_NAME "bin\\\\MyExecutable.exe")
+    SET(CPACK_NSIS_DISPLAY_NAME "${CPACK_PACKAGE_INSTALL_DIRECTORY} ${PROJECT_NAME}$")
+    SET(CPACK_NSIS_HELP_LINK "http:\\\\\\\\www.gnutelephony.org")
+    SET(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\www.gnutelephony.org")
+    SET(CPACK_NSIS_CONTACT "dyfet@gnutelephony.org")
+    SET(CPACK_NSIS_MODIFY_PATH ON)
+
+ENDIF(WIN32 AND NOT UNIX)
+
+set(CPACK_COMPONENTS_ALL libraries headers)
+set(CPACK_COMPONENT_LIBRARIES_DISPLAY_NAME "Libraries")
+set(CPACK_COMPONENT_HEADERS_DISPLAY_NAME   "C++ Headers")
+set(CPACK_COMPONENT_LIBRARIES_DESCRIPTION  "Dynamic library")
+set(CPACK_COMPONENT_HEADERS_DESCRIPTION
+    "Header files needed to build applications using ucommon library")
+SET(CPACK_SOURCE_IGNORE_FILES ".bzr" "build" ".swp$" ".*~" ".svn" ".git")
+SET(CPACK_SOURCE_GENERATOR "TBZ2")
+SET(CPACK_SOURCE_PACKAGE_FILE_NAME "${PACKAGE_FILE_NAME}-${PACKAGE_FILE_VERSION}")
+
+# This must always be last!
+INCLUDE(CPack)
+
 
 # set to true for debug and trace during CMakeLists development
 set(CMAKE_VERBOSE_MAKEFILE FALSE)
@@ -139,9 +183,7 @@ add_dependencies(ccaudio-audiotool ccaudio ucommon)
 set_target_properties(ccaudio-audiotool PROPERTIES OUTPUT_NAME audiotool)
 target_link_libraries(ccaudio-audiotool ccaudio ${USES_UCOMMON_LIBRARIES})
 
-if(BUILD_PACKAGE)
-    install(FILES inc/ccaudio2.h DESTINATION include)
-    install(TARGETS ccaudio DESTINATION ${INSTALL_LIBDIR})
-    install(TARGETS ccaudio-tonetool ccaudio-audiotool DESTINATION ${INSTALL_BINDIR})
-endif()
+install(FILES inc/ccaudio2.h DESTINATION include COMPONENT headers)
+install(TARGETS ccaudio DESTINATION ${INSTALL_LIBDIR} COMPONENT libraries)
+install(TARGETS ccaudio-tonetool ccaudio-audiotool DESTINATION ${INSTALL_BINDIR})
 
