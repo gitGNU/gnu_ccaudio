@@ -60,16 +60,31 @@ else()
 endif()
 
 # app specific paths, -DWITH_LIBDIR, -DWITH_DATADIR effects...
-if(WITH_LIBDIR)
+
+if (WITH_LIBDIR)
+    set(INSTALL_LIBDIR ${WITH_LIBDIR})
     set(DEFAULT_LIBPATH ${WITH_LIBDIR})
 else()
+    set(INSTALL_LIBDIR lib)
     set(DEFAULT_LIBPATH ${CMAKE_INSTALL_PREFIX}/lib)
 endif()
 
+if (WITH_BINDIR)
+    set(INSTALL_BINDIR ${WITH_BINDIR})
+else()
+    set(INSTALL_BINDIR bin)
+endif()
+
+if(WITH_LIBSUFFIX)
+    set(INSTALL_LIBDIR ${INSTALL_LIBDIR}${WITH_LIBSUFFIX})
+endif()
+
 if(WITH_DATADIR)
-    set(DEFAULT_PHRASES ${WITH_DATADIR}/ccaudio})
+    set(DEFAULT_PHRASES ${WITH_DATADIR})
+    set(INSTALL_DATADIR ${WITH_DATADIR})
 else()
     set(DEFAULT_PHRASES ${CMAKE_INSTALL_PREFIX}/share/ccaudio)
+    set(INSTALL_DATADIR share/ccaudio)
 endif()
 
 check_include_files(sys/soundcard.h HAVE_SYS_SOUNDCARD_H)
@@ -111,12 +126,6 @@ if(HAVE_GSM_H OR HAVE_GSM_GSM_H)
     set(AUDIO_LIBS ${AUDIO_LIBS} gsm)
 endif()
 
-if(LIB_SUFFIX)
-    if (NOT LIB_SUFFIX EQUAL 64)
-        message (FATAL_ERROR "LIB_SUFFIX must be empty (32 bits) or 64 (64 bits)")
-    endif()
-endif()
-
 file(GLOB ccaudio_src src/*.cpp)
 set(ccaudio_inc inc/ccaudio2.h)
 add_library(ccaudio ${BUILD_LIBRARY_TYPE} ${ccaudio_src} ${ccaudio_inc})
@@ -136,8 +145,7 @@ target_link_libraries(ccaudio-audiotool ccaudio ${USES_UCOMMON_LIBRARIES})
 
 if(BUILD_PACKAGE)
     install(FILES inc/ccaudio2.h DESTINATION include)
-    install(TARGETS ccaudio DESTINATION lib${LIB_SUFFIX})
-    install(TARGETS ccaudio-tonetool DESTINATION bin)
-    install(TARGETS ccaudio-audiotool DESTINATION bin)
+    install(TARGETS ccaudio DESTINATION ${INSTALL_LIBDIR})
+    install(TARGETS ccaudio-tonetool ccaudio-audiotool DESTINATION ${INSTALL_BINDIR})
 endif()
 
