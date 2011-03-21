@@ -22,7 +22,7 @@
 #include <endian.h>
 #endif
 
-#if defined(_MSWINDOWS_) && !defined(__BIG_ENDIAN)
+#if !defined(__BIG_ENDIAN)
 #define __LITTLE_ENDIAN 1234
 #define __BIG_ENDIAN    4321
 #define __PDP_ENDIAN    3412

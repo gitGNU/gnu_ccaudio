@@ -140,7 +140,7 @@ endif()
 
 check_include_files(CoreAudio/CoreAudio.h OSX_AUDIO)
 if(OSX_AUDIO)
-    set(AUDIO_LIBS -framework;Coreaudio)
+    set(AUDIO_LIBS "-framework CoreAudio")
 endif()
 
 if(WIN32)
