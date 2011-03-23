@@ -1,3 +1,6 @@
+from ccaudio2 2.0.3 to ccaudio2 2.0.4
+- fix from gahr for cmake.
+
 from ccaudio2 2.0.2 to ccaudio2 2.0.3
 - fixes for os/x support
 
