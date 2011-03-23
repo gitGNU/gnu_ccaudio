@@ -71,11 +71,8 @@ SET(CPACK_SOURCE_PACKAGE_FILE_NAME "${PACKAGE_FILE_NAME}-${PACKAGE_FILE_VERSION}
 # This must always be last!
 INCLUDE(CPack)
 
-
 # set to true for debug and trace during CMakeLists development
 set(CMAKE_VERBOSE_MAKEFILE FALSE)
-
-configure_file(config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
 # Set defaults and pass common options.  Common build options can be passed
 # to cmake using cmake -DWITH_CFLAGS="...", WITH_LIBS, and WITH_INCLUDES
@@ -165,6 +162,8 @@ endif()
 if(HAVE_GSM_H OR HAVE_GSM_GSM_H)
     set(AUDIO_LIBS ${AUDIO_LIBS} gsm)
 endif()
+
+configure_file(config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
 file(GLOB ccaudio_src src/*.cpp)
 set(ccaudio_inc inc/ccaudio2.h)
