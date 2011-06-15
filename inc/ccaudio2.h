@@ -1607,6 +1607,7 @@ public:
 typedef struct
 {
     bool zeroflag;
+    unsigned long last;
     unsigned pos;
     unsigned max;
     char *bp;
@@ -1640,6 +1641,12 @@ public:
     virtual void spell(const char *text, audiorule_t *state);
 
     virtual void literal(const char *text, audiorule_t *state);
+
+    virtual void weekday(const char *text, audiorule_t *state);
+
+    virtual void date(const char *text, audiorule_t *state);
+
+    virtual void time(const char *text, audiorule_t *state);
 
     static AudioRule *find(const char *lang = NULL);
 };

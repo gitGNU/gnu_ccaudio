@@ -36,14 +36,25 @@ LinkedObject()
         enlist(&secondary);
 }
 
-static class __LOCAL _default_ : public AudioRule
+static class __LOCAL _default : public AudioRule
 {
 public:
-    _default_();
+    _default();
 
     bool id(const char *lang);
 
 } _default_rule;
+
+static class __LOCAL _en_US : public AudioRule
+{
+public:
+    _en_US();
+
+    bool id(const char *lang);
+
+    void time(const char *text, audiorule_t *state);
+
+} _en_US_rule;
 
 AudioRule *AudioRule::find(const char *lang)
 {
@@ -75,12 +86,52 @@ AudioRule *AudioRule::find(const char *lang)
     return &_default_rule;
 }
 
-_default_::_default_() :
+_default::_default() :
 AudioRule(true)
 {
 }
 
-bool _default_::id(const char *lang)
+_en_US::_en_US() :
+AudioRule(false)
+{
+}
+
+bool _en_US::id(const char *lang)
+{
+    if(eq(lang, "en_US"))
+        return true;
+
+    if(eq(lang, "en_US.", 6))
+        return true;
+
+    return false;
+}
+
+void _en_US::time(const char *text, audiorule_t *state)
+{
+    const char *ap = "a";
+
+    Time now((char *)text);
+    if(now[Time::hour] >= 12) {
+        ap = "p";
+        _lownumber(now[Time::hour] % 12, state);
+    }
+    else if(now[Time::hour])
+        _lownumber(now[Time::hour], state);
+    else
+        _lownumber(12, state);
+
+    if(now[Time::minute]) {
+        if(now[Time::minute] < 10)
+            _add("o", state);
+        _lownumber(now[Time::minute], state);
+    }
+
+    _add(ap, state);
+    _add("m", state);
+}
+
+bool _default::id(const char *lang)
 {
     if(eq(lang, "en_", 3))
         return true;
@@ -158,6 +209,7 @@ void AudioRule::number(const char *text, audiorule_t *state)
     unsigned long num;
 
     state->zeroflag = true;
+    state->last = atol(text);
 
     if(!text || !*text)
         return;
@@ -217,6 +269,7 @@ void AudioRule::order(const char *text, audiorule_t *state)
     static const char *hi[] = {"", "", "20th", "30th", "40th", "50th", "60th", "70th", "80th", "90th"};
 
     unsigned num = atoi(text);
+    state->last = atol(text);
 
     if(num > 100)
     {
@@ -246,15 +299,14 @@ void AudioRule::order(const char *text, audiorule_t *state)
 void AudioRule::spell(const char *text, audiorule_t *state)
 {
     ucs4_t code;
-    char *top;
     char buf[16];
 
     if(!state->bp)
         state->bp = (char *)(&state->list[state->max]);
 
     while(text && *text) {
-        if(isdigit(*text)) {
-            buf[0] = *(text++);
+        if(isalnum(*text)) {
+            buf[0] = tolower(*(text++));
             buf[1] = 0;
         }
         else {
@@ -272,3 +324,26 @@ void AudioRule::literal(const char *text, audiorule_t *state)
 {
     _add(text, state);
 }
+
+void AudioRule::weekday(const char *text, audiorule_t *state)
+{
+    Date now((char *)text);
+}
+
+void AudioRule::date(const char *text, audiorule_t *state)
+{
+    Date now((char *)text);
+}
+
+void AudioRule::time(const char *text, audiorule_t *state)
+{
+    Time now((char *)text);
+    _lownumber(now[Time::hour], state);
+    if(now[Time::minute] < 1)
+        _add("o", state);
+    if(now[Time::minute] < 10)
+        _add("o", state);
+    if(now[Time::minute])
+        _lownumber(now[Time::minute], state);
+}
+
