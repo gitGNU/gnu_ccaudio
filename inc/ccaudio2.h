@@ -1609,6 +1609,7 @@ typedef struct
     bool zeroflag;
     unsigned pos;
     unsigned max;
+    char *bp;
     const char *list[1];
 } audiorule_t;
 
@@ -1620,6 +1621,13 @@ typedef struct
  */
 class __EXPORT AudioRule : public LinkedObject
 {
+protected:
+    static void _add(const char *text, audiorule_t *state);
+
+    static void _dup(const char *text, audiorule_t *state);
+
+    static void _lownumber(int num, audiorule_t *state);
+
 public:
     AudioRule(bool primary);
 
@@ -1628,6 +1636,10 @@ public:
     virtual void number(const char *text, audiorule_t *state);
 
     virtual void order(const char *text, audiorule_t *state);
+
+    virtual void spell(const char *text, audiorule_t *state);
+
+    virtual void literal(const char *text, audiorule_t *state);
 
     static AudioRule *find(const char *lang = NULL);
 };

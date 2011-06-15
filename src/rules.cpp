@@ -94,9 +94,31 @@ bool _default_::id(const char *lang)
     return false;
 }
 
-static void _add(const char *text, audiorule_t *state)
+void AudioRule::_dup(const char *text, audiorule_t *state)
 {
-    if(state->pos >= state->max - 1)
+    size_t len = strlen(text) + 1;
+    if(!state->bp)
+        state->bp = ((char *)(&state->list[state->max])) - 1;
+
+    state->bp -= len;
+    if(state->bp && ((char *)(&state->list[state->pos + 2]) >= state->bp)) {
+        state->list[0] = NULL;
+        state->pos = state->max;
+    }
+    else {
+        String::set(state->bp, len, text);
+        state->list[state->pos++] = state->bp;
+        state->list[state->pos] = NULL;
+    }
+}
+
+void AudioRule::_add(const char *text, audiorule_t *state)
+{
+    if(state->bp && ((char *)(&state->list[state->pos + 2]) >= state->bp)) {
+        state->list[0] = NULL;
+        state->pos = state->max;
+    }
+    else if(state->pos >= state->max - 1)
         state->list[0] = NULL;
     else {
         state->list[state->pos++] = text;
@@ -111,7 +133,7 @@ static const char *_0to19[] =
 static const char *_tens[] =
     {"", "10", "20", "30", "40", "50", "60", "70", "80", "90"};
 
-static void _lownumber(int num, audiorule_t *state)
+void AudioRule::_lownumber(int num, audiorule_t *state)
 {
     if(num >= 100)
     {
@@ -221,3 +243,32 @@ void AudioRule::order(const char *text, audiorule_t *state)
         _add(low[num], state);
 }
 
+void AudioRule::spell(const char *text, audiorule_t *state)
+{
+    ucs4_t code;
+    char *top;
+    char buf[16];
+
+    if(!state->bp)
+        state->bp = (char *)(&state->list[state->max]);
+
+    while(text && *text) {
+        if(isdigit(*text)) {
+            buf[0] = *(text++);
+            buf[1] = 0;
+        }
+        else {
+            code = utf8::codepoint(text);
+            if(!code || code == (ucs4_t)EOF)
+                break;
+            text += utf8::size(text);
+            snprintf(buf, sizeof(buf), "cp%lu", (long unsigned)code);
+        }
+        _dup(buf, state);
+    }
+}
+
+void AudioRule::literal(const char *text, audiorule_t *state)
+{
+    _add(text, state);
+}
