@@ -43,8 +43,6 @@ public:
 
     bool id(const char *lang);
 
-    void number(const char *text, audiorule_t *state);
-
 } _default_rule;
 
 AudioRule *AudioRule::find(const char *lang)
@@ -133,7 +131,7 @@ static void _lownumber(int num, audiorule_t *state)
         _add(_0to19[num % 10], state);
 }
 
-void _default_::number(const char *text, audiorule_t *state)
+void AudioRule::number(const char *text, audiorule_t *state)
 {
     unsigned long num;
 
@@ -184,5 +182,42 @@ void _default_::number(const char *text, audiorule_t *state)
             _add(_0to19[(*text - '0')], state);
     }
     state->zeroflag = false;
+}
+
+void AudioRule::order(const char *text, audiorule_t *state)
+{
+    static const char *low[] = { "th",
+        "1st", "2nd", "3rd", "4th", "5th",
+        "6th", "7th", "8th", "9th", "10th",
+        "11th", "12th", "13th", "14th", "15th",
+        "16th", "17th", "18th", "19th"};
+
+    static const char *hi[] = {"", "", "20th", "30th", "40th", "50th", "60th", "70th", "80th", "90th"};
+
+    unsigned num = atoi(text);
+
+    if(num > 100)
+    {
+        if(num % 100) {
+            _add(_0to19[num / 100], state);
+            _add("hundred", state);
+        }
+        else {
+            _add(_0to19[num / 100], state);
+            _add("hundred", state);
+            _add("th", state);
+        }
+        num %= 100;
+    }
+    if(num > 19)
+    {
+        if(num % 10)
+            _add(_tens[num / 10], state);
+        else
+            _add(hi[num / 10], state);
+        num %= 10;
+    }
+    if(num)
+        _add(low[num], state);
 }
 
