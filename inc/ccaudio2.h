@@ -1604,6 +1604,32 @@ public:
         {return codec;};
 };
 
+typedef struct
+{
+    bool zeroflag;
+    unsigned pos;
+    unsigned max;
+    const char *list[1];
+} audiorule_t;
+
+/**
+ * The language class for language modules and plugins.  This offers rules
+ * parsing and translation for phrasebook systems.
+ *
+ * @author David Sugar <dyfet@gnutelephony.org>
+ */
+class __EXPORT AudioRule : public LinkedObject
+{
+public:
+    AudioRule(bool primary);
+
+    virtual bool id(const char *lang) = 0;
+
+    virtual void number(const char *text, audiorule_t *state) = 0;
+
+    static AudioRule *find(const char *lang = NULL);
+};
+
 /**
  * The codec class is a virtual used for transcoding audio samples between
  * linear frames (or other known format) and an encoded "sample" buffer.

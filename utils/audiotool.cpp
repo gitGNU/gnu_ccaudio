@@ -1138,7 +1138,7 @@ static void packetdump(char **argv)
     buffer = new unsigned char[Audio::maxFramesize(info)];
 
     while((count = packetfile.getPacket(buffer)) > 0)
-        printf("-- %ld\n", count);
+        printf("-- %ld\n", (long)count);
 
     delete[] buffer;
     packetfile.close();

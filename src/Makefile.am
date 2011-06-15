@@ -18,6 +18,6 @@ libccaudio_la_LDFLAGS = @CCAUDIO_LIBS@ $(RELEASE)
 libccaudio_la_SOURCES = audiobase.cpp audiofile.cpp audiobuffer.cpp \
 	codec.cpp detect.cpp dialers.cpp fileio.cpp friends.cpp \
 	mapper.cpp oss.cpp osx.cpp resample.cpp stream.cpp w32.cpp \
-	teltones.cpp tone.cpp 
+	teltones.cpp tone.cpp rules.cpp
 
 
