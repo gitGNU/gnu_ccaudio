@@ -1625,7 +1625,9 @@ public:
 
     virtual bool id(const char *lang) = 0;
 
-    virtual void number(const char *text, audiorule_t *state) = 0;
+    virtual void number(const char *text, audiorule_t *state);
+
+    virtual void order(const char *text, audiorule_t *state);
 
     static AudioRule *find(const char *lang = NULL);
 };
