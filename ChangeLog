@@ -1,3 +1,6 @@
+from ccaudio2 2.0.5 to ccaudio2 2.1.0
+- phrasebook rules processing.
+
 from ccaudio2 2.0.4 to ccaudio2 2.0.5
 - adusted cmake install paths.
 
