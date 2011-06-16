@@ -15,8 +15,9 @@ LDADD = ../src/libccaudio.la @CCAUDIO_LIBS@
 EXTRA_DIST = audiotool.1 tonetool.1 tones.conf
 
 man_MANS = audiotool.1 tonetool.1
-bin_PROGRAMS = tonetool audiotool
+bin_PROGRAMS = tonetool audiotool phrasebook
 
 tonetool_SOURCES = tonetool.cpp
 audiotool_SOURCES = audiotool.cpp
+phrasebook_SOURCES = phrasebook.cpp
 

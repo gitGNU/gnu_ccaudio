@@ -200,7 +200,12 @@ add_dependencies(ccaudio-audiotool ccaudio ucommon)
 set_target_properties(ccaudio-audiotool PROPERTIES OUTPUT_NAME audiotool)
 target_link_libraries(ccaudio-audiotool ccaudio ${USES_UCOMMON_LIBRARIES})
 
+add_executable(ccaudio-phrasebook utils/phrasebook.cpp)
+add_dependencies(ccaudio-phrasebook ccaudio ucommon)
+set_target_properties(ccaudio-phrasebook PROPERTIES OUTPUT_NAME phrasebook)
+target_link_libraries(ccaudio-phrasebook ccaudio ${USES_UCOMMON_LIBRARIES})
+
 install(FILES inc/ccaudio2.h DESTINATION ${INSTALL_INCLUDEDIR} COMPONENT headers)
 install(TARGETS ccaudio DESTINATION ${INSTALL_LIBDIR} COMPONENT libraries)
-install(TARGETS ccaudio-tonetool ccaudio-audiotool DESTINATION ${INSTALL_BINDIR})
+install(TARGETS ccaudio-tonetool ccaudio-audiotool ccaudio-phrasebook DESTINATION ${INSTALL_BINDIR})
 

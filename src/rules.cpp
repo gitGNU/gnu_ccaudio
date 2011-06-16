@@ -85,7 +85,7 @@ AudioRule *AudioRule::find(const char *lang)
         rp.next();
     }
 
-    return &_default_rule;
+    return NULL;
 }
 
 _default::_default() :

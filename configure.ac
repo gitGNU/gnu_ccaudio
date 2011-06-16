@@ -131,9 +131,6 @@ AC_CHECK_HEADERS(CoreAudio/CoreAudio.h, [
 
 AC_CHECK_LIB([m], [sqrt], [EXPORT_LIBS="$EXPORT_LIBS -lm"])
 AC_CHECK_LIB([ossaudio], [_oss_ioctl], [AUDIO_LIBS="-lossaudio"])
-AC_CHECK_FUNC([ftruncate],[
-    AC_DEFINE(HAVE_FTRUNCATE, [1], [has ftruncate() function])
-])
 
 ac_gsm_codec=false
 ac_spx_codec=false
