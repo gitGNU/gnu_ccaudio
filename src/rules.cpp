@@ -116,7 +116,11 @@ void _en_US::time(const char *text, audiorule_t *state)
     Time now((char *)text);
     if(now[Time::hour] >= 12) {
         ap = "p";
-        _lownumber(now[Time::hour] % 12, state);
+        unsigned hour = now[Time::hour];
+        if(hour % 12)
+            _lownumber(now[Time::hour] % 12, state);
+        else
+            _lownumber(12, state);
     }
     else if(now[Time::hour])
         _lownumber(now[Time::hour], state);
@@ -135,7 +139,7 @@ void _en_US::time(const char *text, audiorule_t *state)
 
 void _en_US::date(const char *text, audiorule_t *state)
 {
-    static const char *_month[] = {"", "january", "febuary", "march", "april", "may", "june", "july", "auguest", "september", "october", "november", "december"};
+    static const char *_month[] = {"", "january", "febuary", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"};
 
     Date now((char *)text);
     _add(_month[now[Date::month]], state);
@@ -343,6 +347,17 @@ void AudioRule::literal(const char *text, audiorule_t *state)
     if(!text || !*text)
         return;
 
+    if(isdigit(text[0]) && isdigit(text[1]) && text[2] == ':') {
+        time(text, state);
+        return;
+    }
+
+    if(isdigit(text[0]) && isdigit(text[1]) && isdigit(text[2]) && isdigit(text[3]) && text[4] == '-') {
+        fulldate(text, state);
+        return;
+    }
+
+
     if(*cp == '-')
         ++cp;
     while(*cp) {
@@ -370,9 +385,15 @@ void AudioRule::weekday(const char *text, audiorule_t *state)
     _add(_dow[now[Date::dow]], state);
 }
 
+void AudioRule::fulldate(const char *text, audiorule_t *state)
+{
+    date(text, state);
+    year(text, state);
+}
+
 void AudioRule::date(const char *text, audiorule_t *state)
 {
-    static const char *_month[] = {"", "january", "febuary", "march", "april", "may", "june", "july", "auguest", "september", "october", "november", "december"};
+    static const char *_month[] = {"", "january", "febuary", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"};
 
     Date now((char *)text);
     char buf[8];
@@ -425,6 +446,13 @@ void AudioRule::init(audiorule_t *state, size_t size)
 {
     memset(state, 0, size);
     state->max = (size - sizeof(audiorule_t)) / sizeof(char *);
+    state->size = size;
+}
+
+void AudioRule::reset(audiorule_t *state)
+{
+    if(state->size)
+        init(state, state->size);
 }
 
 const char *AudioRule::code(void)

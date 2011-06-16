@@ -1610,6 +1610,7 @@ typedef struct
     unsigned long last;
     unsigned pos;
     unsigned max;
+    size_t size;
     char *bp;
     const char *list[1];
 } audiorule_t;
@@ -1648,6 +1649,8 @@ public:
 
     virtual void date(const char *text, audiorule_t *state);
 
+    virtual void fulldate(const char *text, audiorule_t *state);
+
     virtual void year(const char *text, audiorule_t *state);
 
     virtual void time(const char *text, audiorule_t *state);
@@ -1655,6 +1658,9 @@ public:
     static AudioRule *find(const char *lang = NULL);
 
     static void init(audiorule_t *state, size_t size);
+
+    static void reset(audiorule_t *state);
+
 };
 
 /**

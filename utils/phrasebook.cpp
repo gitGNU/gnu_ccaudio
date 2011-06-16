@@ -38,20 +38,44 @@ static void display(char **args)
         const char **out = &state.rule.list[0];
         const char *arg = *(args++);
 
-        if(eq(arg, "-number=", 8))
+        if(eq(arg, "@number/", 8))
             ruleset->number(arg + 8, &state.rule);
-        else if(eq(arg, "-number")) {
+        else if(eq(arg, "@number")) {
             arg = *(args++);
             if(!arg)
-                shell::errexit(4, "*** phrasebook: -number: %s\n", _TEXT("argument missing"));
+                shell::errexit(4, "*** phrasebook: @number: %s\n", _TEXT("argument missing"));
             ruleset->number(arg, &state.rule);
         }
-        else if(eq(arg, "-spell=", 7))
-            ruleset->spell(arg + 7, &state.rule);
-        else if(eq(arg, "-spell")) {
+        else if(eq(arg, "@time/", 6))
+            ruleset->time(arg + 6, &state.rule);
+        else if(eq(arg, "@time")) {
             arg = *(args++);
             if(!arg)
-                shell::errexit(4, "*** phrasebook: -spell: %s\n", _TEXT("argument missing"));
+                shell::errexit(4, "*** phrasebook: @time: %s\n", _TEXT("argument missing"));
+            ruleset->time(arg, &state.rule);
+        }
+        else if(eq(arg, "@date/", 6))
+            ruleset->date(arg + 6, &state.rule);
+        else if(eq(arg, "@date")) {
+            arg = *(args++);
+            if(!arg)
+                shell::errexit(4, "*** phrasebook: @date: %s\n", _TEXT("argument missing"));
+            ruleset->date(arg, &state.rule);
+        }
+        else if(eq(arg, "@fulldate/", 6))
+            ruleset->fulldate(arg + 6, &state.rule);
+        else if(eq(arg, "@fulldate")) {
+            arg = *(args++);
+            if(!arg)
+                shell::errexit(4, "*** phrasebook: @fulldate: %s\n", _TEXT("argument missing"));
+            ruleset->fulldate(arg, &state.rule);
+        }
+        else if(eq(arg, "@spell/", 7))
+            ruleset->spell(arg + 7, &state.rule);
+        else if(eq(arg, "@spell")) {
+            arg = *(args++);
+            if(!arg)
+                shell::errexit(4, "*** phrasebook: @spell: %s\n", _TEXT("argument missing"));
             ruleset->spell(arg, &state.rule);
         }
         else
