@@ -404,3 +404,7 @@ void AudioRule::init(audiorule_t *state, size_t size)
     state->max = (size - sizeof(audiorule_t)) / sizeof(char *);
 }
 
+const char *AudioRule::code(void)
+{
+    return "en";
+}

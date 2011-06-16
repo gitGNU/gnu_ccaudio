@@ -1634,6 +1634,8 @@ public:
 
     virtual bool id(const char *lang) = 0;
 
+    virtual const char *code(void);
+
     virtual void number(const char *text, audiorule_t *state);
 
     virtual void order(const char *text, audiorule_t *state);
