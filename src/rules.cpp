@@ -100,10 +100,10 @@ AudioRule(false)
 
 bool _en_US::id(const char *lang)
 {
-    if(eq(lang, "en_US"))
+    if(case_eq(lang, "en_US"))
         return true;
 
-    if(eq(lang, "en_US.", 6))
+    if(case_eq(lang, "en_US.", 6))
         return true;
 
     return false;
@@ -147,13 +147,13 @@ void _en_US::date(const char *text, audiorule_t *state)
 
 bool _default::id(const char *lang)
 {
-    if(eq(lang, "en_", 3))
+    if(case_eq(lang, "en_", 3))
         return true;
 
-    if(eq(lang, "C"))
+    if(case_eq(lang, "C"))
         return true;
 
-    if(eq(lang, "en"))
+    if(case_eq(lang, "en"))
         return true;
 
     return false;
