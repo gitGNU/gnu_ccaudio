@@ -62,8 +62,16 @@ static void display(char **args)
                 shell::errexit(4, "*** phrasebook: @date: %s\n", _TEXT("argument missing"));
             ruleset->date(arg, &state.rule);
         }
-        else if(eq(arg, "@fulldate/", 6))
-            ruleset->fulldate(arg + 6, &state.rule);
+        else if(eq(arg, "@weekday/", 9))
+            ruleset->weekday(arg + 9, &state.rule);
+        else if(eq(arg, "@weekday")) {
+            arg = *(args++);
+            if(!arg)
+                shell::errexit(4, "*** phrasebook: @fulldate: %s\n", _TEXT("argument missing"));
+            ruleset->weekday(arg, &state.rule);
+        }
+        else if(eq(arg, "@fulldate/", 10))
+            ruleset->fulldate(arg + 10, &state.rule);
         else if(eq(arg, "@fulldate")) {
             arg = *(args++);
             if(!arg)
@@ -78,6 +86,15 @@ static void display(char **args)
                 shell::errexit(4, "*** phrasebook: @spell: %s\n", _TEXT("argument missing"));
             ruleset->spell(arg, &state.rule);
         }
+        else if(eq(arg, "@order/", 7))
+            ruleset->order(arg + 7, &state.rule);
+        else if(eq(arg, "@order")) {
+            arg = *(args++);
+            if(!arg)
+                shell::errexit(4, "*** phrasebook: @order: %s\n", _TEXT("argument missing"));
+            ruleset->order(arg, &state.rule);
+        }
+
         else
             ruleset->literal(arg, &state.rule);
 

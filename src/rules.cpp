@@ -222,6 +222,37 @@ void AudioRule::_lownumber(int num, audiorule_t *state)
         _add(_0to19[num % 10], state);
 }
 
+void AudioRule::nonzero(const char *text, audiorule_t *state)
+{
+    char *bp = state->bp;
+    unsigned pos = state->pos;
+
+    number(text, state);
+    if(state->zeroflag) {
+        state->bp = bp;
+        state->pos = pos;
+        state->list[pos] = NULL;
+    }
+}
+
+void AudioRule::zero(const char *text, audiorule_t *state)
+{
+    if(state->zeroflag)
+        literal(text, state);
+}
+
+void AudioRule::single(const char *text, audiorule_t *state)
+{
+    if(state->last == 1)
+        literal(text, state);
+}
+
+void AudioRule::plural(const char *text, audiorule_t *state)
+{
+    if(state->last > 1)
+        literal(text, state);
+}
+
 void AudioRule::number(const char *text, audiorule_t *state)
 {
     unsigned long num;
