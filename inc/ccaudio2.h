@@ -1646,9 +1646,13 @@ public:
 
     virtual void date(const char *text, audiorule_t *state);
 
+    virtual void year(const char *text, audiorule_t *state);
+
     virtual void time(const char *text, audiorule_t *state);
 
     static AudioRule *find(const char *lang = NULL);
+
+    static void init(audiorule_t *state, size_t size);
 };
 
 /**

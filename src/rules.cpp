@@ -54,6 +54,8 @@ public:
 
     void time(const char *text, audiorule_t *state);
 
+    void date(const char *text, audiorule_t *state);
+
 } _en_US_rule;
 
 AudioRule *AudioRule::find(const char *lang)
@@ -129,6 +131,18 @@ void _en_US::time(const char *text, audiorule_t *state)
 
     _add(ap, state);
     _add("m", state);
+}
+
+void _en_US::date(const char *text, audiorule_t *state)
+{
+    static const char *_month[] = {"", "january", "febuary", "march", "april", "may", "june", "july", "auguest", "september", "october", "november", "december"};
+
+    Date now((char *)text);
+    _add(_month[now[Date::month]], state);
+
+    char buf[8];
+    snprintf(buf, sizeof(buf), "%d", now[Date::day]);
+    order(buf, state);
 }
 
 bool _default::id(const char *lang)
@@ -327,12 +341,49 @@ void AudioRule::literal(const char *text, audiorule_t *state)
 
 void AudioRule::weekday(const char *text, audiorule_t *state)
 {
+    static const char *_dow[] = {"sunday", "monday", "tuesday", "wednasday", "thursday", "friday", "saturday"};
+
     Date now((char *)text);
+    _add(_dow[now[Date::dow]], state);
 }
 
 void AudioRule::date(const char *text, audiorule_t *state)
 {
+    static const char *_month[] = {"", "january", "febuary", "march", "april", "may", "june", "july", "auguest", "september", "october", "november", "december"};
+
     Date now((char *)text);
+    char buf[8];
+    snprintf(buf, sizeof(buf), "%d", now[Date::day]);
+    order(buf, state);
+    _add(_month[now[Date::month]], state);
+}
+
+void AudioRule::year(const char *text, audiorule_t *state)
+{
+    Date now((char *)text);
+    unsigned year = now[Date::year];
+    unsigned hi = year / 100;
+    unsigned lo = year % 100;
+
+    if((hi % 10) == 0) {
+        _lownumber(hi / 10, state);
+        _add("thousand", state);
+        if(!lo)
+            return;
+        _lownumber(lo, state);
+        return;
+    }
+
+    if(!lo) {
+        _lownumber(hi, state);
+        _add("hundred", state);
+        return;
+    }
+
+    _lownumber(hi, state);
+    if(lo < 10)
+        _add("o", state);
+    _lownumber(lo, state);
 }
 
 void AudioRule::time(const char *text, audiorule_t *state)
@@ -345,5 +396,11 @@ void AudioRule::time(const char *text, audiorule_t *state)
         _add("o", state);
     if(now[Time::minute])
         _lownumber(now[Time::minute], state);
+}
+
+void AudioRule::init(audiorule_t *state, size_t size)
+{
+    memset(state, 0, size);
+    state->max = (size - sizeof(audiorule_t)) / sizeof(char *);
 }
 
