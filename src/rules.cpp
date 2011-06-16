@@ -336,7 +336,30 @@ void AudioRule::spell(const char *text, audiorule_t *state)
 
 void AudioRule::literal(const char *text, audiorule_t *state)
 {
-    _add(text, state);
+    const char *cp = text;
+    bool dot = false;
+    bool num = true;
+
+    if(!text || !*text)
+        return;
+
+    if(*cp == '-')
+        ++cp;
+    while(*cp) {
+        if(*cp == '.' && !dot) {
+            dot = true;
+            continue;
+        }
+        if(!isdigit(*cp)) {
+            num = false;
+            break;
+        }
+        ++cp;
+    }
+    if(num)
+        number(text, state);
+    else
+        _add(text, state);
 }
 
 void AudioRule::weekday(const char *text, audiorule_t *state)

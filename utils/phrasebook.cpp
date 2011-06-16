@@ -40,8 +40,20 @@ static void display(char **args)
 
         if(eq(arg, "-number=", 8))
             ruleset->number(arg + 8, &state.rule);
+        else if(eq(arg, "-number")) {
+            arg = *(args++);
+            if(!arg)
+                shell::errexit(4, "*** phrasebook: -number: %s\n", _TEXT("argument missing"));
+            ruleset->number(arg, &state.rule);
+        }
         else if(eq(arg, "-spell=", 7))
             ruleset->spell(arg + 7, &state.rule);
+        else if(eq(arg, "-spell")) {
+            arg = *(args++);
+            if(!arg)
+                shell::errexit(4, "*** phrasebook: -spell: %s\n", _TEXT("argument missing"));
+            ruleset->spell(arg, &state.rule);
+        }
         else
             ruleset->literal(arg, &state.rule);
 
