@@ -42,6 +42,7 @@ NAMESPACE_UCOMMON
 
 class __EXPORT AudioCodec;
 class __EXPORT AudioDevice;
+class __EXPORT AudioRule;
 
 /**
  * Generic audio class to hold master data types and various useful
@@ -633,6 +634,26 @@ public:
      * Initialize by loading any plugins.
      */
     static void init(void);
+
+    /**
+     * Set default prefix directory (/var/lib/xxx).
+     */
+    static void prefix(const char *path);
+
+    /**
+     * Set voice library path.
+     */
+    static void voices(const char *path, AudioRule *locale = NULL);
+
+    /**
+     * Set suffix extension to add.
+     */
+    static void suffix(const char *extension);
+
+    /**
+     * Transform path.
+     */
+    static string_t path(const char *file, AudioRule *locale = NULL);
 };
 
 /**
@@ -1635,7 +1656,7 @@ public:
 
     virtual bool id(const char *lang) = 0;
 
-    virtual const char *code(void);
+    virtual const char *path(void);
 
     virtual void number(const char *text, audiorule_t *state);
 

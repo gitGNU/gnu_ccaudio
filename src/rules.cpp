@@ -486,7 +486,7 @@ void AudioRule::reset(audiorule_t *state)
         init(state, state->size);
 }
 
-const char *AudioRule::code(void)
+const char *AudioRule::path(void)
 {
-    return "en";
+    return "/en/";
 }

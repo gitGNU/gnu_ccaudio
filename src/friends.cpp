@@ -1175,6 +1175,74 @@ timeout_t Audio::toTimeout(const char *buf)
     return atol(buf) * 3600000 + atol(++sp) * 60000 + sec + msec;
 }
 
+static const char *prefix_path = NULL;
+static const char *voices_path = NULL;
+static const char *suffix_ext = NULL;
+static AudioRule *locale_rule = NULL;
+
+void Audio::prefix(const char *path)
+{
+    if(path)
+        prefix_path = strdup(path);
+}
+
+void Audio::suffix(const char *ext)
+{
+    if(ext && *ext == '.')
+        suffix_ext = strdup(ext);
+}
+
+void Audio::voices(const char *path, AudioRule *locale)
+{
+    if(!locale)
+        locale = AudioRule::find(NULL);
+
+    voices_path = strdup(path);
+    locale_rule = locale;
+}
+
+string_t Audio::path(const char *name, AudioRule *locale)
+{
+    bool fp = false;
+    const char *ext;
+    const char *ls = strrchr(name, '/');
+    if(*name == '/')
+        fp = true;
+#ifdef  _MSWINDOWS_
+    const char *lbs = strrchr(name, '\\');
+    if(*name == '\\')
+        fp = true;
+    if(!lbs && name[1] == ':') {
+        lbs = name + 1;
+        fp = true;
+    }
+    if(lbs > ls)
+        ls = lbs;
+#endif
+    if(ls)
+        ext = strrchr(ls, '.');
+    else
+        ext = strrchr(name, '.');
+    if(!ls && voices_path && (locale || locale_rule)) {
+        if(!locale)
+            locale = locale_rule;
+        if(ext)
+            return str(voices_path) + str(locale->path()) + str(name);
+        else
+            return str(voices_path) + str(locale->path()) + str(name) + str(suffix_ext);
+    }
+    if((!ls || fp || !prefix_path) && ext)
+        return str(name);
+    if(!ls || fp || !prefix_path)
+        return str(name) + str(suffix_ext);
+
+    if(ext)
+        return str(prefix_path) + str("/") + str(name);
+
+    return str(prefix_path) + str("/") + str(name) + str(suffix_ext);
+}
+
+
 void Audio::init(void)
 {
 #ifndef BUILD_STATIC
