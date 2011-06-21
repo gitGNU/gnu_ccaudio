@@ -176,7 +176,6 @@ AC_SUBST_DIR(default_libpath, plugindir)
 AC_SUBST_DIR(default_phrases, phrasedir)
 
 AC_DEFINE_UNQUOTED(DEFAULT_LIBPATH, "$default_libpath", [lib path])
-AC_DEFINE_UNQUOTED(DEFAULT_PHRASES, "$default_phrases", [phrase path])
 
 AC_SUBST(plugindir)
 AC_SUBST(phrasedir)

@@ -20,5 +20,4 @@
 #cmakedefine OSX_AUDIO 1
 #cmakedefine BUILD_STATIC 1
 #define DEFAULT_LIBPATH "${DEFAULT_LIBPATH}"
-#define DEFAULT_PHRASES "${DEFAULT_PHRASES}"
 

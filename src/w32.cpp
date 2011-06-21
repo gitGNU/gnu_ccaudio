@@ -40,8 +40,8 @@ int _w32_ccaudio_dummy = 0;
 #include <ucommon/export.h>
 #include <ccaudio2.h>
 
-extern  LONG buffer_framing;
-extern  LONG buffer_count;
+static LONG buffer_framing = 120;   // millisec
+static LONG buffer_count = 8;
 
 class W32Semaphore
 {

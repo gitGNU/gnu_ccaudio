@@ -39,57 +39,11 @@
 
 using namespace UCOMMON_NAMESPACE;
 
-class AudioRegistry
-{
-public:
-    AudioRegistry();
-
-    const char *codecdir;
-
-};
-
 #ifdef  _MSWINDOWS_
-extern LONG buffer_framing = 120;   // millisec
-extern LONG buffer_count = 8;
-#endif
-
-static class AudioRegistry registry;
-
-#define REGISTRY_AUDIO_SETTINGS "SOFTWARE\\GNU ccAudio2\\Audio Settings"
-
-AudioRegistry::AudioRegistry()
-{
-#ifdef  _MSWINDOWS_
-    static TCHAR regpath[256];
-    LONG value;
-    HKEY key;
-    char *env;
-
-    codecdir = "C:/Program Files/Common Files/GNU ccAudio2";
-
-#ifdef  DEBUG
-#define PLUGINS "Debug"
+static const char *plugins = DEFAULT_LIBPATH;
 #else
-#define PLUGINS "Codecs"
+static const char *plugins = DEFAULT_LIBPATH "/ccaudio";
 #endif
-
-    if(RegOpenKey(HKEY_LOCAL_MACHINE, REGISTRY_AUDIO_SETTINGS, &key) == ERROR_SUCCESS) {
-        if(RegQueryValue(key, PLUGINS, regpath, &value) == ERROR_SUCCESS) {
-            codecdir = regpath;
-            env = regpath;
-            while(NULL != (env = strchr(env, '\\')))
-                *env = '/';
-        }
-        RegQueryValue(key, "Framing", NULL, &buffer_framing);
-        RegQueryValue(key, "Buffers", NULL, &buffer_count);
-        RegCloseKey(key);
-    }
-
-#else
-    codecdir = DEFAULT_LIBPATH "/ccaudio2";
-#endif
-}
-
 
 #if _MSC_VER > 1400        // windows broken dll linkage issue...
 #else
@@ -98,7 +52,7 @@ const unsigned Audio::ndata = (unsigned)(-1);
 
 const char *Audio::getPluginPath(void)
 {
-    return registry.codecdir;
+    return plugins;
 }
 
 Audio::Level Audio::tolevel(float dbm)
