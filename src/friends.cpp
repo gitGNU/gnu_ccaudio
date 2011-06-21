@@ -1199,7 +1199,7 @@ string_t Audio::path(const char *name, AudioRule *locale)
 void Audio::init(shell& args)
 {
 #ifdef  _MSWINDOWS_
-    plugins = _STR(str(args.execdir()) + "../lang");
+    plugins = _STR(str(args.execdir()) + "../ccaudio");
 #else
     const char *dp = strrchr(args.execdir(), '/');
     if(dp && (eq(dp, "/.") || eq(dp, "/utils") || eq(dp, "/.libs")))
