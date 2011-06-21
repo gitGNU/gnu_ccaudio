@@ -635,6 +635,8 @@ public:
      */
     static void init(void);
 
+    static void init(shell& args);
+
     /**
      * Set default prefix directory (/var/lib/xxx).
      */

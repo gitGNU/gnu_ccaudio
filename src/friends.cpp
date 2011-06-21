@@ -1196,6 +1196,17 @@ string_t Audio::path(const char *name, AudioRule *locale)
     return str(prefix_path) + str("/") + str(name) + str(suffix_ext);
 }
 
+void Audio::init(shell& args)
+{
+#ifdef  _MSWINDOWS_
+    plugins = args.execdir();
+#else
+    const char *dp = strrchr(args.execdir(), '/');
+    if(dp && (eq(dp, "/.") || eq(dp, "/server") || eq(dp, "/.libs")))
+        plugins = args.execdir();
+#endif
+    init();
+}
 
 void Audio::init(void)
 {
