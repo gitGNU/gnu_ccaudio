@@ -1199,10 +1199,10 @@ string_t Audio::path(const char *name, AudioRule *locale)
 void Audio::init(shell& args)
 {
 #ifdef  _MSWINDOWS_
-    plugins = args.execdir();
+    plugins = _STR(str(args.execdir()) + "../lang");
 #else
     const char *dp = strrchr(args.execdir(), '/');
-    if(dp && (eq(dp, "/.") || eq(dp, "/server") || eq(dp, "/.libs")))
+    if(dp && (eq(dp, "/.") || eq(dp, "/utils") || eq(dp, "/.libs")))
         plugins = args.execdir();
 #endif
     init();
@@ -1224,6 +1224,13 @@ void Audio::init(void)
     while(is(dir) && fsys::read(dir, filename, sizeof(filename)) > 0) {
         if(filename[0] == '.')
             continue;
+
+        const char *ext = strrchr(filename, '.');
+        if(!ext || !case_eq(ext, MODULE_EXT))
+            continue;
+
+        if(case_eq(filename, "lib", 3))
+                continue;
 
         snprintf(path, sizeof(path), "%s/%s", dp, filename);
         fsys::load(path);

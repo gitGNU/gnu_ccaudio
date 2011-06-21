@@ -132,7 +132,7 @@ PROGRAM_MAIN(argc, argv)
         shell::errexit(1, "*** phrasebook: %s\n",
             _TEXT("no command specified"));
 
-    Audio::init();
+    Audio::init(args);
     const char *cmd = args[0];
 
     argv = args.argv();

@@ -177,6 +177,14 @@ AC_SUBST_DIR(default_phrases, phrasedir)
 
 AC_DEFINE_UNQUOTED(DEFAULT_LIBPATH, "$default_libpath", [lib path])
 
+AH_BOTTOM([
+#ifdef  _MSC_VER
+#define MODULE_EXT ".dll"
+#else
+#define MODULE_EXT ".so"
+#endif
+])
+
 AC_SUBST(plugindir)
 AC_SUBST(phrasedir)
 AC_SUBST(UCOMMON_REQUIRES)

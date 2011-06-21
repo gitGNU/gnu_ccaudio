@@ -20,4 +20,5 @@
 #cmakedefine OSX_AUDIO 1
 #cmakedefine BUILD_STATIC 1
 #define DEFAULT_LIBPATH "${DEFAULT_LIBPATH}"
+#define MODULE_EXT  "${MODULE_EXT}"
 
