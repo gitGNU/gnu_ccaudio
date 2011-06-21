@@ -23,6 +23,12 @@ using namespace UCOMMON_NAMESPACE;
 static const char *delfile = NULL;
 static shell::flagopt helpflag('h',"--help",    _TEXT("display this list"));
 static shell::flagopt althelp('?', NULL, NULL);
+static shell::stringopt encoding('e', "--encoding", _TEXT("audio format"), "type", "pcmu");
+static shell::numericopt framing('f', "--framing", _TEXT("audio framing"), "msec", 20);
+static shell::numericopt interdigit('i', "--interdigit", _TEXT("interdigit timing"), "msec", 60);
+static shell::numericopt level('l', "--level", _TEXT("audio level"), "level", 30000);
+static shell::numericopt maxtime('m', "--max", _TEXT("max time"), "msec", 60000);
+static shell::numericopt offset('s', "--offset", _TEXT("offset into stream"), "msec", 0);
 
 static AudioTone *getTone(char **argv, Audio::Level l, timeout_t framing, timeout_t interdigit)
 {
@@ -59,96 +65,9 @@ void writeTones(char **argv, bool append)
     AudioStream output;
     Audio::Info info, make;
     const char *target;
-    char *option;
-    char *offset = NULL;
-    char *encoding = (char *)"pcmu";
-    Audio::Level level = 30000;
-    timeout_t framing = 20, interdigit = 60;
-    timeout_t maxtime = 60000;
     unsigned maxframes;
     Audio::Linear buffer;
     char *filename = (char *)"tones.conf";
-
-retry:
-    option = *argv;
-
-    if(eq("--", option)) {
-        ++argv;
-        goto skip;
-    }
-
-    if(eq("--", option, 2))
-        ++option;
-
-    if(eq(option, "-encoding=", 10) && !append) {
-        encoding = option + 10;
-        ++argv;
-        goto retry;
-    }
-
-    if(eq(option, "-interdigit")) {
-        ++argv;
-        if(*argv) {
-            shell::errexit(1, "*** tonetool: -interdigit: %s\n",
-                _TEXT("missing argument"));
-        }
-        interdigit = atoi(*(argv++));
-        goto retry;
-    }
-
-    if(eq(option, "-interdigit=", 12)) {
-        interdigit = atoi(option + 12);
-        ++argv;
-        goto retry;
-    }
-
-    if(eq(option, "-framing")) {
-        ++argv;
-        if(*argv) {
-            shell::errexit(1, "*** tonetool: -framing: %s\n",
-                _TEXT("missing argument"));
-        }
-        framing = atoi(*(argv++));
-        goto retry;
-    }
-
-    if(eq(option, "-framing=", 9)) {
-        framing = atoi(option + 9);
-        ++argv;
-        goto retry;
-    }
-
-    if(eq(option, "-encoding")) {
-        ++argv;
-        if(!*argv) {
-            shell::errexit(1, "*** tonetool: -encoding: %s\n",
-                _TEXT("missing argument"));
-        }
-        encoding = *(argv++);
-        goto retry;
-    }
-
-    if(eq(option, "-offset=", 8) && append) {
-        offset = option + 8;
-        ++argv;
-        goto retry;
-    }
-
-    if(eq(option, "-offset") && append) {
-        ++argv;
-        if(!*argv) {
-            shell::errexit(1, "*** tonetool: -offset: %s\n",
-                _TEXT("missing argument"));
-        }
-        offset = *(argv++);
-        goto retry;
-    }
-
-skip:
-    if(*argv && **argv == '-') {
-        shell::errexit(2, "*** tonetool: %s: %s\n",
-            *argv, _TEXT("unknown option"));
-    }
 
     TelTone::load(filename);
 
@@ -160,19 +79,19 @@ skip:
             _TEXT("no tone spec to use"));
     }
 
-    if(!append && encoding)
-        make.encoding = Audio::getEncoding(encoding);
+    if(!append)
+        make.encoding = Audio::getEncoding(*encoding);
 
     make.rate = Audio::rate8khz;
 
     if(!append) {
         remove(target);
-        output.create(target, &make, false, framing);
+        output.create(target, &make, false, *framing);
     }
     else {
-        output.open(target, Audio::modeWrite, framing);
-        if(offset)
-            output.setPosition(atol(offset));
+        output.open(target, Audio::modeWrite, *framing);
+        if(is(offset))
+            output.setPosition(*offset);
         else
             output.setPosition();
     }
@@ -189,7 +108,7 @@ skip:
 
     output.getInfo(&info);
 
-    tone = getTone(argv, level, info.framing, interdigit);
+    tone = getTone(argv, ((Audio::Level)*level), info.framing, *interdigit);
 
     if(!tone) {
         shell::errexit(5, "*** tonetool: %s\n",
@@ -197,7 +116,7 @@ skip:
     }
 
     printf("%s: ", fname(target));
-    maxframes = maxtime / info.framing;
+    maxframes = *maxtime / info.framing;
 
     while(maxframes--) {
         buffer = tone->getFrame();
@@ -334,48 +253,13 @@ void toneDetect(char **argv)
     AudioStream input;
     Audio::Info info, make;
     const char *target;
-    char *option;
-    timeout_t framing = 20;
     Audio::Linear buffer;
     char result[128];
-
-retry:
-    option = *argv;
-
-    if(eq("--", option)) {
-        ++argv;
-        goto skip;
-    }
-
-    if(eq("--", option, 2))
-        ++option;
-
-    if(eq(option, "-framing")) {
-        ++argv;
-        if(*argv) {
-            shell::errexit(1, "*** tonetool: -framing: %s\n",
-                _TEXT("missing argument"));
-        }
-        framing = atoi(*(argv++));
-        goto retry;
-    }
-
-    if(eq(option, "-framing=", 9)) {
-        framing = atoi(option + 9);
-        ++argv;
-        goto retry;
-    }
-
-skip:
-    if(*argv && **argv == '-') {
-        shell::errexit(2, "*** tonetool: %s: %s\n",
-            *argv, _TEXT("unknown option"));
-    }
 
     while(*argv) {
         target = *(argv++);
 
-        input.open(target, Audio::modeRead, framing);
+        input.open(target, Audio::modeRead, *framing);
 
         if(!input.is_open()) {
             shell::errexit(3, "*** tonetool: %s: %s\n",
@@ -423,7 +307,7 @@ PROGRAM_MAIN(argc, argv)
     shell args(argc, argv);
 
     if(is(helpflag) || is(althelp)) {
-        printf("%s\n", _TEXT("Usage: tonetool [options] command arguments..."));
+        printf("%s\n", _TEXT("Usage: tonetool [options] command [arguments...]"));
         printf("%s\n\n", _TEXT("Tone tool operations"));
         printf("%s\n", _TEXT("Options:"));
         shell::help();

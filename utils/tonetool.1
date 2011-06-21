@@ -3,7 +3,7 @@
 tonetool \- create and manipulate telephony tones.
 .SH SYNOPSIS
 .B tonetool
-\fBcommand\fR [\fIarguments...\fR]
+[\fIoptions...\fR] \fBcommand\fR [\fIarguments...\fR]
 .SH DESCRIPTION
 Teltones is used to generate or play audio telephony tones based on a
 "spec".  The spec can be "dtmf digitstring" to create or play dtmf digits,
@@ -11,6 +11,19 @@ Teltones is used to generate or play audio telephony tones based on a
 play a single tone, or "dual ..." to create or play a dual tone.
 Teltones can also be used to detect dtmf digits contained in audio files.
 .PP
+.SH OPTIONS
+.TP
+\fI\-encoding=pcmu\fR
+Specify audio encoding format.
+.TP
+\fI\-framing=20ms\fR
+Specify audio framing size.
+.TP
+\fI\-interdigit=60ms\fR
+Specify dtmf interdigit time.
+.TP
+\fI\-level=30000\fR
+Specify base audio level to use.
 .SH COMMANDS
 .TP
 \fBappend\fR
