@@ -3,98 +3,66 @@
 audiotool \- manipulate audio data files.
 .SH SYNOPSIS
 .B audiotool
-\fI\-append\fR [\fI\-offset=pos\fR] \fItarget\fR \fIaudiofiles...\fR
-.br
-.B audiotool
-\fI\-build\fR [\fI\-encoding=codec\fR] \fItarget\fR \fIaudiofiles...\fR
-.br
-.B audiotool
-\fI\-chart\fR [\fI\-silence=value\fR] [\fI\-framing=msec\fR] \fIaudiofiles...\fR
-.br
-.B audiotool
-\fI\-codecs\fR
-.br
-.B audiotool
-\fI\-info\fR \fIaudiofile\fR
-.br
-.B audiotool
-\fI\-notation\fR \fIaudiofile\fR [\fI``new-string''\fR]
-.br
-.B audiotool
-\fI\-play\fR \fIaudiofiles...\fR
-.br
-.B audiotool
-\fI\-plugins\fR
-.br
-.B audiotool
-\fI-soundcard\fR [\fIindex\fR]
-.br
-.B audiotool
-\fI\-strip\fR [\fI\-silence=value\fR] [\fI-framing=msec\fR] \fIaudiofiles...\fR
-.br
-.B audiotool
-\fI\-trim\fR [\fI\-silence=value\fR] [\fI-framing=msec\fR] [\fI-padding=frames\fR] \fIaudiofiles...\fR
-.br
-.B audiotool
-\fI\-version\fR
+\fBcommand\fR [\fIarguments...\fR]
 .SH DESCRIPTION
 Audiotool is used to copy, manipulate, and examine the contents of audio
 files.  These audio files may be raw headerless audio data or audio stored in
 common data files such as .wav or .au files.  In the near future
 audiotool will also support packetized audio files such as .mp3 and .ogg.
 .PP
+.SH COMMANDS
 .TP
-\fB\-append\fR
+\fBappend\fR
 appends the content of other audio files into an existing audio file.
 The offset to save within the existing file may be specified.
 If nessisary the content of the specified files will be re-encoded in
 the codec of the file being appended to.
 .TP
-\fB\-build\fR
+\fBbuild\fR
 Build a brand new audio file from scratch and then copy content from
 existing audio files into it.  The encoding of the new
 audio file will either be based on the file extension, the audio file
 that is being copied into it, or by specifying the encoding format
 directly.
 .TP
-\fB\-chart\fR
+\fBchart\fR
 This is used to generate an energy chart profile of the audio file frame
 by frame.  A * indicates solid audio content, a ^ indicates what might
 be a lead or trailer section of partial content, and a . indicates
 relative silence.  Soon a autotrim option will be added to audiotool to
 remove silent frames.
 .TP
-\fB\-codecs\fR
+\fBcodecs\fR
 List all active codec objects.  If you have plugins which are loaded that
 creates codec objects which match a built-in codec, the plugin will be
 selected first.
 .TP
-\fB\-info\fR
+\fBinfo\fR
 The info command gives you basic information on the audio file,
 including what format it is stored as, what codec the audio data is
 encoded in, how much data is in the file, what the bit rate used is,
 etc.
 .TP
-\fB\-notation\fR
+\fBnotation\fR
 Notation can be used to either set or display the annotation stored in
 audio files which support annotations, such as .au and .wav files.
 .TP
-\fB\-play\fR
+\fBplay\fR
 Plays the content of the audio file to the default system audio device
 (soundcard).  Play is supported on w32 and posix systems that support
 oss audio.  Future work will expand to additional platforms.
 .TP
-\fB\-plugins\fR
+\fBplugins\fR
 This simply returns the path to the plugins directory.  All plugins are
 loaded with Audio::init().  Plugins are not supported when building with
 static linkage.
 .TP
-\fB\-strip\fR
+\fBstrip\fR
 Strips out all silent frames from an audio file.  Silent frames are
 those which fall below a threashold and that have no peak impulse above
 the threashold.
 .TP
-\fB\-trim\fR
+\fBtrim\fR
 Removes leading and trailing "silence" from a file.  The -padding option
 may be used to add additional silent frames at the end of the file after
 it has been trimed, as this may be needed for files that will later be

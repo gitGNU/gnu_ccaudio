@@ -21,6 +21,8 @@
 using namespace UCOMMON_NAMESPACE;
 
 static const char *delfile = NULL;
+static shell::flagopt helpflag('h',"--help",    _TEXT("display this list"));
+static shell::flagopt althelp('?', NULL, NULL);
 
 static AudioTone *getTone(char **argv, Audio::Level l, timeout_t framing, timeout_t interdigit)
 {
@@ -418,32 +420,40 @@ static void stop(void)
 PROGRAM_MAIN(argc, argv)
 {
     shell::bind("tonetool");
+    shell args(argc, argv);
 
-    char *cp;
-
-    if(argc < 2) {
-        printf("%s\n", _TEXT("use: tonetool -command [-options...] [args...]"));
-        exit(-1);
+    if(is(helpflag) || is(althelp)) {
+        printf("%s\n", _TEXT("Usage: tonetool [options] command arguments..."));
+        printf("%s\n\n", _TEXT("Tone tool operations"));
+        printf("%s\n", _TEXT("Options:"));
+        shell::help();
+        printf("\n%s\n", _TEXT("Report bugs to dyfet@gnu.org"));
+        PROGRAM_EXIT(0);
     }
 
+    if(!args())
+        shell::errexit(1, "*** tonetool: %s\n",
+            _TEXT("no command specified"));
+
+    Audio::init(args);
+    const char *cp = args[0];
+
+    argv = args.argv();
     ++argv;
-    cp = *argv;
-    while(*cp == '-')
-        ++cp;
 
     shell::exiting(stop);
 
     if(eq(cp, "list"))
-        listTones(++argv);
+        listTones(argv);
     else if(eq(cp, "detect"))
-        toneDetect(++argv);
+        toneDetect(argv);
     else if(eq(cp, "create"))
-        writeTones(++argv, false);
+        writeTones(argv, false);
     else if(eq(cp, "append"))
-        writeTones(++argv, true);
+        writeTones(argv, true);
 
     shell::errexit(1, "*** tonetool: %s: %s\n",
-        *argv, _TEXT("unknown option"));
+        cp, _TEXT("unknown option"));
 
     PROGRAM_EXIT(0);
 }

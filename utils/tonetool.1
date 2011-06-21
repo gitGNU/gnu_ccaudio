@@ -3,19 +3,7 @@
 tonetool \- create and manipulate telephony tones.
 .SH SYNOPSIS
 .B tonetool
-\fI\-append\fR [\fI\-offset=pos\fR] [\fI\-level=level\fR] \fItarget\fR \fItonespec...\fR
-.br
-.B tonetool
-\fI\-create\fR [\fI\-encoding=codec\fR] [\fI-level=level\fR] \fItarget\fR \fItonespec...\fR
-.br
-.B tonetool
-\fI\-detect\fR \fIinput files...\fR
-.br
-.B tonetool
-\fI\-list\fR [\fI\-file=config\fR] [\fI\-locale=where\fR] \fItone\fR
-.br
-.B tonetool
-\fI\-play\fR [\fI\-level=level\fR] \fItonespec...\fR
+\fBcommand\fR [\fIarguments...\fR]
 .SH DESCRIPTION
 Teltones is used to generate or play audio telephony tones based on a
 "spec".  The spec can be "dtmf digitstring" to create or play dtmf digits,
@@ -23,19 +11,20 @@ Teltones is used to generate or play audio telephony tones based on a
 play a single tone, or "dual ..." to create or play a dual tone.
 Teltones can also be used to detect dtmf digits contained in audio files.
 .PP
+.SH COMMANDS
 .TP
-\fB\-append\fR
+\fBappend\fR
 Appends the generated tone to the end of an existing audio file.
 .TP
-\fB\-create\fR
+\fBcreate\fR
 Create a new audio file from scratch and fill with the tone specified.
 .TP
-\fB\-detect\fR
+\fBdetect\fR
 Process an existing audio file and report on dtmf digits found.
 .TP
-\fB\-list\fR
+\fBlist\fR
 List a tone entry definition by sequencing.
-\fB\-play\fR
+\fBplay\fR
 Generate a tone or dialing string and play it to the local soundcard.
 .SH BUGS
 At this time tonetool always assumes all data is sourced at 8khz and
@@ -48,5 +37,5 @@ Report bugs to <dyfet@gnu.org>.
 Copyright \(co 2005 David Sugar, Tycho Softworks.
 .br
 This is free software; see the source for copying conditions.  There is NO
-warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.

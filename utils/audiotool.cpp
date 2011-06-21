@@ -32,6 +32,8 @@
 using namespace UCOMMON_NAMESPACE;
 
 static const char *delfile = NULL;
+static shell::flagopt helpflag('h',"--help",    _TEXT("display this list"));
+static shell::flagopt althelp('?', NULL, NULL);
 
 class AudioBuild : public AudioStream
 {
@@ -1412,50 +1414,60 @@ skip:
 
 PROGRAM_MAIN(argc, argv)
 {
-    char *cp;
+    shell::bind("audiotool");
+    shell args(argc, argv);
 
-    if(argc < 2) {
-        shell::errexit(1, "%s\n",
-            _TEXT("use: audiotool -command [-options...] [args...]"));
+    if(is(helpflag) || is(althelp)) {
+        printf("%s\n", _TEXT("Usage: audiotool [options] command arguments..."));
+        printf("%s\n\n", _TEXT("Audio tool and audio file operations"));
+        printf("%s\n", _TEXT("Options:"));
+        shell::help();
+        printf("\n%s\n", _TEXT("Report bugs to dyfet@gnu.org"));
+        PROGRAM_EXIT(0);
     }
+
+    if(!args())
+        shell::errexit(1, "*** audiotool: %s\n",
+            _TEXT("no command specified"));
+
+    Audio::init(args);
+    const char *cp = args[0];
+
+    argv = args.argv();
     ++argv;
-    cp = *argv;
-    while(*cp == '-')
-        ++cp;
 
     shell::exiting(stop);
-    Audio::init();
 
     if(eq(cp, "version"))
         version();
     else if(eq(cp, "endian"))
         showendian();
     else if(eq(cp, "soundcard")) {
-        if(*(++argv))
+        if(*(argv))
             soundcard(atoi(*argv));
         else
             soundcard(0);
     }
     else if(eq(cp, "build"))
-        build(++argv);
+        build(argv);
     else if(eq(cp, "append"))
-        append(++argv);
+        append(argv);
     else if(eq(cp, "chart"))
-        chart(++argv);
+        chart(argv);
     else if(eq(cp, "info"))
-        info(++argv);
+        info(argv);
     else if(eq(cp, "note") || eq(cp, "annotate") || eq(cp, "notation"))
-        note(++argv);
+        note(argv);
     else if(eq(cp, "packets") || eq(cp, "dump") || eq(cp, "packetdump"))
-        packetdump(++argv);
+        packetdump(argv);
     else if(eq(cp, "play"))
-        play(++argv);
+        play(argv);
     else if(eq(cp, "strip"))
-        strip(++argv);
+        strip(argv);
     else if(eq(cp, "trim"))
-        trim(++argv);
+        trim(argv);
     else if(eq(cp, "size"))
-        size(++argv);
+        size(argv);
     else if(eq(cp, "codecs"))
         codecs();
     else if(eq(cp, "plugins"))
