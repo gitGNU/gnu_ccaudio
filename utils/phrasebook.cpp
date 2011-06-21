@@ -24,7 +24,11 @@ using namespace UCOMMON_NAMESPACE;
 static shell::flagopt helpflag('h',"--help",    _TEXT("display this list"));
 static shell::flagopt althelp('?', NULL, NULL);
 static shell::stringopt lang('l', "--lang", _TEXT("specify language"), "language", "C");
+static shell::stringopt prefix('P', "--prefix", _TEXT("specify prefix path"), "path", "/var/lib/ccaudio");
+static shell::stringopt suffix('S', "--suffix", _TEXT("audio extension"), ".ext", ".au");
+static shell::stringopt voices('V', "--voice", _TEXT("specify voice library"), "path", "/usr/share/ccaudio");
 static AudioRule *ruleset;
+static bool showpath = false;
 
 static void display(char **args)
 {
@@ -100,8 +104,12 @@ static void display(char **args)
 
         if(*out == NULL)
             printf("*** %s: failed", arg);
-        else while(*out)
-            printf("%s ", *(out++));
+        else while(*out) {
+            if(showpath)
+                printf("%s ", Audio::path(*(out++)).c_str());
+            else
+                printf("%s ", *(out++));
+        }
         printf("\n");
     }
 }
@@ -139,8 +147,16 @@ PROGRAM_MAIN(argc, argv)
         shell::errexit(3, "*** phrasebook: %s: %s\n",
             *lang, _TEXT("language not found"));
 
+    Audio::prefix(*prefix);
+    Audio::voices(*voices, ruleset);
+    Audio::suffix(*suffix);
+
     if(case_eq(cmd, "display"))
         display(argv);
+    else if(case_eq(cmd, "paths")) {
+        showpath = true;
+        display(argv);
+    }
     else
         shell::errexit(2, "*** phrasebook: %s: %s\n",
             cmd, _TEXT("unknown command"));
